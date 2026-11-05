@@ -210,6 +210,22 @@ def test_reinference_finds_the_line_behind_a_wrong_type_hint(tmp_path):
     enc = encode(load_program(path))
     plain = rank.rank(enc, "card")
     assert plain.candidates[0].card == 2
-    with_reinference = rank.rank(enc, "card", reinfer_path=path)
+    with_reinference = rank.rank(enc, "card", path=path, reinfer=True)
     assert with_reinference.stats["reinference"] == [1]
     assert with_reinference.candidates[0].lines == (1,)
+
+
+# -- missing code ----------------------------------------------------------------------
+@pytest.mark.parametrize("example,kind,line", [("missing_return", "add-return", 3), ("missing_await", "add-await", 3)])
+def test_hints_for_missing_code(example, kind, line):
+    path = REPO_ROOT / "examples" / f"{example}.js"
+    r = rank.rank(encode(load_program(path)), "card-late", path=path, hints=True)
+    assert [(h.kind, h.line) for h in r.hints] == [(kind, line)]
+    assert r.rank_of(line) == 1
+
+
+def test_no_hint_without_missing_code():
+    path = REPO_ROOT / "examples" / "promise.js"
+    r = rank.rank(encode(load_program(path)), "card-late", path=path, hints=True)
+    assert r.hints == [] and r.rank_of(1) == 1
+

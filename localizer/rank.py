@@ -47,6 +47,11 @@ class Ranking:
     time: float = 0.0
     stats: dict = field(default_factory=dict)
     span: dict = field(default_factory=dict)  # group key -> (first line, last line)
+    hints: list = field(default_factory=list)  # repair.Hint: missing code, shown first
+
+    @property
+    def hint_lines(self) -> list[int]:
+        return list(dict.fromkeys(h.line for h in self.hints))
 
     @property
     def groups(self) -> list:
@@ -60,8 +65,9 @@ class Ranking:
 
     @property
     def lines(self) -> list[int]:
-        """Suspicious source lines, in ranking order (first line of each group)."""
-        out: list[int] = []
+        """Suspicious source lines, in ranking order (hints first, then the
+        first line of each group)."""
+        out: list[int] = list(self.hint_lines)
         for g in self.groups:
             L = self.span[g][0] if g in self.span else g
             if L not in out:
@@ -73,8 +79,13 @@ class Ranking:
         return a <= line <= b
 
     def rank_of(self, line: int) -> Optional[int]:
-        """Rank of the first group that covers `line` (pessimistic within a candidate)."""
-        return line_ranks(self.candidates, lambda g: self.covers(g, line))
+        """Rank of `line`: its position among the hints, or after the hints the
+        rank of the first group that covers it (pessimistic within a candidate)."""
+        hl = self.hint_lines
+        if line in hl:
+            return hl.index(line) + 1
+        r = line_ranks(self.candidates, lambda g: self.covers(g, line))
+        return None if r is None else len(hl) + r
 
 
 def line_ranks(candidates: list[Candidate], hit=None):
@@ -208,6 +219,17 @@ def rank_from_pools(enc: Encoding, card_pool: Pool, size_pool: Optional[Pool] = 
     return out
 
 
+def top_lines(enc: Encoding, candidates: list[Candidate], k: int = 6) -> list[int]:
+    out: list[int] = []
+    for c in candidates:
+        for g in c.lines:
+            if enc.line_of(g) not in out:
+                out.append(enc.line_of(g))
+        if len(out) >= k:
+            break
+    return out[:k]
+
+
 def reinference_singletons(enc: Encoding, pool: Pool, path, **kw) -> list:
     """Lines that re-inference shows to be single-line corrections (line grouping)."""
     from .reinfer import reinference_corrections
@@ -226,16 +248,26 @@ def rank(
     min_count: int = 10,
     hard_cap: int = 30,
     timeout: Optional[float] = None,
-    reinfer_path=None,
-    reinfer_options: Optional[dict] = None,
+    path=None,
+    reinfer: bool = False,
+    hints: bool = False,
+    options: Optional[dict] = None,
 ) -> Ranking:
+    """Rank the candidate correction subsets.  With the program's `path`:
+    reinfer adds single lines found by re-inference (reinfer.py), hints adds
+    repairs of missing code (repair.py) in front.  options: plus, closed_fields."""
+    options = options or {}
     card_pool = enumerate_pool(enc, None, algorithm, min_count, hard_cap, timeout)
     size_pool = None
     if strategy in ("size", "pareto"):
         size_pool = enumerate_pool(enc, size_weights(enc), algorithm, min_count, hard_cap, timeout)
-    extra = reinference_singletons(enc, card_pool, reinfer_path, **(reinfer_options or {})) if reinfer_path else []
+    extra = reinference_singletons(enc, card_pool, path, **options) if path and reinfer else []
     r = rank_from_pools(enc, card_pool, size_pool, extra)[strategy]
     r.stats["reinference"] = extra
+    if path and hints:
+        from .repair import find_hints
+
+        r.hints = find_hints(path, top_lines(enc, r.candidates), **options)
     return r
 
 

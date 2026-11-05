@@ -29,6 +29,7 @@ sys.path.insert(0, str(ROOT))
 from localizer import baseline, mcs, rank  # noqa: E402
 from localizer.constraints import program_from_json, run_infer, run_solver_js  # noqa: E402
 from localizer.encode import encode  # noqa: E402
+from localizer.repair import find_hints  # noqa: E402
 
 STRATEGIES = list(rank.STRATEGIES)
 
@@ -111,15 +112,26 @@ def evaluate_single(source: str, targets: list[int], closed_fields: bool = False
     row["pool_complete"] = card_pool.complete and size_pool.complete
     _record_rankings(row, rankings, enc, targets)
     if reinfer and group_by == "line":
+        # item 4: re-inference; item 3: hints for missing code; "best" = both
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "program.js"
             path.write_text(source)
             t1 = time.perf_counter()
             extra = rank.reinference_singletons(enc, card_pool, path, closed_fields=closed_fields)
             row["time_reinfer"] = time.perf_counter() - t1
+            t1 = time.perf_counter()
+            hints = find_hints(path, rank.top_lines(enc, rankings["card-late"].candidates), closed_fields=closed_fields)
+            row["time_hints"] = time.perf_counter() - t1
         row["reinfer_lines"] = extra
         row["target_is_reinfer_correction"] = row["target_is_correction"] or any(t in extra for t in targets)
-        _record_rankings(row, rank.rank_from_pools(enc, card_pool, size_pool, extra), enc, targets, "+reinfer")
+        with_reinfer = rank.rank_from_pools(enc, card_pool, size_pool, extra)
+        _record_rankings(row, with_reinfer, enc, targets, "+reinfer")
+        row["hints"] = [[h.kind, h.line] for h in hints]
+        row["hint_on_target"] = any(h.line in targets for h in hints)
+        for r in list(rankings.values()) + list(with_reinfer.values()):
+            r.hints = hints
+        _record_rankings(row, rankings, enc, targets, "+hints")
+        _record_rankings(row, with_reinfer, enc, targets, "+reinfer+hints")
     if card_pool.mcses:
         min_cost = card_pool.mcses[0].cost
         tier = [m for m in card_pool.mcses if m.cost == min_cost]

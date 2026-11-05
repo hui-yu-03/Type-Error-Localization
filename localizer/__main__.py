@@ -34,6 +34,8 @@ def main(argv=None) -> int:
                     help="unit of blame: source line (default), statement, or AST node")
     ap.add_argument("--reinfer", action="store_true",
                     help="also check candidate lines by re-running inference without them")
+    ap.add_argument("--no-hints", action="store_true",
+                    help="do not look for missing code (a forgotten return or await)")
     ap.add_argument("--timeout", type=float, default=60.0, help="seconds")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     args = ap.parse_args(argv)
@@ -63,8 +65,8 @@ def main(argv=None) -> int:
     result["well_typed"] = False
     try:
         ranking = rank.rank(enc, args.strategy, args.algorithm, min_count=args.candidates, timeout=args.timeout,
-                            reinfer_path=args.file if args.reinfer else None,
-                            reinfer_options={"plus": args.plus, "closed_fields": args.closed_fields})
+                            path=args.file, reinfer=args.reinfer, hints=not args.no_hints,
+                            options={"plus": args.plus, "closed_fields": args.closed_fields})
     except HardConflict:
         print(f"{args.file}: the library signatures alone are contradictory", file=sys.stderr)
         return 2
@@ -74,6 +76,7 @@ def main(argv=None) -> int:
         algorithm=args.algorithm,
         candidates=[{"groups": [list(enc.span[g]) for g in c.lines], "size": c.size} for c in ranking.candidates],
         suspicious_lines=ranking.lines[: args.top],
+        hints=[{"kind": h.kind, "line": h.line, "edit": h.description} for h in ranking.hints],
         first_conflict_solver_js=baseline.solver_js_lines(js)[:1],
     )
     if args.json:
@@ -81,6 +84,10 @@ def main(argv=None) -> int:
         return 1
 
     print(f"{args.file}: type error.")
+    if ranking.hints:
+        print("\nLikely missing code (this edit makes the program well typed):")
+        for h in ranking.hints:
+            print(f"  line {h.line:<4} {h.description}")
     def where(g) -> str:
         if args.group_by == "node":
             return f"{g[0]}:{g[1] + 1}"
@@ -97,7 +104,7 @@ def main(argv=None) -> int:
     ranks = rank.line_ranks(ranking.candidates)
     for g in ranking.groups[: args.top]:
         cand = next(i for i, c in enumerate(ranking.candidates, 1) if g in c.lines)
-        print(f"  {ranks[g]:>2}. line {where(g):<6} {code(g):<58}  (candidate #{cand})")
+        print(f"  {ranks[g] + len(ranking.hint_lines):>2}. line {where(g):<6} {code(g):<58}  (candidate #{cand})")
     unit = {"line": "line", "statement": "statement", "node": "expression"}[args.group_by]
     print(f"\nCorrection subsets (dropping the constraints of these {unit}s makes the rest typable):")
     for i, c in enumerate(ranking.candidates[: max(args.top, 3)], 1):
