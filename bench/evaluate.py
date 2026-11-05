@@ -115,7 +115,18 @@ def evaluate_single(source: str, targets: list[int], closed_fields: bool = False
     return row
 
 
-def evaluate_multi(source: str, targets: list[int], timeout: float = 60.0) -> dict:
+def apply_mistakes(source: str, mistakes: list[dict]) -> str:
+    """Apply mutation sites (from `mutate.js sample`) to a source text."""
+    for m in sorted(mistakes, key=lambda m: -m["start"]):
+        source = source[: m["start"]] + m["replacement"] + source[m["end"] :]
+    return source
+
+
+def evaluate_multi(source: str, targets: list[int], base_source: Optional[str] = None,
+                   mistakes: Optional[list[dict]] = None, timeout: float = 60.0) -> dict:
+    """Several mistakes.  A mistake is *effective* if applying it alone to the
+    base program already causes a type error; benign mistakes cannot be found
+    by any method, so recall is also reported relative to the effective ones."""
     t0 = time.perf_counter()
     data = infer_source(source)
     program = program_from_json(data, source)
@@ -126,18 +137,30 @@ def evaluate_multi(source: str, targets: list[int], timeout: float = 60.0) -> di
         return row
     row["detected"] = True
     T = set(targets)
-    k = len(targets)
+    effective = set(T)
+    if base_source is not None and mistakes:
+        effective = set()
+        for m in mistakes:
+            single = apply_mistakes(base_source, [m])
+            p1 = program_from_json(infer_source(single), single)
+            if encode(p1).check() == z3.unsat:
+                effective.add(m["line"])
+    row["effective"] = len(effective)
     pool = rank.enumerate_pool(enc, None, "oll", min_count=5, hard_cap=20, timeout=timeout)
-    r = rank.rank_from_pools(enc, pool)["card"]
-    first = set(r.candidates[0].lines) if r.candidates else set()
+    rankings = rank.rank_from_pools(enc, pool)
+    b1 = baseline.first_conflicts(enc, k=max(len(T), 1), timeout_ms=int(timeout * 1000))
+    first = set(rankings["card"].candidates[0].lines) if rankings["card"].candidates else set()
     row["first_mcs_size"] = len(first)
     row["first_mcs_precision"] = len(first & T) / len(first) if first else 0.0
-    row["first_mcs_recall"] = len(first & T) / k
-    top = r.lines[:k]
-    row["topk_recall"] = len(set(top) & T) / k
-    b1 = baseline.first_conflicts(enc, k=k, timeout_ms=int(timeout * 1000))
-    row["first_conflict_topk_recall"] = len(set(b1[:k]) & T) / k
-    # how many of the mistakes are "visible" (their line alone matters)?
+    row["first_mcs_recall"] = len(first & T) / len(T)
+    e = len(effective)
+    row["first_mcs_recall_eff"] = len(first & effective) / e if e else None
+    for name in ("card", "card-late"):
+        lines = rankings[name].lines
+        row[f"top_recall_{name}"] = len(set(lines[: len(T)]) & T) / len(T)
+        row[f"top_recall_eff_{name}"] = len(set(lines[:e]) & effective) / e if e else None
+    row["top_recall_first_conflict"] = len(set(b1[: len(T)]) & T) / len(T)
+    row["top_recall_eff_first_conflict"] = len(set(b1[:e]) & effective) / e if e else None
     row["time"] = time.perf_counter() - t0
     return row
 

@@ -23,7 +23,8 @@ from pathlib import Path
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="python -m localizer", description=__doc__.split("\n\n")[0])
     ap.add_argument("file", help="JavaScript source file")
-    ap.add_argument("--strategy", choices=rank.STRATEGIES, default="card", help="ranking strategy (default: card)")
+    ap.add_argument("--strategy", choices=rank.STRATEGIES, default="card-late",
+                    help="ranking strategy (default: card-late, the best single rule in the experiments)")
     ap.add_argument("--algorithm", choices=sorted(ALGORITHMS), default="oll", help="MCS algorithm (default: oll)")
     ap.add_argument("--top", type=int, default=5, help="number of suspicious lines to show")
     ap.add_argument("--candidates", type=int, default=10, help="number of correction subsets to enumerate")

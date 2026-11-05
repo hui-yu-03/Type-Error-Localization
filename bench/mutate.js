@@ -237,7 +237,7 @@ function main() {
     const mutated = apply(src, chosen);
     process.stdout.write(
       JSON.stringify({
-        mistakes: chosen.map(({ start, end, ...info }) => info),
+        mistakes: chosen, // with start/end offsets, so each can be applied alone
         lines: chosen.map((s) => s.line).sort((a, b) => a - b),
         source: mutated,
       }) + "\n",

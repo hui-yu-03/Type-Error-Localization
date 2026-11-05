@@ -153,7 +153,8 @@ def cmd_generated(args) -> None:
 def _multi(task: dict) -> dict:
     row = {k: v for k, v in task.items() if k != "source"}
     try:
-        row.update(ev.evaluate_multi(task["source"], task["mistake_lines"]))
+        row.update(ev.evaluate_multi(task["source"], task["mistake_lines"],
+                                     base_source=(ROOT / task["base"]).read_text(), mistakes=task["mistakes"]))
     except Exception as e:
         row.update(error=repr(e)[:200])
     return row
@@ -167,9 +168,12 @@ def cmd_multi(args) -> None:
             for seed in range(1, 4):
                 s = ev.sample_mistakes(path, k, seed)
                 tasks.append(dict(base=label, k=k, seed=seed, mistake_lines=s["lines"],
-                                  ops=[m["op"] for m in s["mistakes"]], source=s["source"]))
+                                  ops=[m["op"] for m in s["mistakes"]], mistakes=s["mistakes"],
+                                  source=s["source"]))
     print(f"multi: {len(tasks)} programs", flush=True)
     rows = run_parallel(_multi, tasks, args.jobs, "multi")
+    for r in rows:
+        r.pop("mistakes", None)
     write_csv(RESULTS / "multi.csv", rows)
 
 

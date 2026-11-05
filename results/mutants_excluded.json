@@ -1,0 +1,15 @@
+[
+ "Tests/Class/class_1.js",
+ "Tests/Class/class_13.js",
+ "Tests/Class/class_7.js",
+ "Tests/Class/class_9.js",
+ "Tests/Class/proto_1.js",
+ "Tests/Class/proto_2.js",
+ "Tests/Conflict_Detection/conflict_3.js",
+ "Tests/Conflict_Detection/conflict_4.js",
+ "Tests/Conflict_Detection/conflict_6.js",
+ "Tests/Conflict_Detection/conflict_binop.js",
+ "Tests/Conflict_Detection/conflict_type_2.js",
+ "Tests/Functions/double_plus_1.js",
+ "Tests/Objects/obj_2.js"
+]

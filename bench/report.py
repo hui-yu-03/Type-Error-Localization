@@ -56,6 +56,10 @@ def pct(x: float | None) -> str:
     return "–" if x is None else f"{100 * x:.0f}"
 
 
+def num(x: float | None) -> str:
+    return "–" if x is None else f"{x:.2f}"
+
+
 def frac(rows, pred) -> float | None:
     return sum(1 for r in rows if pred(r)) / len(rows) if rows else None
 
@@ -157,18 +161,26 @@ def closed_table(rows: list[dict]) -> str:
 
 # -- several mistakes --------------------------------------------------------------
 def multi_table(rows: list[dict]) -> str:
+    def mean(rs, key):
+        vals = [r[key] for r in rs if r.get(key) is not None]
+        return statistics.mean(vals) if vals else None
+
     body = []
     for k in sorted({r["k"] for r in rows}):
         rs = [r for r in rows if r["k"] == k]
         det = [r for r in rs if r.get("detected")]
         if not det:
             continue
-        m = lambda key: f"{statistics.mean([r[key] for r in det]):.2f}"  # noqa: E731
-        body.append([str(k), str(len(rs)), str(len(det)), m("first_mcs_size"), pct(statistics.mean([r["first_mcs_precision"] for r in det])),
-                     pct(statistics.mean([r["first_mcs_recall"] for r in det])), pct(statistics.mean([r["topk_recall"] for r in det])),
-                     pct(statistics.mean([r["first_conflict_topk_recall"] for r in det]))])
-    return table(["mistakes k", "programs", "ill-typed", "size of first MCS", "first MCS precision (%)", "first MCS recall (%)",
-                  "MCS ranking: mistakes in top-k lines (%)", "first conflicts: mistakes in first k blamed lines (%)"], body)
+        body.append([
+            str(k), str(len(rs)), str(len(det)), num(mean(det, "effective")), num(mean(det, "first_mcs_size")),
+            pct(mean(det, "first_mcs_precision")), pct(mean(det, "first_mcs_recall_eff")),
+            pct(mean(det, "top_recall_eff_card-late")), pct(mean(det, "top_recall_eff_card")),
+            pct(mean(det, "top_recall_eff_first_conflict")),
+        ])
+    return table(["mistakes k", "programs", "ill-typed", "effective mistakes e (mean)", "size of first MCS",
+                  "first MCS: precision (%)", "first MCS: recall of effective (%)",
+                  "top-e lines, MCS latest first (%)", "top-e lines, MCS earliest first (%)",
+                  "first e blamed lines, first conflict (%)"], body)
 
 
 # -- scaling -------------------------------------------------------------------------
@@ -209,21 +221,39 @@ def _style(ax) -> None:
     ax.set_axisbelow(True)
 
 
+def _spread(values: list[float], gap: float) -> list[float]:
+    """Move sorted label positions apart so that neighbours are >= gap apart."""
+    order = sorted(range(len(values)), key=lambda i: values[i])
+    pos = [values[i] for i in order]
+    for i in range(1, len(pos)):
+        pos[i] = max(pos[i], pos[i - 1] + gap)
+    shift = (sum(values[i] for i in order) - sum(pos)) / len(pos)  # keep them centred
+    out = [0.0] * len(values)
+    for j, i in enumerate(order):
+        out[i] = pos[j] + shift
+    return out
+
+
 def plot_scaling(rows: list[dict]) -> None:
+    import math
+
     import matplotlib
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import FixedLocator, FuncFormatter, NullLocator
 
     ks = sorted({r["k"] for r in rows})
+    sizes = sorted({r["size"] for r in rows})
     algs = [("oll", "OLL"), ("ihs", "IHS"), ("z3", "Z3 maxres")]
-    fig, axes = plt.subplots(1, len(ks), figsize=(4.2 * len(ks), 3.6), sharey=True, facecolor=SURFACE)
+    fig, axes = plt.subplots(1, len(ks), figsize=(4.3 * len(ks), 3.7), sharey=True, facecolor=SURFACE)
     axes = [axes] if len(ks) == 1 else axes
     for ax, k in zip(axes, ks):
         _style(ax)
+        ends = []
         for (a, label), color in zip(algs, SERIES):
             pts = []
-            for size in sorted({r["size"] for r in rows}):
+            for size in sizes:
                 ts = [r["time"] for r in rows if r["k"] == k and r["size"] == size and r["algorithm"] == a]
                 if ts:
                     pts.append((size, statistics.median(ts)))
@@ -232,16 +262,25 @@ def plot_scaling(rows: list[dict]) -> None:
             xs, ys = zip(*pts)
             ax.plot(xs, ys, color=color, linewidth=2, marker="o", markersize=5,
                     markeredgecolor=SURFACE, markeredgewidth=1.5, label=label)
-            ax.annotate(label, (xs[-1], ys[-1]), textcoords="offset points", xytext=(6, 0), va="center",
-                        fontsize=8.5, color=INK2)
+            ends.append((label, xs[-1], ys[-1]))
+        # direct labels at the line ends, spread apart (log scale: 0.2 decades)
+        ys_log = _spread([math.log10(y) for _, _, y in ends], 0.2)
+        for (label, x, _), yl in zip(ends, ys_log):
+            ax.annotate(label, (x, 10 ** yl), xytext=(8, 0), textcoords="offset points",
+                        va="center", fontsize=8.5, color=INK2)
         ax.set_xscale("log")
         ax.set_yscale("log")
+        ax.xaxis.set_major_locator(FixedLocator(sizes))
+        ax.xaxis.set_minor_locator(NullLocator())
+        ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v / 1000:g}k" if v >= 1000 else f"{v:g}"))
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}"))
+        ax.set_xlim(sizes[0] / 1.3, sizes[-1] * 2.4)
         ax.set_title(f"{k} injected mistake{'s' if k > 1 else ''}", fontsize=10, color=INK, loc="left")
         ax.set_xlabel("program size (lines)", fontsize=9, color=INK2)
-        ax.margins(x=0.25)
-    axes[0].set_ylabel("time to first smallest MCS (s, median)", fontsize=9, color=INK2)
-    axes[0].legend(frameon=False, fontsize=8.5, loc="upper left", labelcolor=INK2)
-    fig.tight_layout()
+    axes[0].set_ylabel("time to the first smallest MCS (s, median)", fontsize=9, color=INK2)
+    handles, labels_ = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels_, frameon=False, fontsize=9, loc="upper center", ncol=3, labelcolor=INK2)
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
     fig.savefig(RESULTS / "scaling.png", dpi=200, facecolor=SURFACE)
     plt.close(fig)
 
@@ -276,8 +315,9 @@ def plot_topk(corpora: list[tuple[str, list[dict]]]) -> None:
         ax.set_xlim(0, 112)
         ax.set_xlabel("mistake line ranked first / in top 3 (%)", fontsize=9, color=INK2)
         ax.set_title(f"{name} ({len(det)} ill-typed mutants)", fontsize=10, color=INK, loc="left")
-    axes[-1].legend(frameon=False, fontsize=8.5, loc="lower right", labelcolor=INK2)
-    fig.tight_layout()
+    handles, labels_ = axes[0].get_legend_handles_labels()
+    fig.legend(handles[::-1], labels_[::-1], frameon=False, fontsize=9, loc="upper center", ncol=2, labelcolor=INK2)
+    fig.tight_layout(rect=(0, 0, 1, 0.93))
     fig.savefig(RESULTS / "topk.png", dpi=200, facecolor=SURFACE)
     plt.close(fig)
 
