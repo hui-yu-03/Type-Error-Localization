@@ -38,7 +38,7 @@ small repair search names what is missing:
 $ python -m localizer examples/missing_await.js
 examples/missing_await.js: type error.
 
-Likely missing code (this edit makes the program well typed):
+Likely fix (this edit makes the program well typed):
   line 3    await p
 
 Suspicious lines (card-late, oll):
@@ -67,11 +67,13 @@ behind them.
 8. [Benchmarks](#benchmarks)
 9. [Results](#results)
 10. [The six improvements after the first version](#the-six-improvements-after-the-first-version)
-11. [The inferencer: what was found and fixed](#the-inferencer-what-was-found-and-fixed)
-12. [Limitations and threats to validity](#limitations-and-threats-to-validity)
-13. [Reproducing everything](#reproducing-everything)
-14. [Repository map](#repository-map)
-15. [References](#references)
+11. [Real code: FixJS and BugsJS](#real-code-fixjs-and-bugsjs)
+12. [Tools](#tools)
+13. [The inferencer: what was found and fixed](#the-inferencer-what-was-found-and-fixed)
+14. [Limitations and threats to validity](#limitations-and-threats-to-validity)
+15. [Reproducing everything](#reproducing-everything)
+16. [Repository map](#repository-map)
+17. [References](#references)
 
 ---
 
@@ -82,24 +84,28 @@ What was done, following the plan of the proposal:
 | Proposal plan | What exists now |
 |---|---|
 | Weeks 1–2: constraints with source lines | `infer.js --json` tags every constraint with the line (and AST node, statement) it comes from; library signatures are marked hard. `solver.js --json` records which constraint caused each conflict. |
-| Weeks 1–2: SMT encoding + correctness argument | `localizer/encode.py`: types are an algebraic datatype, fields and signatures uninterpreted functions, `+` a disjunction, one selector literal per line. [Correctness argument](#24-correctness-argument) plus an empirical cross-check: the encoding agrees with `solver.js` on **all 132** test programs and on 1,827 of 1,828 mutated programs. |
+| Weeks 1–2: SMT encoding + correctness argument | `localizer/encode.py`: types are an algebraic datatype, fields and signatures uninterpreted functions, `+` a disjunction, one selector literal per line. [Correctness argument](#24-correctness-argument) plus an empirical cross-check: the encoding agrees with `solver.js` on **all 132** test programs and on 1,829 of 1,830 mutated programs. |
 | Weeks 3–4: smallest correction subsets | `localizer/mcs.py`: core-guided MaxSMT (**OLL**), **implicit hitting sets** (MaxHS-style, with RC2 as the hitting-set solver), and Z3's built-in MaxSMT as a reference, all enumerating minimal correction subsets in order of cost. Tests check that all three agree and that every result is a minimal correction subset. |
 | Week 5: ranking (Q2) | `localizer/rank.py`: cardinality with several tie-breaking rules, program-derived weights, Pareto-optimal correction subsets, and a learned tie-breaker. |
 | Week 6: benchmarks | `bench/mutate.js` (six kinds of mistakes), `bench/generate.py` (well-typed programs of any size, optionally of independent modules), about 7,700 evaluated programs. |
 | Week 7: experiments (Q1–Q3) | `bench/run_experiments.py`, `bench/report.py`, `bench/train_ranker.py`, results in [`results/`](results/summary.md). |
 | (extension) | Optional **closed-world fields** (`--closed-fields`): a disjunctive constraint, beyond what unification can express, that catches misspelled property names. |
 
-The six improvements made after the first version
-([details](#the-six-improvements-after-the-first-version)):
+The improvements made after the first version
+([details](#the-six-improvements-after-the-first-version),
+[real code](#real-code-fixjs-and-bugsjs), [tools](#tools)):
 
 | # | Improvement | Result |
 |---|---|---|
-| 1 | **Learned tie-breaking** from def/use and code features | Top-1 86% (test suite) / 88% (generated) against 83% / 77% for the best fixed rule, on programs not seen in training; but no gain when trained on the *other* corpus, so it stays opt-in (`--strategy learned`). |
-| 2 | **Faster large programs**: eliminating line-local variables, slicing, automatic core minimization | 8,000-line programs: OLL 36–43 s → 16–17 s, IHS 35–52 s → 14–17 s, with the same optima; programs of 8 independent modules: 36 s → 4 s (slicing). |
-| 3 | **Missing code**: repair hints for a forgotten `return` or `await` | Forgotten `return`/`await` in the generated programs: top-1 from 0% to 100% (130/130 hints correct, no hint on any other mistake). Overall top-1 on generated programs 77% → 96%. |
+| 1 | **Learned tie-breaking** from def/use and code features | Top-1 85% (test suite) / 88% (generated) against 83% / 77% for the best fixed rule, on programs not seen in training; but no gain on the *other* corpus, nor on real bug fixes, so it stays opt-in (`--strategy learned`). |
+| 2 | **Faster large programs**: eliminating line-local variables, slicing, automatic core minimization | 8,000-line programs: OLL 44–51 s → 18–21 s, IHS 46–63 s → 17–21 s, with the same optima; programs of 8 independent modules: 40 s → 4 s (slicing). |
+| 3 | **Hints for missing code and likely fixes**: a forgotten `return` or `await`; later `!` precedence, a missing `.length`, a misspelled member | All 130 forgotten `return`s/`await`s get a correct hint, and 146 of 187 misspelled properties; none of the 279 hints on injected mistakes is wrong. Top-1 on generated programs 77% → 96%. On real fixes, 97% of the hints point at a line the developer changed. |
 | 4 | **Finer units of blame** (statement, expression) and **re-inference** without a line | Method chains split over lines are localized per link; re-inference repairs the cases where `infer.js` guessed later types from the mistake (generated: top-1 96% → 97%). |
-| 5 | **Fixes to the inferencer** found by the SMT encoding | `solver.js` and the encoding now agree on 99.9% of mutants (was 97%); no more spurious conflicts on large well-typed programs (was 7 in 20). One expected test output changed. |
-| 6 | **Real buggy programs** | A buggy/fixed-pair evaluation pipeline (`bench/realworld.py`). Not run on real data: the environment could not reach any source of real buggy programs (see [item 6](#6-real-buggy-programs)). |
+| 5 | **Fixes to the inferencer** found by the SMT encoding and on real code | `solver.js` and the encoding agree on 99.9% of mutants (was 97%); no spurious conflicts on large well-typed programs (was 7 in 20); block scopes for `let`/`const`; four more bugs found on real code. Two expected test outputs changed. |
+| 6 | **Real bug fixes**: FixJS (44,881 function pairs of bug-fixing commits) and BugsJS (453 bugs) | 1.3% of the real fixes are type errors this type system sees. On the small ones the full pipeline ranks a changed line first in 70% and in the top 3 in 91% of the cases, against 57% for a first-conflict checker. |
+| 7 | **A relaxed type system for real JavaScript**, its rules chosen by ablation | False alarms on real functions 32.6% → 19.0%, while 99.6% of the injected mistakes are still found. With it, 83% / 99% (top-1 / top-3) on the small real fixes. |
+| 8 | **Tools**: explanations, a question for ties, a language server; one Node process for all inferences; independent parts solved apart and cached | "line 1 makes p Promise<str>; the rest of the program needs Promise<num>"; inference about 37 times faster; only the changed part is solved again after an edit. |
+| 9 | **Statistics**: cluster-bootstrap confidence intervals, exact McNemar tests | Against the first-conflict checker, the full pipeline is better at top-3 on every corpus (p ≤ 10⁻⁷), and at top-1 on the injected mistakes and the small real fixes (p ≤ 10⁻³); at top-1 it is not significantly different on all real fixes, nor with the relaxed type system. |
 
 Main findings (details in [Results](#results)):
 
@@ -113,24 +119,34 @@ Main findings (details in [Results](#results)):
   ties. A small repair search (improvement 3) closes this gap.
 * **Q2.** Ranking by cardinality puts the mistake line in the top 3 in 92–100%
   of the cases (99–100% leaving out forgotten `return`s), against 71–77% for
-  a first-conflict checker. For the top-1, the tie-breaking rule decides, and the
+  a first-conflict checker (whose top-1 is 71–76%). For the top-1, the tie-breaking rule decides, and the
   best fixed rule depends on the kind of mistake: "latest line first" (77–83%
   overall) wins for mistakes at a use site, "fewer constraints first" for
-  mistakes at a definition site. A learned tie-breaker reaches 86–88% on unseen
+  mistakes at a definition site. A learned tie-breaker reaches 85–88% on unseen
   programs of the same kind, but encodes the style of the benchmark rather than
   something general. With repair hints and re-inference, the full pipeline
   reaches **84% (test suite) and 97% (generated programs) top-1, and 100% top-3**.
 * **Several mistakes.** With 2–6 mistakes, the MCS ranking ("latest first") still has
-  77–79% of the effective mistakes among its first answers, and the full
-  pipeline 81–86%, while the first-conflict checker drops to 45–52%.
+  78–79% of the effective mistakes among its first answers, and the full
+  pipeline 83–88%, while the first-conflict checker drops to 50–55%.
 * **Q3.** All three algorithms localize programs of 8,000 lines (≈28,700
   constraints) with up to 16 mistakes, without timeouts. With the performance
-  improvements, OLL and IHS take 14–17 s (before: 35–52 s) and are now faster
-  than Z3's built-in MaxSMT (17–28 s). IHS needs about three times as many SAT
-  calls as OLL, but each is cheap. Programs made of independent parts profit
-  most: slicing brings 8,000 lines of 8 modules down to 4–7 s.
+  improvements, OLL and IHS take 17–21 s (before: 44–63 s) and are now at least
+  as fast as Z3's built-in MaxSMT (19–30 s). IHS needs about three times as many
+  SAT calls as OLL, but each is cheap. Programs made of independent parts profit
+  most: slicing brings 8,000 lines of 8 modules down to 4–8 s.
+* **Real code.** About one real bug fix in 80 (FixJS: 573 of 43,921 function
+  pairs) is a type error that this type system sees, and a third of real
+  functions are ill-typed even after their fix. On the small real fixes the full
+  pipeline ranks a changed line first in 70% and in the top 3 in 91% of the
+  cases, against 57% for a first-conflict checker and 24% / 57% for a random
+  order. A relaxed type system, its rules chosen by ablation, removes 42% of the
+  false alarms and keeps 99.6% of the injected mistakes; with it the small real
+  fixes reach 83% / 99%. A tie-break learned on injected mistakes does not
+  transfer to real ones: the mutation operators decide where mistakes are.
 * The declarative encoding exposed **order dependence and missing checks in
-  the existing solver** (`solver.js`); they are now fixed (improvement 5).
+  the existing solver** (`solver.js`), and running on real code four more
+  problems of the inferencer; they are now fixed (improvement 5, findings 12–14).
 
 ---
 
@@ -162,7 +178,13 @@ Options:
 | `--reinfer` | also check candidate lines by re-running inference without them |
 | `--no-hints` | do not look for missing code (forgotten `return`/`await`) |
 | `--closed-fields` | reading a field that no object literal or write defines is an error |
+| `--relaxed` | the relaxed type system for real code (undeclared globals and library members are `any`, functions are objects, ...; see [Real code](#real-code-fixjs-and-bugsjs)) |
+| `--explain` | say which types clash for the first candidates |
+| `--ask [--answer 1\|2]` | when the first two candidates tie, ask which type a variable should have |
 | `--top N`, `--json` | number of lines shown, machine-readable output |
+
+In an editor, `python -m localizer.lsp` is a language server that shows the
+ranked lines and their explanations as diagnostics (see [Tools](#tools)).
 
 A well-typed program prints the types of a model, with `?` for the parts that
 no constraint determines:
@@ -206,8 +228,12 @@ python -m pytest tests -q
                                             │ rank.py         ranked suspicious lines   │
                                             │ features.py     learned tie-breaking      │
                                             │ reinfer.py      re-inference without a line│
-                                            │ repair.py/.js   hints for missing code    │
+                                            │ repair.py/.js   hints: likely fixes       │
                                             │ baseline.py     first conflict, SMT order │
+                                            │ explain.py      clashing types, questions │
+                                            │ parallel.py     independent parts apart   │
+                                            │ lsp.py          editor integration        │
+                                            │ infer_worker.js one Node process for all  │
                                             └──────────────────────────────────────────┘
 ```
 
@@ -419,7 +445,7 @@ states them declaratively, so the order of the constraints does not matter.
   difference was a program `solver.js` accepted and the encoding rejected:
   `+` on a boolean, `void` or object (20), a Promise used as an object or array
   (23), arrays mixed with numbers (8), indexing a number (3). **After the fixes
-  they agree on 1,827 (99.9%).** The remaining program uses an array method on a
+  they agree on 1,829 of the 1,830 mutants of the final run (99.9%).** The remaining program uses an array method on a
   string. `solver.js` still treats such a variable as `str | Array<T>`, because
   in its text input it cannot tell indexing (`s[0]`, legal on strings) from an
   array method.
@@ -560,8 +586,10 @@ pessimistically: in the example above, lines 2 and 3 both get rank 3.
 
 Two additions can run on top of any strategy:
 
-* **Hints for missing code** (on by default): repairs that add a `return` or an
-  `await` and remove at least one conflict are shown first (improvement 3).
+* **Hints** (on by default): small repairs that remove at least one conflict
+  are shown first: an added `return` or `await` (improvement 3), and the fixes
+  found in real bugs, `!` precedence, a missing `.length` and a misspelled
+  member ([Real code](#learning-from-real-fixes)).
 * **Re-inference** (`--reinfer`): lines that make the program well typed when
   inference is run again without them become single-line candidates
   (improvement 4).
@@ -597,8 +625,10 @@ the localization metrics (but counted in the detection tables).
 |---|---|---|
 | **test suite** | the 119 well-typed programs of `Tests/` (the 13 ill-typed ones excluded) | up to 6 mutants per operator and program: 761 mutants, each with open fields (+ re-inference and hints), closed fields, statement and node grouping |
 | **generated** | 40 generated programs of 60 lines (`bench/corpus/generated/`), accepted by both checkers | 1,069 mutants, the same four settings; balanced over operators (the test suite has a single `await`) |
-| **several mistakes** | 20 generated programs of 200 lines (`bench/corpus/multi/`) | k ∈ {1, 2, 3, 4, 6} mistakes on distinct lines, 3 samples each: 300 programs |
+| **several mistakes** | 40 generated programs of 200 lines (`bench/corpus/multi/`) | k ∈ {1, 2, 3, 4, 6} mistakes on distinct lines, 3 samples each: 600 programs |
 | **scaling** | generated programs of 500 – 8,000 lines, and programs of 8 independent modules of 2,000 and 8,000 lines, 2 per size | k ∈ {1, 4, 16} mistakes (modular: {1, 4}): 38 programs, 264 timed runs |
+| **FixJS** (real) | 44,881 distinct pairs of a JavaScript function before and after a bug-fixing commit on GitHub (2012) | screened for type errors with the strict and the relaxed type system: 573 and 303 pairs localized ([Real code](#real-code-fixjs-and-bugsjs)) |
+| **BugsJS** (real) | 453 test-validated bugs of 10 Node.js projects: 486 changed functions | 6 and 4 type errors localized |
 
 The **generator** (`bench/generate.py`) builds programs from templates that use
 earlier variables of the right type: numbers, strings, booleans, arrays,
@@ -633,13 +663,13 @@ All numbers below come from `results/*.csv` and are reproduced by
 
 | mistake | test suite: mutants | type errors: solver.js / SMT / SMT + closed fields | generated: mutants | type errors: solver.js / SMT / SMT + closed fields |
 |---|---|---|---|---|
-| literal | 324 | 138 / 138 / 138 | 240 | 190 / 190 / 190 |
+| literal | 324 | 137 / 137 / 137 | 240 | 190 / 190 / 190 |
 | swap-args | 20 | 6 / 6 / 6 | 125 | 57 / 57 / 57 |
 | misspell-prop | 127 | 29 / 29 / **64** | 240 | 158 / 158 / **173** |
 | missing-await | 1 | 0 / 0 / 0 | 72 | 72 / 72 / 72 |
 | wrong-var | 250 | 78 / 78 / 78 | 240 | 116 / 117 / 117 |
 | remove-return | 39 | 5 / 5 / 5 | 152 | 53 / 53 / 53 |
-| **all** | 761 | 256 / 256 / 291 | 1,069 | 646 / 647 / 662 |
+| **all** | 761 | 255 / 255 / 290 | 1,069 | 646 / 647 / 662 |
 
 Many mutants are still well typed: a string literal that is only concatenated
 can become a number, a swapped pair of arguments can have the same type. These
@@ -652,13 +682,13 @@ more than double the misspelled properties found in the test suite.
 
 | mistake | ill-typed (test suite / generated) | mistake line is in a smallest MCS (%) | the smallest MCS is unique (%) | equally small MCSs (mean) |
 |---|---|---|---|---|
-| literal | 138 / 190 | 100 / 99 | 49 / 88 | 1.6 / 1.2 |
+| literal | 137 / 190 | 100 / 99 | 48 / 88 | 1.6 / 1.2 |
 | swap-args | 6 / 57 | 100 / 100 | 100 / 100 | 1.0 / 1.0 |
 | misspell-prop | 29 / 158 | 100 / 100 | 7 / 49 | 2.0 / 1.6 |
 | missing-await | – / 72 | – / 100 | – / **0** | – / 2.4 |
 | wrong-var | 78 / 117 | 100 / 100 | 33 / 36 | 1.8 / 1.8 |
 | remove-return | 5 / 53 | 80 / **0** | 80 / 28 | 1.2 / 2.5 |
-| **all** | 256 / 647 | 100 / 92 | 41 / 55 | 1.7 / 1.6 |
+| **all** | 255 / 647 | 100 / 92 | 41 / 55 | 1.7 / 1.6 |
 
 **Mostly yes, as long as the mistake is on a line whose constraints take part
 in the conflict.** For wrong values, swapped arguments, misspelled
@@ -714,12 +744,12 @@ Generated programs, one mistake, top-1 / top-3 (%):
 | MCS card, then size | 93 / 99 | 100 / 100 | 64 / 100 | 76 / 100 | 60 / 99 | 0 / 0 | 71 / 91 |
 | MCS size-weighted | 93 / 99 | 100 / 100 | 56 / 95 | 76 / 100 | 60 / 97 | 0 / 0 | 69 / 90 |
 | MCS Pareto (card, size) | 93 / 99 | 100 / 100 | 64 / 100 | 76 / 100 | 60 / 99 | 0 / 0 | 71 / 91 |
-| latest first + hints | 89 / 99 | 100 / 100 | 99 / 100 | **100** / 100 | 97 / 100 | **100** / 100 | 96 / 100 |
-| latest first + re-inference + hints | 91 / 100 | 100 / 100 | 99 / 100 | **100** / 100 | 98 / 100 | **100** / 100 | **97** / 100 |
+| latest first + hints | 89 / 99 | 100 / 100 | **100** / 100 | **100** / 100 | 97 / 100 | **100** / 100 | 96 / 100 |
+| latest first + re-inference + hints | 91 / 100 | 100 / 100 | **100** / 100 | **100** / 100 | 98 / 100 | **100** / 100 | **97** / 100 |
 | (ill-typed mutants) | 190 | 57 | 158 | 72 | 117 | 53 | 647 |
 
-On the test-suite programs (256 ill-typed mutants) the totals are: first
-conflict 77 / 77, latest first 83 / 100, latest first + re-inference + hints
+On the test-suite programs (255 ill-typed mutants) the totals are: first
+conflict 76 / 77, latest first 83 / 100, latest first + re-inference + hints
 84 / 100 ([`results/summary.md`](results/summary.md)).
 
 * **Top-3: the smallest correction subsets almost always contain the mistake.**
@@ -730,7 +760,7 @@ conflict 77 / 77, latest first 83 / 100, latest first + re-inference + hints
   top-3 is no better than its top-1: 77% and 71%.
 * **Top-1: the tie-breaking rule decides, and the best fixed rule depends on the
   kind of mistake.** With random tie-breaking, MCSs are about as good as the
-  first conflict at top-1 (68% vs 77%; 70% vs 71%): the balanced conflicts lose
+  first conflict at top-1 (68% vs 76%; 70% vs 71%): the balanced conflicts lose
   half of their points to a coin flip.
   * *Latest line first* is the best fixed rule (83% test suite, 77%
     generated). For a use-site mistake (wrong variable 96–97%, misspelled
@@ -746,9 +776,29 @@ conflict 77 / 77, latest first 83 / 100, latest first + re-inference + hints
     misspelled property 56–64%). The Pareto ranking over (lines, constraints)
     gives the same order as "fewest lines, then fewest constraints" here.
   * A **learned** tie-breaker (improvement 1) combines these signals and reaches
-    86% (test suite) and 88% (generated) on programs it was not trained on.
+    85% (test suite) and 88% (generated) on programs it was not trained on.
 * **Hints and re-inference** take the full pipeline to 97% top-1 and 100% top-3
   on the generated programs.
+
+### Confidence intervals and significance
+
+Mistakes of the same program are not independent, so the 95% confidence
+intervals come from a cluster bootstrap that resamples whole programs, and pairs
+of methods are compared with exact McNemar tests on the same mistakes
+(`bench/stats.py`, [`results/significance.md`](results/significance.md)). Top-1
+/ top-3 (%), and the McNemar p-value of the comparison with the first-conflict
+checker:
+
+| method | test suite (255 mistakes, 70 programs) | p (top-1 / top-3) | generated (647, 40 programs) | p (top-1 / top-3) |
+|---|---|---|---|---|
+| first conflict (solver.js) | 76 [69–83] / 77 [70–83] | | 71 [66–75] / 71 [66–75] | |
+| MCS card, latest first | 83 [77–88] / 100 [99–100] | 0.002 / 10⁻¹⁷ | 77 [73–81] / 92 [89–94] | 10⁻⁸ / 10⁻⁴⁰ |
+| latest first + re-inference + hints | 84 [78–89] / 100 [100–100] | 0.001 / 10⁻¹⁷ | 97 [96–98] / 100 [100–100] | 10⁻⁴⁵ / 10⁻⁵⁶ |
+
+With 40–70 programs the intervals are a few points wide, and every difference
+to the first-conflict checker is significant. The learned tie-breaker's numbers
+in `significance.md` are in-sample (the shipped model was trained on all
+mutants); its cross-validated results are in [improvement 1](#1-learned-tie-breaking).
 
 ### Unit of blame
 
@@ -786,7 +836,8 @@ is missing code again.
 
 ### Several mistakes
 
-Generated programs of 200 lines with *k* mistakes on distinct lines. A
+Generated programs of 200 lines with *k* mistakes on distinct lines (40 base
+programs, three samples per program and *k*: 600 programs). A
 mistake is *effective* if it is a type error on its own; benign mistakes
 cannot be found by any method, so recall is measured against the effective
 ones. The last four columns give the share of the effective mistakes among the
@@ -794,24 +845,24 @@ first *e* suspicious lines (%), where *e* is the number of effective mistakes.
 
 | mistakes k | ill-typed programs | effective mistakes e (mean) | first MCS: size / precision / recall | first conflict | MCS latest first | MCS learned | full pipeline |
 |---|---|---|---|---|---|---|---|
-| 1 | 39 / 60 | 1.00 | 1.00 / 62% / 62% | 72 | 79 | 82 | **95** |
-| 2 | 56 / 60 | 1.50 | 1.95 / 60% / 72% | 45 | 78 | 79 | **86** |
-| 3 | 58 / 60 | 2.03 | 2.47 / 65% / 75% | 47 | 79 | 79 | **83** |
-| 4 | 59 / 60 | 2.56 | 2.97 / 64% / 72% | 47 | 77 | 77 | **82** |
-| 6 | 60 / 60 | 3.80 | 4.22 / 63% / 69% | 52 | 78 | 76 | **81** |
+| 1 | 82 / 120 | 1.00 | 1.01 / 65% / 66% | 77 | 80 | 84 | **98** |
+| 2 | 111 / 120 | 1.53 | 1.95 / 64% / 75% | 50 | 78 | 79 | **88** |
+| 3 | 116 / 120 | 2.04 | 2.43 / 67% / 76% | 52 | 79 | 81 | **85** |
+| 4 | 119 / 120 | 2.56 | 2.95 / 65% / 72% | 51 | 78 | 80 | **85** |
+| 6 | 120 / 120 | 3.82 | 4.22 / 64% / 69% | 55 | 79 | 79 | **83** |
 
 With several mistakes the first-conflict strategy degrades quickly: only
-45–52% of the effective mistakes are among its first *e* answers. It keeps
+50–55% of the effective mistakes are among its first *e* answers. It keeps
 blaming consequences, and one mistake can cause several conflicts. The MCS
-ranking keeps 77–79% of them, independent of *k*. A smallest correction
+ranking keeps 78–79% of them, independent of *k*. A smallest correction
 subset covers all conflicts at once, so each mistake needs only one of its
-lines in it. About 60–65% of the lines of the first MCS are mistakes; the others
+lines in it. About 64–67% of the lines of the first MCS are mistakes; the others
 are the other side of a tie. The learned tie-breaker (trained on single
-mistakes) adds nothing here beyond *k* = 1. Hints for missing code help at every
-*k*: a hint is accepted when the edit removes at least one conflict (the
-smallest correction subset of the edited program gets smaller), so it works
-while other mistakes are still present. All the hints given in these 300
-programs pointed at an actual mistake.
+mistakes) adds 0–2 points beyond *k* = 1. Hints help at every *k*: a hint is
+accepted when the edit removes at least one conflict (the smallest correction
+subset of the edited program gets smaller), so it works while other mistakes
+are still present. All the hints given in these 600 programs pointed at an
+actual mistake.
 
 ### Q3: how does it scale?
 
@@ -825,41 +876,41 @@ configurations found the same optimum on every program.
 
 | lines | constraints | mistakes | smallest MCS (mean) | OLL | IHS | Z3 maxres |
 |---|---|---|---|---|---|---|
-| 1,000 | 3,566 | 16 | 7.5 | 1.0 → 0.7 | 1.3 → 0.7 | 1.0 → 1.0 |
-| 2,000 | 7,168 | 16 | 10.0 | 3.1 → 1.7 | 4.3 → 2.3 | 3.1 → 2.6 |
-| 4,000 | 14,360 | 16 | 11.0 | 11.7 → 5.7 | 14.2 → 5.8 | 9.5 → 8.6 |
-| 8,000 | 28,694 | 1 | 0.5 | 43.2 → 15.9 | 37.6 → 14.3 | 21.8 → 16.8 |
-| 8,000 | 28,692 | 4 | 3.5 | 35.7 → 16.1 | 35.1 → 15.6 | 25.8 → 20.6 |
-| 8,000 | 28,689 | 16 | 13.5 | 41.7 → 17.3 | 51.8 → 16.9 | 32.8 → 27.6 |
+| 1,000 | 3,566 | 16 | 7.5 | 1.1 → 0.8 | 1.4 → 0.8 | 1.0 → 1.0 |
+| 2,000 | 7,168 | 16 | 10.0 | 3.5 → 1.8 | 4.4 → 2.2 | 3.0 → 2.8 |
+| 4,000 | 14,360 | 16 | 11.0 | 15.4 → 6.6 | 17.9 → 6.6 | 9.9 → 9.0 |
+| 8,000 | 28,694 | 1 | 0.5 | 45.0 → 18.3 | 47.5 → 18.0 | 23.0 → 19.0 |
+| 8,000 | 28,692 | 4 | 3.5 | 43.8 → 19.2 | 46.0 → 17.1 | 28.2 → 21.9 |
+| 8,000 | 28,689 | 16 | 13.5 | 51.2 → 21.2 | 62.5 → 21.1 | 35.0 → 29.7 |
 
 Programs of 8 independent modules (slicing keeps only the modules with a conflict):
 
 | lines | mistakes | lines left after slicing | OLL | IHS | Z3 maxres |
 |---|---|---|---|---|---|
-| 2,000 | 1 | 315 | 1.6 → 1.1 | 1.4 → 1.1 | 1.8 → 1.0 |
-| 2,000 | 4 | 420 | 2.1 → 1.1 | 1.7 → 1.1 | 1.9 → 1.1 |
-| 8,000 | 1 | 1,243 | 35.9 → 4.0 | 33.1 → 3.9 | 21.7 → 4.2 |
-| 8,000 | 4 | 2,884 | 35.5 → 6.6 | 33.8 → 6.1 | 24.6 → 7.1 |
+| 2,000 | 1 | 315 | 1.8 → 1.2 | 1.5 → 1.1 | 1.9 → 1.1 |
+| 2,000 | 4 | 420 | 2.0 → 1.2 | 1.9 → 1.1 | 2.0 → 1.2 |
+| 8,000 | 1 | 1,243 | 40.0 → 4.3 | 39.0 → 4.1 | 24.7 → 4.5 |
+| 8,000 | 4 | 2,884 | 39.7 → 6.8 | 42.6 → 6.6 | 26.1 → 7.9 |
 
 (all sizes from 500 lines: [`results/summary.md`](results/summary.md))
 
 * **All three scale to programs of 8,000 lines** (≈28,700 constraints) with
   16 mistakes. With the improvements, the time grows about as the size to the
-  power 1.5 (8 times the lines, 23–25 times the time for OLL; before: 40–60
+  power 1.5 (8 times the lines, 24–27 times the time for OLL; before: 47–56
   times), and much more slowly with the number of mistakes.
 * **The cost of the SAT calls dominates, not the encoding.** At 8,000 lines
-  encoding takes 2.3 s and slicing 0.8 s; the rest is solving. Before the
-  improvements, OLL made 70 SAT calls (most of them to shrink cores) and IHS
-  208; now 16 and 44.
-* **OLL and IHS are now faster than Z3's maxres** at 8,000 lines (14–17 s against
-  17–28 s); before, Z3 was the fastest (22–33 s against 35–52 s). Z3 profits
+  encoding takes 2.4 s and slicing 0.8 s; the rest is solving. Before the
+  improvements, OLL made 67 SAT calls (most of them to shrink cores) and IHS
+  216; now 16 and 42.
+* **OLL and IHS are now at least as fast as Z3's maxres** at 8,000 lines (17–21 s
+  against 19–30 s); before, Z3 was the fastest (23–35 s against 44–63 s). Z3 profits
   less because its internal MaxSMT does not use our core handling. IHS makes about
   three times as many SAT calls as OLL: each optimal hitting set is checked
   against the SMT formula, and the cores are collected one by one. When the
   calls are cheap that hardly matters, and IHS ends up as fast as OLL.
 * **Independent parts are where slicing pays off**: in a program of 8 modules
-  only the modules with a mistake are solved, and 8,000 lines take 4–7 s
-  instead of 22–36 s.
+  only the modules with a mistake are solved, and 8,000 lines take 4–8 s
+  instead of 25–43 s.
 
 ---
 
@@ -892,11 +943,11 @@ and test), and across corpora.
 
 | rule | test suite (256) | generated (647) |
 |---|---|---|
-| earliest first | 54 / 99 | 62 / 91 |
+| earliest first | 53 / 99 | 62 / 91 |
 | latest first | 83 / 100 | 77 / 92 |
-| fewest constraints, then latest | 66 / 100 | 74 / 91 |
+| fewest constraints, then latest | 65 / 100 | 74 / 91 |
 | random | 68 / 99 | 70 / 91 |
-| **learned, 5-fold CV by program** | **86** / 100 | **88** / 92 |
+| **learned, 5-fold CV by program** | **85** / 100 | **88** / 92 |
 | learned, trained on the other corpus | 83 / 100 | 76 / 92 |
 
 By kind of mistake (cross-validated, both corpora), the learned rule gets the
@@ -936,19 +987,19 @@ parentheses the SAT calls):
 
 | lines | mistakes | before | no core minimization | eliminate local variables | slicing | all (now) |
 |---|---|---|---|---|---|---|
-| 2,000 | 1 | 2.5 (8) | 1.7 (3) | 1.6 (8) | 2.3 (8) | 1.6 (3) |
-| 2,000 | 16 | 3.1 (52) | 2.0 (12) | 2.6 (50) | 3.3 (49) | 1.7 (12) |
-| 8,000 | 1 | 43.2 (4) | 22.3 (2) | 24.5 (4) | 34.7 (4) | 15.9 (2) |
-| 8,000 | 4 | 35.7 (20) | 22.0 (6) | 25.0 (20) | 36.9 (20) | 16.1 (6) |
-| 8,000 | 16 | 41.7 (70) | 23.6 (16) | 29.3 (68) | 39.6 (68) | 17.3 (16) |
+| 2,000 | 1 | 2.2 (8) | 1.6 (3) | 1.7 (8) | 2.6 (8) | 1.6 (3) |
+| 2,000 | 16 | 3.5 (50) | 2.0 (12) | 2.6 (50) | 3.3 (50) | 1.8 (12) |
+| 8,000 | 1 | 45.0 (4) | 25.9 (2) | 28.1 (4) | 41.6 (4) | 18.3 (2) |
+| 8,000 | 4 | 43.8 (19) | 25.4 (6) | 28.3 (19) | 36.4 (20) | 19.2 (6) |
+| 8,000 | 16 | 51.2 (67) | 27.8 (16) | 33.0 (68) | 52.1 (71) | 21.2 (16) |
 
 The two largest effects: on large formulas every deletion step of core
-minimization is a SAT call on the whole formula (70 → 16 calls), and
+minimization is a SAT call on the whole formula (67 → 16 calls), and
 eliminating line-local variables makes every call cheaper. Slicing alone
 helps little on these generated programs, because their lines are almost all
 connected into one component (it removes about 3% of the lines). On programs
 of independent modules it is the decisive step (see [Q3](#q3-how-does-it-scale)):
-8,000 lines in 8 modules go from 36 s to 4 s. All configurations and all
+8,000 lines in 8 modules go from 40 s to 4 s. All configurations and all
 algorithms found the same optimum on every program.
 
 ### 3. Missing code: a forgotten `return` or `await`
@@ -972,14 +1023,21 @@ typed; with several mistakes, the other mistakes may remain. The kept edits are
 shown as **hints**, ranked before the correction subsets.
 
 *Result.* On both corpora every forgotten `return` and `await` that is a type
-error got a correct hint (130 of 130), and none of the other 773 ill-typed
-mutants got a hint. On the generated programs, top-1 for these kinds goes from
-0% to 100%, and the overall top-1 from 77% to 96%, at a cost of about 0.07 s per
-program. In the test suite, forgotten `return`s go from 80% to 100%. With
-several mistakes, hints raise the share of mistakes found among the first
-answers from 77–79% to 81–86% (see [Several mistakes](#several-mistakes)). The two kinds of edits match two of the mutation operators. They
-target the "missing code" case that Q1 identified, but how often real mistakes
-are of these two kinds is not known from this benchmark.
+error gets a correct hint (130 of 130). On the generated programs, top-1 for
+these kinds goes from 0% to 100%, and the overall top-1 from 77% to 96%, at a
+cost of about 0.07 s per program. In the test suite, forgotten `return`s go from
+80% to 100%. With several mistakes, hints raise the share of mistakes found among
+the first answers from 78–79% to 83–88% (see [Several mistakes](#several-mistakes)).
+
+*Later: likely fixes from real bugs.* The FixJS fixes classified by hand showed
+three more small edits that real developers make, which became templates too
+([Real code](#learning-from-real-fixes)): `!a === b` → `!(a === b)`, a missing
+`.length` (only for values the program also uses as a collection), and a
+misspelled member renamed to the closest known name. With them, 146 of the 187
+misspelled-property mutants get a hint as well, and **none of the 279 hints on
+the injected mistakes of both corpora is wrong**, nor any of the hints in the 600
+programs with several mistakes. On real fixes, 97% of the hints point at a line
+that the developer changed.
 
 ### 4. Finer units of blame and re-inference
 
@@ -1017,7 +1075,7 @@ line, about 1 s for a 50-line program, so it is opt-in.
 [the next section](#the-inferencer-what-was-found-and-fixed)), with the encoding
 as the reference.
 
-*Result.* Agreement on 1,827 of 1,828 mutants (was 1,774); no spurious
+*Result.* Agreement on 1,829 of 1,830 mutants (before: 1,774 of 1,828); no spurious
 conflicts on 60 well-typed generated programs of up to 1,600 lines (was 7 of
 20 at 1,600 lines); all 132 regression tests still pass. Only one expected
 output changed (`Tests/Functions/ArrowFuncExpr_2.out`): the parameters of
@@ -1028,40 +1086,292 @@ since any value can be concatenated with a string.
 
 *Problem.* All the results above are on mistakes introduced by mutation.
 
-*What was done.* `bench/realworld.py DIR` evaluates pairs `NAME.buggy.js` /
-`NAME.fixed.js`, such as a student's failed submission and the next accepted
-one, or the two sides of a bug-fixing commit. The lines changed by the fix are
-the mistake lines; for an insertion (missing code), the lines next to it. It
-reports how many bugs the type system sees at all (buggy ill-typed, fixed well
-typed) and top-1/top-3 for every method. `bench/realworld/pipeline-check/`
-only checks that the script works; it is not a data set.
+*What was done.* Two datasets of real bug fixes were screened for the bugs that
+the type system sees, and those were localized: FixJS (66,497 function pairs of
+bug-fixing commits on GitHub) and BugsJS (453 test-validated bugs).
+`bench/realworld.py` evaluates any buggy/fixed pairs; `bench/fixjs.py` and
+`bench/bugsjs.py` prepare the two datasets. This turned into a second round of
+work, described in [Real code](#real-code-fixjs-and-bugsjs): a relaxed type
+system for real JavaScript, more fixes to the inferencer, repair templates and a
+tie-break learned from real fixes, and [tools](#tools) to use the localizer.
 
-*Not done: the real data.* No source of real buggy programs was reachable from
-the environment in which this was built. Its network policy refused the
-Stack Exchange API (`api.stackexchange.com`), Hugging Face (`huggingface.co`),
-Zenodo (`zenodo.org`) and IBM's Project CodeNet download host
-(`dax-cdn.cdn.appdomain.cloud`). Public GitHub repositories other than this one
-were out of the session's scope. The datasets that were found do not fit as
-they are. [tsbugs](https://arxiv.org/html/2601.21186v1) (bugs of TypeScript
-projects) mostly involves generics, interfaces and `null` handling, which this
-type system does not model. The
-[Stack Overflow edit pairs](https://arxiv.org/pdf/2308.12079) are mostly
-compiler errors other than type errors. To run it:
+*Result.* 1.3% of the FixJS fixes are type errors that this type system sees;
+on the small ones the full pipeline ranks a changed line first in 70% of the
+cases and in the top 3 in 91%, against 57% for a first-conflict checker.
 
-* put pairs in a directory and run `python bench/realworld.py DIR`; or
-* allow one of the hosts above under *Network access → Allowed domains* in the
-  environment's settings ([docs](https://code.claude.com/docs/en/cloud-environments#network-access)).
-  Project CodeNet's JavaScript submissions are a good candidate: a rejected
-  submission followed by an accepted one from the same author gives real
-  buggy/fixed pairs.
+---
+
+## Real code: FixJS and BugsJS
+
+Everything above was measured on injected mistakes. This section runs the
+localizer on real bug fixes, and describes what that showed and what was
+changed because of it.
+
+### The data
+
+* **FixJS** [10] has the version before and after the fix of every JavaScript
+  function changed by a bug-fixing commit on GitHub in the first half of 2012:
+  66,497 pairs, in three size classes (fewer than 50 tokens, 50–100, more).
+  FixJS pairs the *n*-th function of a file before the commit with the *n*-th
+  one after it, so a commit that adds, removes or reorders functions pairs two
+  different functions (in a first run, 43% of the pairs found to be type errors
+  were such mismatches). `bench/fixjs.py` therefore matches the functions of each
+  commit and file by similarity (greedily, most similar first; at least half of
+  the lines in common, not identical): **44,881 distinct pairs**, of which 1,500
+  were mispaired by FixJS; 9,333 pairs were exact duplicates from other commits
+  (forks and cherry-picks).
+* **BugsJS** [11] has 453 test-validated bugs of ten Node.js projects, each the
+  buggy revision and the same revision with only the source fix applied
+  (`bench/bugsjs.py`). The innermost function around each changed hunk gives
+  **486 function pairs**.
+
+Each function is checked as a program of its own, without moving its lines (an
+anonymous function becomes the initializer of a constant). Free variables
+(globals, `this`, other modules) are left unconstrained. The *mistake lines* are
+the lines the fix changed, ignoring changes of whitespace (for a pure insertion,
+the lines around it); at the level of expressions, the AST nodes that overlap a
+changed token.
+
+### How many real bugs are type errors?
+
+A pair is a type error the type system sees if the version before the fix is
+ill-typed and the version after it well typed.
+
+| corpus | parsed pairs | ill-typed before the fix | well typed after it | still ill-typed after it |
+|---|---|---|---|---|
+| FixJS, strict type system | 43,921 | 14,186 (32.3%) | **573 (1.3%)** | 13,591 (30.9%) |
+| FixJS, relaxed type system | 43,921 | 7,823 (17.8%) | **303 (0.7%)** | 7,508 (17.1%) |
+| BugsJS, strict | 486 | 107 (22%) | 6 (1.2%) | – |
+| BugsJS, relaxed | 486 | 50 (10%) | 4 (0.8%) | – |
+
+* **About one real bug fix in 80 is a type error that this type system sees.**
+  Gao et al. [12] found 15% of public JavaScript bugs detectable by TypeScript or
+  Flow — *with* type annotations written by hand. Here there are no annotations,
+  each function is seen alone, and the type system has no `null`, unions or
+  generics. BugsJS, whose bugs were selected because tests reveal them, has even
+  fewer: its bugs are mostly logic errors.
+* **A third of real functions are ill-typed, and stay so after the fix.** These
+  are false alarms of a type system designed for a core subset: functions used
+  as objects (jQuery's `$`), a library method called with different argument
+  types, `return;` next to `return value`, ... This motivated the relaxed type
+  system below.
+* **Not every "type error fixed" is a real type bug.** Thirty random small fixes
+  (at most 3 changed lines) were classified by hand
+  ([`bench/realworld/fixjs_sample.md`](bench/realworld/fixjs_sample.md)): **17 are
+  real type-related mistakes**, 11 are fixes of something else that remove a false
+  alarm on the way (a refactoring, a rewritten test), 2 are unclear. The real ones
+  include `for (x in array)` used as if it gave the elements (twice),
+  `path.existsSync` instead of `fs.existsSync` (twice), `weapons.push[key]`
+  instead of `weapons.push(key)`, `!x === "str"` (precedence), `return ""` in a
+  function that returns arrays, and wrong variables or properties
+  (`this.map` for `this.mapModel`, `mime` for `this.mime`). In BugsJS, one of the
+  six is a real type bug (`val === {}`, which is always false).
+
+### A relaxed type system for real code
+
+The false alarms were analysed through the minimal conflicting lines of the
+functions that are still ill-typed after the fix. Each pattern became a rule of
+`--relaxed`; every rule can be switched on or off (`infer.js --relaxed=r1,r2`,
+`set_relaxed({...})`):
+
+| rule | what real JavaScript does | rule |
+|---|---|---|
+| `globals` | uses globals of other files and the browser (`$`, `document`) | a name the program never declares or assigns is `any` |
+| `members` | calls library methods on objects it did not create (`.html`, `.get`) | a member that the program never defines and that is no built-in member is `any`, unless its name is within a small edit distance of a known member (`xs.lenght` stays checked) |
+| `returns` | returns `undefined`, `null` or `false` on some paths | `return;`, a sentinel return and falling off the end are fine next to `return value` |
+| `fields` | uses functions as objects (`$.ajax`, `F.prototype`) | functions may carry fields |
+| `length` | writes `arr.length = 0` | arrays and strings have a numeric `length` |
+| `errors` | treats errors as objects | an error is an object |
+| `keys` | indexes objects by any value | any value can be an object key |
+| `compare` (opt-in) | compares values of different types | `==` is an error only between two different primitive types (as in TypeScript) |
+| `arrays` (opt-in) | mixes kinds of values in array literals | an array literal of literals of different kinds holds a union |
+
+The rules were chosen by an ablation (`bench/relaxed_check.py --ablation`):
+every rule left out or added in turn, measuring the false alarms on the
+versions after the fix of 1,978 random FixJS pairs, and the injected mistakes
+that are still found:
+
+| rules | false alarms on real code | mistakes found: test suite | generated |
+|---|---|---|---|
+| strict (no rule) | 645 (32.6%) | 255 | 657 |
+| **default rules** | **375 (19.0%)** | **251** | **657** |
+| default without `globals` | 412 (20.8%) | 251 | 657 |
+| default without `returns` | 428 (21.6%) | 251 | 657 |
+| default without `members` | 457 (23.1%) | 251 | 657 |
+| default without `fields` | 399 (20.2%) | 253 | 657 |
+| default without `length` | 375 (19.0%) | 251 | 657 |
+| default without `errors` | 380 (19.2%) | 251 | 657 |
+| default without `keys` | 382 (19.3%) | 253 | 657 |
+| default with `arrays` | 373 (18.9%) | 244 | 603 |
+| default with `compare` | 372 (18.8%) | 251 | 653 |
+
+* **The default rules remove 42% of the false alarms and keep 99.6% of the
+  injected mistakes** (908 of 912). `members`, `returns` and `globals` matter
+  most.
+* **The typo guard is what makes `members` cheap.** Without it (a first version),
+  `members` also turned misspelled built-in members on values of unknown type
+  (`xs.lenght`) into `any`: 70 injected mistakes were lost.
+* **`arrays` and `compare` are not on by default**: they remove 2 and 3 false
+  alarms but lose 61 and 4 mistakes. (Before the typo guard, the blanket version
+  of `compare` — any two values may be compared — also hid two real FixJS bugs of
+  the form `!x === "object"`, a boolean compared with a string; the
+  TypeScript-like rule keeps them.)
+
+### Localizing real bugs
+
+The pairs that are type errors the type system sees (same function), with the
+lines the fix changed as the mistake lines; top-1 / top-3 (%):
+
+| method | FixJS strict: all (572) | small fixes (288) | FixJS relaxed: all (303) | small fixes (126) |
+|---|---|---|---|---|
+| first conflict (solver.js) | 64 / 65 | 57 / 57 | 80 / 82 | 79 / 80 |
+| first conflict (SMT order) | 66 / 67 | 60 / 60 | 82 / 84 | 81 / 82 |
+| MCS card, latest first | 64 / 89 | 67 / 91 | 71 / 95 | 76 / 99 |
+| full pipeline (+ re-inference, hints) | 67 / 89 | 70 / 91 | 78 / 96 | 83 / 99 |
+| random line (expected) | 32 / 66 | 24 / 57 | 33 / 66 | 25 / 61 |
+
+![Top-1 and top-3 on real bug fixes](results/real.png)
+
+* **On real fixes the full pipeline ranks a changed line first in 67–70% of the
+  cases and among the first three in 89–91%**, against 57–64% for a
+  first-conflict checker (which has a single answer, so its top-3 is its top-1)
+  and 24–32% / 57–66% for a random order of the lines that have constraints.
+* **The gap is largest at top-3** (91% against 57% on the small strict fixes,
+  exact McNemar test p ≈ 4·10⁻²⁷; 96% against 82% with the relaxed type system,
+  p ≈ 2·10⁻¹¹; [`results/significance.md`](results/significance.md)), the same
+  pattern as on injected mistakes. At top-1 the full pipeline is better than the
+  first-conflict checker on the small strict fixes (70% against 57%, p ≈ 2·10⁻⁶),
+  but not significantly on all strict fixes (67% against 64%, p = 0.22) nor with
+  the relaxed type system (78% against 80%, p = 0.5). The type errors that
+  remain under the relaxed type system are easier for the first-conflict checker
+  (80% instead of 64%), and there the plain MCS ranking without hints is even
+  behind it at top-1 (71% against 80%, p = 0.003).
+* **On the 17 hand-classified real type bugs**, the full pipeline puts a changed
+  line first in 10 and in the top 3 in 16; the first-conflict checker gets 11
+  first and has no second answer.
+* **Expressions as units of blame**: on all 572 pairs, the first ranked AST node
+  overlaps a changed token in 54% of the cases (top-3: 84%), against 37% / 64% for a
+  random order of the nodes.
+* **BugsJS** has too few type errors (6 and 4) for percentages to mean much: the
+  MCS ranking puts a changed line first in 3 of 6 (strict) and 3 of 4 (relaxed).
+
+### Learning from real fixes
+
+**Tie-breaking.** The tiers of candidates of the FixJS pairs were used like
+those of the mutants (`bench/train_ranker.py`, cross-validation grouped by
+commit). Top-1 / top-3 (%) on the 547 pairs whose candidates contain a changed
+line:
+
+| rule | FixJS |
+|---|---|
+| earliest first | 57 / 94 |
+| latest first | 67 / 93 |
+| fewest constraints, then latest | 61 / 93 |
+| random | 62 / 94 |
+| learned on the mutants | 63 / 95 |
+| learned on real fixes (5-fold CV by commit) | 68 / 95 |
+| learned on real fixes, applied to the mutants | 75 / 93 |
+
+The model learned on injected mistakes does not transfer to real ones (63%
+against 67% for latest first), and a model learned on real fixes is barely
+better than latest first (68%). Its weights even change sign: on the mutants a
+line with a declaration is *more* likely the mistake (+0.9), on real fixes *less*
+likely (−0.8), and a line with a `return` the other way round (−1.5 against
++0.6). The mutation operators decide where the mistakes are, and real
+developers make them elsewhere. *Latest first* stays the default.
+
+**Repair templates.** The hand-classified fixes showed three small, frequent
+edits that a hint can propose (`localizer/repair.js`), next to the forgotten
+`return`/`await`:
+
+* `precedence`: `!a === b` (always false: `!` binds first) becomes `!(a === b)`;
+* `add-length`: in a comparison `n < xs`, try `xs.length`;
+* `rename-member`: a member that the program never defines and that is no
+  built-in member becomes the closest defined or built-in name (edit distance 1,
+  or 2 for longer names).
+
+As before, an edit is shown only if it removes a conflict. On FixJS, 59 of the
+572 type errors got a hint, and **in 58 of them the first hint is on a line that
+the developer changed** (rename-member 47 of 47, precedence 5 of 5, add-length 4
+of 4, add-return 2 of 3); with the relaxed type system, 70 of 73. On the
+injected mistakes none of the 279 hints is wrong (see
+[improvement 3](#3-missing-code-a-forgotten-return-or-await)). A first version
+of `add-length` also proposed `i < n.length` when `n` was a number written as a
+string, which type-checks at the wrong line; it is now proposed only for values
+that the program also uses as a collection.
+
+---
+
+## Tools
+
+Four additions make the localizer usable outside the benchmarks.
+
+**Explanations** (`--explain`, `localizer/explain.py`). A candidate says "drop
+these lines"; the explanation says why. The program without the candidate is
+typable, and its typing forces some types; the candidate's own lines force
+others. The explanation names the program variables where the two differ:
+
+```
+$ python -m localizer examples/promise.js --explain
+  #1  {1}  (1 line(s), 4 constraint(s))
+       line 1 makes p Promise<str, ?>; the rest of the program needs Promise<num, ?>
+  #2  {2, 3}  (2 line(s), 18 constraint(s))
+       lines 2, 3 make p Promise<num, ?>; the rest of the program needs Promise<str, ?>
+```
+
+Only types that the constraints *force* are compared (each printed part is
+checked to be entailed, unforced parts print as `?`), so an explanation never
+depends on an arbitrary choice of the solver.
+
+**A question for ties** (`--ask`). When the first two candidates are equally
+small, the program without the one and without the other force different types
+for some variable; which one the programmer intended decides the tie:
+
+```
+$ python -m localizer examples/missing_await.js --ask
+Candidates #1 and #2 tie. Which type should w have?
+  1) Promise<num, ?>   (then the mistake is in line 4)
+  2) num   (then the mistake is in line 3)
+```
+
+**An editor plug-in** (`python -m localizer.lsp`). A minimal language server
+(Language Server Protocol over stdin/stdout): when a JavaScript document is
+opened or changed it publishes the hints and the most suspicious lines as
+diagnostics, the first as an error and the others as warnings, each with its
+explanation; when the program is fixed they disappear. Results are cached by the
+text of the document.
+
+**Speed.**
+
+* *One Node process for all inferences* (`localizer/infer_worker.js`). Inference
+  used to start Node once per file, which dominated the time of small programs
+  and of re-inference (one inference per related line). The worker runs the
+  module body of `infer.js` again for every request, in a fresh scope and with the
+  library tables reloaded, so no state is shared: on the 151 test, generated and
+  example programs, with three argument sets each, its output is byte-identical
+  to separate processes, and it is **about 37 times faster** (0.25 s against
+  9.2 s for 151 inferences). The 321 unit tests now run in 20 seconds.
+* *Independent parts solved separately* (`localizer/parallel.py`). Slicing finds
+  the connected components of the formula; a smallest MCS of the whole is the
+  union of smallest MCSs of the conflicting parts, so each part can be solved by
+  itself, in another process. Each part's result is cached by its constraints, up
+  to renumbering its type variables and moving its lines, so after an edit only
+  the part that changed is solved again. On programs of 8 independent modules
+  (`bench/parallel_bench.py`, `results/parallel.md`; inference not included),
+  four processes bring the time to the first smallest MCS of an 8,000-line
+  program from 4.9–6.0 s (joint formula) to 3.9–4.1 s, and after an edit of one
+  module to 2.4–2.5 s, most of which is now encoding and slicing; at 2,000 lines
+  the times are 0.9–1.2 s, 0.6–0.7 s and 0.4–0.5 s. All three find the same
+  cost on every program. The gain is modest because one or two parts hold most
+  of the conflict, and those parts are solved no faster.
 
 ---
 
 ## The inferencer: what was found and fixed
 
-Building a second, declarative solver next to the union-find solver turned up
-the following. Items 1–8 were fixed (improvement 5), item 12 was found on real
-code and fixed (improvement 6); 9–11 remain.
+Building a second, declarative solver next to the union-find solver, and
+running both on real code, turned up the following. Items 1–8 were fixed
+(improvement 5), 10 and 12–14 later; 9 and 11 remain.
 
 1. **Order dependence of deferred constraints in `solver.js`** — *fixed.* `+`,
    `?:` and `&&`/`||` were resolved after the main pass, once, with heuristics
@@ -1106,36 +1416,59 @@ code and fixed (improvement 6); 9–11 remain.
    guessed from *earlier* lines, so the constraints of a line can depend on
    other lines. This is a design decision of the inferencer; re-inference
    (improvement 4) compensates for it in the localizer.
-10. **No block scopes** (new). `let`/`const` variables get one type variable per
-    function, so `for (let i ...)` loops at the same level share `i`, and two
-    loops whose `let x` hold different types would conflict. Fixing it would
-    rename many type variables in the expected test outputs, so it is left as is;
-    the generator uses a separate loop variable per module.
+10. **No block scopes** — *fixed.* `let`/`const` variables got one type variable
+    per function, so `for (let i ...)` loops at the same level shared `i`, and two
+    loops whose `let x` hold different types conflicted. Now a `let`/`const`
+    declared again in a nested block (a block, a loop, a `switch`) gets a type
+    variable of its own (`i__b1__scope`), and its binding ends with the block.
+    Declarations that are not re-declared keep their names, so all 132 expected
+    test outputs are unchanged.
 11. **Strings with array methods** (`s.push(1)` on a string) are still accepted
     as `str | Array<T>` by `solver.js` (see §2.4).
-12. **Names inherited from `Object.prototype`** (new, found on FixJS) — *fixed*.
+12. **Names inherited from `Object.prototype`** (found on FixJS) — *fixed*.
     The library tables of `summaries.js` were plain objects, so a property or
     constructor called `constructor`, `toString`, `valueOf`, … found the members
     of `Object.prototype` instead of a signature, and `infer.js` crashed
     (`spec.params` is undefined). The tables now have no prototype.
+13. **Wrong string signatures** (found on FixJS) — *fixed*. `String.prototype.match`
+    and `search` were declared to take an object, so `s.match(/re/)` was a type
+    error; they take a string or a RegExp. `replace` and `replaceAll` take a
+    replacement function as well as a string. One expected test output
+    (`Tests/Type_Methods/str_2.out`) changed: the second argument of `replace` is
+    no longer forced to be a string.
+14. **Names that break the constraint syntax** (found on BugsJS) — *fixed*. A
+    method may be called by any string, such as the ESLint selector
+    `"ObjectExpression, ObjectPattern"`; the name became part of type variables,
+    and the comma split a constraint. Such names are now sanitized.
 
 ---
 
 ## Limitations and threats to validity
 
-* **No real mistakes yet.** All mistakes are introduced by mutation
-  (improvement 6 explains why). The mutation operators decide where mistakes
-  are, and the tie-breaking results depend on it: `wrong-var` and
-  `misspell-prop` change a use, `literal` mostly a definition. That is why the
-  per-operator tables matter more than the totals, and why the learned rule is
-  not the default.
-* **The repair hints** cover exactly the two kinds of missing code the mutation
-  operators produce; other missing code (a missing argument, a missing
-  property) is not covered.
+* **Real mistakes are few, and noisy.** Q1–Q3 are answered on injected
+  mistakes, whose operators decide where the mistakes are (`wrong-var` and
+  `misspell-prop` change a use, `literal` mostly a definition); that is why the
+  per-operator tables matter more than the totals. The real bug fixes
+  ([Real code](#real-code-fixjs-and-bugsjs)) complement them, but only 1.3% of
+  them are type errors this type system sees, a hand sample suggests that about
+  a third of those are fixes of something else that happen to remove a false
+  alarm, and the lines a fix changes are only an approximation of the mistake
+  (a fix may rewrite more). Each real function is checked alone, without the
+  rest of its file.
+* **The type system is small.** No `null`/`undefined`, unions, generics or
+  flow-sensitive types; a third of real functions are ill-typed. The relaxed
+  mode removes 42% of these false alarms, but its rules are heuristics chosen on
+  a sample of FixJS and may not carry over to other code.
+* **Eager type hints.** `infer.js` still decides some method dispatches with
+  types guessed from earlier lines (finding 9). Re-inference (`--reinfer`)
+  compensates for it; a declarative alternative, a disjunction over the possible
+  receivers in the SMT encoding, was not built: it would touch all three
+  components for a gain of at most 1–2% of the mutants.
+* **The repair hints** cover five kinds of edits (a forgotten `return` or
+  `await`, `!` precedence, a missing `.length`, a misspelled member); other
+  missing code (a missing argument, a missing call) is not covered.
 * **Granularity.** By default the unit of blame is the line; statements and AST
   nodes are available, with the trade-offs shown above.
-* **Dropping a line does not re-run inference** unless `--reinfer` is used;
-  without it, a few mistakes hide behind type hints (§Q1).
 * **Synthetic programs.** The generated programs exercise the core subset, but
   their structure is regular (one definition per line, short functions); the
   test programs are small (5–30 lines), which inflates ties.
@@ -1143,7 +1476,9 @@ code and fixed (improvement 6); 9–11 remain.
   Absolute times are indicative; the comparisons between algorithms and
   configurations on the same programs are fair.
 * **Semantics.** The encoding follows TypeScript for `+` and indexing; `solver.js`
-  now does too. One difference remains (strings with array methods, §2.4).
+  now does too. One difference remains (strings with array methods, §2.4). The
+  relaxed rules exist only in the encoding: there, `solver.js` remains the strict
+  first-conflict baseline.
 
 ---
 
@@ -1177,12 +1512,53 @@ python bench/train_ranker.py
 python bench/report.py
 ```
 
-`run_experiments.py all` takes about 30 minutes on 4 cores. The single
+`run_experiments.py all` takes about 15 minutes on 4 cores. The single
 experiments are `mutants`, `generated`, `multi` and `scaling`; see `--help` for
-sizes, seeds and timeouts. Run `train_ranker.py` after `mutants` and `generated`
-(it reads their tiers and writes `localizer/ranking_model.json`). Everything is
-seeded and deterministic except the running times. For real buggy programs:
-`python bench/realworld.py DIR`.
+sizes, seeds and timeouts. Run `train_ranker.py` after `mutants`, `generated`
+and the FixJS runs below (it reads their tiers and writes
+`localizer/ranking_model.json`). Everything is seeded and deterministic except
+the running times.
+
+Real bug fixes (FixJS needs 1.8 GB; the screening takes about 40 minutes per
+type system on 4 cores):
+
+```bash
+git clone --depth 1 https://github.com/AAI-USZ/FixJS ../fixjs
+```
+
+```bash
+python bench/fixjs.py screen ../fixjs && python bench/fixjs.py evaluate ../fixjs && python bench/fixjs.py report
+```
+
+```bash
+python bench/fixjs.py screen ../fixjs --relaxed && python bench/fixjs.py evaluate ../fixjs --relaxed && python bench/fixjs.py report --relaxed
+```
+
+```bash
+python bench/bugsjs.py fetch ../bugsjs && python bench/bugsjs.py extract ../bugsjs
+```
+
+```bash
+python bench/realworld.py ../bugsjs/pairs --out bugsjs && python bench/realworld.py ../bugsjs/pairs --out bugsjs_relaxed --relaxed
+```
+
+```bash
+python bench/relaxed_check.py --ablation ../fixjs
+```
+
+```bash
+python bench/stats.py && python bench/parallel_bench.py
+```
+
+The PDF report is built from this README (needs `pip install markdown` and
+Node's Playwright):
+
+```bash
+python docs/build_report.py
+```
+
+Any other buggy/fixed pairs: put `NAME.buggy.js` / `NAME.fixed.js` in a
+directory and run `python bench/realworld.py DIR`.
 
 ---
 
@@ -1205,13 +1581,23 @@ seeded and deterministic except the running times. For real buggy programs:
 | `localizer/reinfer.py` | re-inference without a line |
 | `localizer/repair.js`, `localizer/repair.py` | hints for a forgotten `return` or `await` |
 | `localizer/baseline.py` | first-conflict baselines |
+| `localizer/explain.py` | explanations (the types that clash) and the question that separates tied candidates |
+| `localizer/lsp.py` | a minimal language server: the ranked lines as diagnostics in an editor |
+| `localizer/parallel.py` | independent parts solved separately, in parallel, with a cache across edits |
+| `localizer/infer_worker.js` | one Node process that runs `infer.js` on many files |
 | `localizer/__main__.py` | command line (`python -m localizer`) |
-| `tests/test_localizer.py` | tests of the localizer |
+| `tests/test_localizer.py`, `tests/test_extensions.py` | tests of the localizer and of the extensions |
 | `bench/mutate.js` | mutation tool |
 | `bench/generate.py` | generator of well-typed programs (optionally of independent modules) |
 | `bench/evaluate.py`, `bench/run_experiments.py`, `bench/report.py` | experiments |
 | `bench/train_ranker.py` | training and cross-validation of the learned tie-breaker |
-| `bench/realworld.py`, `bench/realworld/` | evaluation on buggy/fixed pairs |
+| `bench/realworld.py`, `bench/realworld/` | evaluation on buggy/fixed pairs (lines and expressions); `fixjs_sample.md`: 30 FixJS fixes classified by hand |
+| `bench/fixjs.py` | FixJS: matching the functions of each commit, screening, localization, report |
+| `bench/bugsjs.py`, `bench/functions.js` | BugsJS: the functions each of the 453 fixes changes |
+| `bench/relaxed_check.py` | the relaxed type system on the injected mistakes; ablation of its rules |
+| `bench/stats.py` | confidence intervals (cluster bootstrap) and McNemar tests |
+| `bench/parallel_bench.py` | joint solving against independent parts solved separately |
+| `docs/build_report.py`, `docs/render_pdf.js` | the PDF report (`docs/report.pdf`) built from this README |
 | `bench/corpus/` | the generated base programs used in the experiments |
 | `results/` | CSV results, `summary.md`, `learned.md`, plots |
 | `examples/` | the small programs used in this README |
@@ -1230,3 +1616,6 @@ seeded and deterministic except the running times. For real buggy programs:
 7. A. Morgado, C. Dodaro, J. Marques-Silva. *Core-guided MaxSAT with soft cardinality constraints.* CP 2014.
 8. A. Ignatiev, A. Morgado, J. Marques-Silva. *RC2: an efficient MaxSAT solver.* JSAT 2019 (PySAT's RC2, used for hitting sets).
 9. N. Bjørner, A.-D. Phan, L. Fleckenstein. *νZ – an optimizing SMT solver.* TACAS 2015 (Z3's MaxSMT).
+10. V. Csuvik, L. Vidács. *FixJS: a dataset of bug-fixing JavaScript commits.* MSR 2022.
+11. P. Gyimesi, B. Vancsics, A. Stocco, D. Mazinanian, Á. Beszédes, R. Ferenc, A. Mesbah. *BugsJS: a benchmark of JavaScript bugs.* ICST 2019.
+12. Z. Gao, C. Bird, E. T. Barr. *To type or not to type: quantifying detectable bugs in JavaScript.* ICSE 2017.

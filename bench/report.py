@@ -290,6 +290,7 @@ def plot_scaling(rows: list[dict]) -> None:
     algs = [("oll", "OLL"), ("ihs", "IHS"), ("z3", "Z3 maxres")]
     fig, axes = plt.subplots(1, len(ks), figsize=(4.3 * len(ks), 3.7), sharey=True, facecolor=SURFACE)
     axes = [axes] if len(ks) == 1 else axes
+    label_top = 0.0
     for ax, k in zip(axes, ks):
         _style(ax)
         ends = []
@@ -310,6 +311,7 @@ def plot_scaling(rows: list[dict]) -> None:
         for (label, x, _), yl in zip(ends, ys_log):
             ax.annotate(label, (x, 10 ** yl), xytext=(8, 0), textcoords="offset points",
                         va="center", fontsize=8.5, color=INK2)
+            label_top = max(label_top, 10 ** yl)
         ax.set_xscale("log")
         ax.set_yscale("log")
         ax.xaxis.set_major_locator(FixedLocator(sizes))
@@ -319,6 +321,9 @@ def plot_scaling(rows: list[dict]) -> None:
         ax.set_xlim(sizes[0] / 1.3, sizes[-1] * 2.4)
         ax.set_title(f"{k} injected mistake{'s' if k > 1 else ''}", fontsize=10, color=INK, loc="left")
         ax.set_xlabel("program size (lines)", fontsize=9, color=INK2)
+    if label_top:  # keep every spread label inside the (shared) y range
+        lo, hi = axes[0].get_ylim()
+        axes[0].set_ylim(lo, max(hi, label_top * 1.4))
     axes[0].set_ylabel("time to the first smallest MCS (s, median)", fontsize=9, color=INK2)
     handles, labels_ = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels_, frameon=False, fontsize=9, loc="upper center", ncol=3, labelcolor=INK2)

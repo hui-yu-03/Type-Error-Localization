@@ -3,8 +3,8 @@
     python docs/build_report.py        # writes docs/report.html and docs/report.pdf
 
 The report is the README typeset for reading on paper: a title page with a
-summary, a table of contents, every section of the README (one major section
-per page), and the figures of results/.  Needs `pip install markdown` and
+summary, a table of contents, every section of the README (each larger part
+on a new page), and the figures of results/.  Needs `pip install markdown` and
 Node's Playwright with Chromium (node docs/render_pdf.js).
 """
 
@@ -27,7 +27,10 @@ html { font-size: 10pt; }
 body { font-family: 'Bitstream Charter', 'Charter', 'DejaVu Serif', serif; color: #1d2430; line-height: 1.45;
        margin: 0; -webkit-print-color-adjust: exact; }
 h1, h2, h3, h4 { font-family: 'Inter', 'DejaVu Sans', sans-serif; color: #14213d; line-height: 1.2; }
-h2 { font-size: 17pt; margin: 0 0 10pt; padding-bottom: 4pt; border-bottom: 1.5pt solid #b5501c; break-before: page; }
+h2 { font-size: 17pt; margin: 24pt 0 10pt; padding-bottom: 4pt; border-bottom: 1.5pt solid #b5501c; break-after: avoid; }
+/* the larger parts start on a new page; the sections inside them follow on */
+#introduction, #architecture, #benchmarks, #the-six-improvements-after-the-first-version,
+#the-inferencer-what-was-found-and-fixed { break-before: page; margin-top: 0; }
 h3 { font-size: 12.5pt; margin: 16pt 0 6pt; break-after: avoid; }
 h4 { font-size: 10.5pt; margin: 12pt 0 4pt; break-after: avoid; }
 p, li { orphans: 3; widows: 3; }
@@ -55,7 +58,7 @@ hr { display: none; }
 .title .abstract { font-size: 10pt; border-top: 1pt solid #d8d1c3; padding-top: 10pt; }
 .title .abstract p { margin: 0 0 6pt; }
 .toc { break-before: page; }
-.toc h2 { break-before: avoid; }
+.toc h2 { break-before: avoid; margin-top: 0; }
 .toc ol { padding-left: 14pt; font-family: 'Inter', sans-serif; font-size: 9.5pt; line-height: 1.6; }
 .toc ol ol { font-size: 8.5pt; line-height: 1.45; color: #3d4757; }
 .figure-caption { text-align: center; font-family: 'Inter', sans-serif; font-size: 8pt; color: #5f6878; margin-top: -4pt; }

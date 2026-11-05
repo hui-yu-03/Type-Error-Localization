@@ -113,14 +113,18 @@ def section(title: str, rows: list[dict], methods: dict, reference: str, random_
             lo, hi = cluster_bootstrap(v, groups)
             cells.append(f"{100 * sum(v) / len(v):.0f} [{100 * lo:.0f}–{100 * hi:.0f}]")
         out.append("| random line (expected) | " + " | ".join(cells) + " |")
-    out += ["", f"McNemar tests against {reference} (top-1): mistakes only it ranks first / only the other "
-            "method ranks first, two-sided p.\n", "| method | only " + reference + " | only the method | p |",
-            "|---|---|---|---|"]
+    if len(methods) < 2:
+        return out + [""]
+    out += ["", f"McNemar tests against {reference}: the mistakes only it ranks first (in the top 3) and only the "
+            "other method does, with the two-sided p-value.\n",
+            f"| method | top-1: only {reference} / only the method | p | top-3: only {reference} / only the method | p |",
+            "|---|---|---|---|---|"]
     for m in methods:
         if m == reference:
             continue
-        a, b, p = mcnemar(hits[(reference, 1)], hits[(m, 1)])
-        out.append(f"| {m} | {a} | {b} | {p:.2g} |")
+        a1, b1, p1 = mcnemar(hits[(reference, 1)], hits[(m, 1)])
+        a3, b3, p3 = mcnemar(hits[(reference, 3)], hits[(m, 3)])
+        out.append(f"| {m} | {a1} / {b1} | {p1:.2g} | {a3} / {b3} | {p3:.2g} |")
     return out + [""]
 
 
@@ -130,10 +134,17 @@ def main() -> None:
            "resamples of whole programs, for FixJS of whole commits); exact McNemar tests on the same mistakes.\n"]
     for corpus, title in (("mutants", "Test suite, one mistake"), ("generated", "Generated programs, one mistake")):
         rows, methods = single_mistakes(corpus)
-        out += section(title, rows, methods, "MCS card, latest first")
+        out += section(title, rows, methods, "first conflict (solver.js)")
     for name, title in (("fixjs", "FixJS real bug fixes"), ("fixjs_relaxed", "FixJS real bug fixes, relaxed type system")):
         rows, methods = fixjs(name)
-        out += section(title, rows, methods, "MCS card, latest first", random_key="random_top")
+        out += section(title, rows, methods, "first conflict (solver.js)", random_key="random_top")
+        small = [r for r in rows if len(r["mistake_lines"]) <= 3]
+        out += section(title + ": small fixes (at most 3 changed lines)", small, methods, "first conflict (solver.js)",
+                       random_key="random_top")
+        nodes = [r for r in rows if r.get("blamable_nodes")]
+        out += section(title + ": expressions as units of blame", nodes,
+                       {"MCS card, latest first": "rank: MCS card, latest first (node)"}, "MCS card, latest first",
+                       random_key="random_node_top")
     text = "\n".join(out)
     (RESULTS / "significance.md").write_text(text)
     print(text)

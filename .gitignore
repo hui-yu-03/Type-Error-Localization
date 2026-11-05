@@ -1,4 +1,7 @@
 *.pdf
+# the report built from the README (docs/build_report.py) is kept
+!docs/report.pdf
+docs/report.html
 node_modules/
 datasets/
 __pycache__/
@@ -6,3 +9,5 @@ __pycache__/
 .venv/
 # large generated programs for the scaling experiment (regenerated from seeds)
 bench/corpus/scaling/
+# cache of the FixJS pairing (needs the FixJS checkout to be useful)
+results/fixjs_pairs.json.gz
