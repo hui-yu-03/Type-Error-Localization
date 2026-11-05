@@ -12,6 +12,8 @@ candidates), so the order in which they are shown matters.  Strategies:
   pareto      two criteria at once, (number of lines, number of constraints):
               non-dominated sorting of the enumerated MCSs (layer 1 = the
               Pareto-optimal correction subsets, cf. Terra-Neves et al. 2018)
+  learned     fewest lines first; ties ordered by a model trained on mutants
+              (features.py, bench/train_ranker.py), then latest line first
 
 The ranked list of suspicious lines is obtained by flattening the ordered
 candidates: a line's rank is the number of distinct lines in the candidates up
@@ -28,8 +30,9 @@ from typing import Callable, Optional
 
 from . import mcs as mcs_mod
 from .encode import Encoding
+from .features import fanout_of, load_model, pool_counts, score, tier_features
 
-STRATEGIES = ("card", "card-late", "card-size", "size", "pareto")
+STRATEGIES = ("card", "card-late", "card-size", "size", "pareto", "learned")
 
 
 @dataclass(frozen=True)
@@ -130,10 +133,16 @@ def enumerate_pool(
     min_count: int = 10,
     hard_cap: int = 30,
     timeout: Optional[float] = None,
+    slicing: bool = True,
 ) -> Pool:
     """Enumerate at least min_count MCSs, then finish the current cost tier
-    (but never keep more than hard_cap)."""
+    (but never keep more than hard_cap).  slicing: restrict the formula to the
+    components that contain conflicts first (slicing.py; same MCSs)."""
     t0 = time.perf_counter()
+    if slicing:
+        from .slicing import slice_to_conflicts
+
+        enc, _ = slice_to_conflicts(enc)
     en = mcs_mod.make(algorithm, enc, weights=weights, timeout=timeout)
     found: list = []
     complete, exhausted = True, False
@@ -159,6 +168,24 @@ def to_candidate(enc: Encoding, groups) -> Candidate:
 
 def order(cands: list[Candidate], key: Callable) -> list[Candidate]:
     return sorted(cands, key=key)
+
+
+def tiers_of(cands: list[Candidate]) -> list[list[Candidate]]:
+    by: dict[int, list[Candidate]] = {}
+    for c in cands:
+        by.setdefault(c.card, []).append(c)
+    return [by[k] for k in sorted(by)]
+
+
+def learned_order(enc: Encoding, cands: list[Candidate], mcses, weights, late) -> list[Candidate]:
+    """Each tier of equally small candidates ordered by the model's score."""
+    counts, n = pool_counts(enc, mcses)
+    fan = fanout_of(enc)
+    out = []
+    for tier in tiers_of(cands):
+        xs = tier_features(enc, tier, counts, n, fan)
+        out += [c for _, c in sorted(zip(xs, tier), key=lambda p: (-score(weights, p[0]), late(p[1])))]
+    return out
 
 
 def pareto_layers(cands: list[Candidate], pos=None) -> list[list[Candidate]]:
@@ -197,6 +224,13 @@ def rank_from_pools(enc: Encoding, card_pool: Pool, size_pool: Optional[Pool] = 
     }
     for name, key in keys.items():
         out[name] = Ranking(name, order(card, key), card_pool.complete, card_pool.time, span=enc.span)
+    model = load_model() if enc.group_by == "line" else None
+    if model is not None:
+        out["learned"] = Ranking("learned", learned_order(enc, card, card_pool.mcses, model["weights"], late),
+                                 card_pool.complete, card_pool.time, span=enc.span)
+    else:
+        out["learned"] = Ranking("learned", order(card, keys["card-late"]), card_pool.complete,
+                                 card_pool.time, {"fallback": "card-late"}, span=enc.span)
     if size_pool is not None:
         size = [to_candidate(enc, m.lines) for m in size_pool.mcses]
         out["size"] = Ranking(

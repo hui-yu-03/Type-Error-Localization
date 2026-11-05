@@ -24,8 +24,9 @@ WORDS = ["alpha", "beta", "gamma", "delta", "item", "node", "user", "key", "path
 
 
 class Gen:
-    def __init__(self, seed: int) -> None:
+    def __init__(self, seed: int, ns: str = "") -> None:
         self.r = random.Random(seed)
+        self.ns = ns  # name prefix of this module
         self.n = 0
         self.vars: dict[str, list[str]] = {
             t: [] for t in ("num", "str", "bool", "arr_num", "arr_str", "obj", "prom_num", "prom_str", "mut_num")
@@ -36,7 +37,7 @@ class Gen:
     # -- helpers -------------------------------------------------------------------
     def name(self, prefix: str) -> str:
         self.n += 1
-        return f"{prefix}{self.n}"
+        return f"{self.ns}{prefix}{self.n}"
 
     def lit(self) -> str:
         return str(self.r.randint(1, 99))
@@ -216,7 +217,8 @@ class Gen:
 
     def loop(self) -> None:
         acc, xs = self.pick("mut_num"), self.pick("arr_num")
-        self.emit(f"for (let i = 0; i < {xs}.length; i++) {{", f"  {acc} = {acc} + {xs}[i];", "}")
+        i = f"{self.ns}i"  # infer.js has no block scopes: one loop variable per module
+        self.emit(f"for (let {i} = 0; {i} < {xs}.length; {i}++) {{", f"  {acc} = {acc} + {xs}[{i}];", "}")
 
     def cond(self) -> None:
         acc = self.pick("mut_num")
@@ -224,17 +226,28 @@ class Gen:
                   f"  {acc} = {acc} - {self.lit()};", "}")
 
 
-def generate(lines: int, seed: int) -> str:
-    g = Gen(seed)
-    g.prelude()
-    while len(g.lines) < lines:
-        g.stmt()
-    return "\n".join(g.lines) + "\n"
+def generate(lines: int, seed: int, modules: int = 1) -> str:
+    """A program of about `lines` lines.  With modules > 1 it consists of
+    independent parts (own variables and functions), like the separate
+    functions or modules of real code; the SMT formula then has one
+    component per part."""
+    out: list[str] = []
+    for m in range(modules):
+        if modules == 1:
+            g = Gen(seed)  # (the seeding of the committed corpora)
+        else:
+            g = Gen(seed * 1000 + m, ns=f"m{m}_")
+        g.prelude()
+        while len(g.lines) < lines // modules:
+            g.stmt()
+        out += g.lines
+    return "\n".join(out) + "\n"
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--lines", type=int, default=100)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--modules", type=int, default=1)
     a = ap.parse_args()
-    print(generate(a.lines, a.seed), end="")
+    print(generate(a.lines, a.seed, a.modules), end="")

@@ -174,13 +174,14 @@ def multi_table(rows: list[dict]) -> str:
         body.append([
             str(k), str(len(rs)), str(len(det)), num(mean(det, "effective")), num(mean(det, "first_mcs_size")),
             pct(mean(det, "first_mcs_precision")), pct(mean(det, "first_mcs_recall_eff")),
-            pct(mean(det, "top_recall_eff_card-late")), pct(mean(det, "top_recall_eff_card")),
-            pct(mean(det, "top_recall_eff_first_conflict")),
+            pct(mean(det, "top_recall_eff_first_conflict")), pct(mean(det, "top_recall_eff_card")),
+            pct(mean(det, "top_recall_eff_card-late")), pct(mean(det, "top_recall_eff_learned")),
+            pct(mean(det, "top_recall_eff_full")),
         ])
     return table(["mistakes k", "programs", "ill-typed", "effective mistakes e (mean)", "size of first MCS",
                   "first MCS: precision (%)", "first MCS: recall of effective (%)",
-                  "top-e lines, MCS latest first (%)", "top-e lines, MCS earliest first (%)",
-                  "first e blamed lines, first conflict (%)"], body)
+                  "first conflict", "MCS earliest first", "MCS latest first", "MCS learned",
+                  "full pipeline"], body)
 
 
 # -- scaling -------------------------------------------------------------------------

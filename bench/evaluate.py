@@ -7,8 +7,8 @@ correction subsets (question Q1/Q2).
 evaluate_multi(): several mistakes -> precision/recall of the first MCS and of
 the top of the ranked list.
 
-time_algorithms(): time to the first optimal correction subset with OLL, IHS
-and Z3 (question Q3).
+time_config(): time to the first optimal correction subset with OLL, IHS or
+Z3 under one of the performance configurations (question Q3, item 2).
 """
 
 from __future__ import annotations
@@ -30,6 +30,7 @@ from localizer import baseline, mcs, rank  # noqa: E402
 from localizer.constraints import program_from_json, run_infer, run_solver_js  # noqa: E402
 from localizer.encode import encode  # noqa: E402
 from localizer.repair import find_hints  # noqa: E402
+from localizer.features import fanout_of, pool_counts, tier_features  # noqa: E402
 
 STRATEGIES = list(rank.STRATEGIES)
 
@@ -132,6 +133,17 @@ def evaluate_single(source: str, targets: list[int], closed_fields: bool = False
             r.hints = hints
         _record_rankings(row, rankings, enc, targets, "+hints")
         _record_rankings(row, with_reinfer, enc, targets, "+reinfer+hints")
+    if group_by == "line" and card_pool.mcses:
+        # training data for the learned tie-breaker: the first tiers with features
+        cands = [rank.to_candidate(enc, m.lines) for m in card_pool.mcses]
+        counts, n = pool_counts(enc, card_pool.mcses)
+        fan = fanout_of(enc)
+        row["tiers"] = [
+            [{"lines": [enc.line_of(g) for g in c.lines], "x": [round(v, 4) for v in x],
+              "y": int(any(on_target(g) for g in c.lines))}
+             for c, x in zip(tier[:12], tier_features(enc, tier[:12], counts, n, fan))]
+            for tier in rank.tiers_of(cands)[:3]
+        ]
     if card_pool.mcses:
         min_cost = card_pool.mcses[0].cost
         tier = [m for m in card_pool.mcses if m.cost == min_cost]
@@ -185,7 +197,14 @@ def evaluate_multi(source: str, targets: list[int], base_source: Optional[str] =
     row["first_mcs_recall"] = len(first & T) / len(T)
     e = len(effective)
     row["first_mcs_recall_eff"] = len(first & effective) / e if e else None
-    for name in ("card", "card-late"):
+    with tempfile.TemporaryDirectory() as d:  # full pipeline: latest first + re-inference + hints
+        path = Path(d) / "program.js"
+        path.write_text(source)
+        extra = rank.reinference_singletons(enc, pool, path)
+        full = rank.rank_from_pools(enc, pool, None, extra)["card-late"]
+        full.hints = find_hints(path, rank.top_lines(enc, full.candidates, k=max(6, 2 * len(T))))
+    rankings["full"] = full
+    for name in ("card", "card-late", "learned", "full"):
         lines = rankings[name].lines
         row[f"top_recall_{name}"] = len(set(lines[: len(T)]) & T) / len(T)
         row[f"top_recall_eff_{name}"] = len(set(lines[:e]) & effective) / e if e else None
@@ -195,25 +214,40 @@ def evaluate_multi(source: str, targets: list[int], base_source: Optional[str] =
     return row
 
 
-def time_algorithms(source: str, algorithms=("oll", "ihs", "z3"), timeout: float = 120.0) -> list[dict]:
-    t0 = time.perf_counter()
-    data = infer_source(source)
-    t_infer = time.perf_counter() - t0
+# -- performance configurations (item: performance) ----------------------------------
+CONFIGS = {
+    "before": dict(simplify=False, slicing=False, minimize_cores=True),  # the first version
+    "no-core-min": dict(simplify=False, slicing=False, minimize_cores=False),
+    "simplify": dict(simplify=True, slicing=False, minimize_cores=True),
+    "slicing": dict(simplify=False, slicing=True, minimize_cores=True),
+    "after": dict(simplify=True, slicing=True, minimize_cores=None),  # the defaults now
+}
+
+
+def time_config(source: str, algorithm: str, config: str, timeout: float = 300.0, data: Optional[dict] = None) -> dict:
+    """Time to the first smallest MCS, split into encoding, slicing and solving."""
+    from localizer.slicing import slice_to_conflicts
+
+    cfg = CONFIGS[config]
+    data = data or infer_source(source)
     program = program_from_json(data, source)
-    t1 = time.perf_counter()
-    enc = encode(program)
-    t_encode = time.perf_counter() - t1
-    base = {"lines": len(enc.lines), "constraints": len(program.constraints), "t_infer": t_infer, "t_encode": t_encode}
-    rows = []
-    for a in algorithms:
-        en = mcs.make(a, enc, timeout=timeout)
-        row = dict(base, algorithm=a)
-        try:
-            m = en.first()
-            row.update(status="ok", time=en.elapsed(), cost=m.cost if m else None)
-        except mcs.Timeout:
-            row.update(status="timeout", time=timeout, cost=None)
-        row.update(sat_calls=en.stats.sat_calls, cores=en.stats.cores,
-                   mean_core=(sum(en.stats.core_sizes) / len(en.stats.core_sizes)) if en.stats.core_sizes else 0)
-        rows.append(row)
-    return rows
+    t0 = time.perf_counter()
+    enc = encode(program, simplify=cfg["simplify"])
+    t_encode = time.perf_counter() - t0
+    t0 = time.perf_counter()
+    groups_before = len(enc.lines)
+    if cfg["slicing"]:
+        enc, _ = slice_to_conflicts(enc, timeout_ms=int(timeout * 1000))
+    t_slice = time.perf_counter() - t0
+    en = mcs.make(algorithm, enc, timeout=timeout, minimize_cores=cfg["minimize_cores"])
+    row = {"algorithm": algorithm, "config": config, "lines": groups_before, "groups_solved": len(enc.lines),
+           "constraints": len(program.constraints), "t_encode": t_encode, "t_slice": t_slice}
+    try:
+        m = en.first()
+        row.update(status="ok", t_solve=en.elapsed(), cost=m.cost if m else None)
+    except mcs.Timeout:
+        row.update(status="timeout", t_solve=timeout, cost=None)
+    row.update(time=row["t_encode"] + row["t_slice"] + row["t_solve"], sat_calls=en.stats.sat_calls,
+               cores=en.stats.cores)
+    return row
+

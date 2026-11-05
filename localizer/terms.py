@@ -283,3 +283,27 @@ def term_vars(t: Term) -> set[str]:
     if isinstance(t, Klass):
         return set().union(set(), *(term_vars(x) for _, sig in t.members for x in sig))
     raise TypeError(t)
+
+
+def rename(t: Term, m: dict[str, str]) -> Term:
+    """t with its type variables renamed by m."""
+    if isinstance(t, Var):
+        return Var(m.get(t.name, t.name))
+    if isinstance(t, Base):
+        return t
+    if isinstance(t, Obj):
+        return Obj(tuple((f, rename(v, m)) for f, v in t.fields))
+    if isinstance(t, Arr):
+        return Arr(rename(t.elem, m))
+    if isinstance(t, Prom):
+        return Prom(rename(t.resolve, m), rename(t.reject, m))
+    if isinstance(t, Resolver):
+        return Resolver(rename(t.inner, m))
+    if isinstance(t, Rejector):
+        return Rejector(rename(t.inner, m))
+    if isinstance(t, Func):
+        return Func(t.name, tuple(rename(p, m) for p in t.params), rename(t.ret, m))
+    if isinstance(t, Klass):
+        return Klass(t.kind, t.name, tuple((n, tuple(rename(x, m) for x in sig)) for n, sig in t.members))
+    raise TypeError(t)
+

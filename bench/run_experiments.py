@@ -188,47 +188,40 @@ def cmd_multi(args) -> None:
     write_csv(RESULTS / "multi.csv", rows)
 
 
-# -- scaling ---------------------------------------------------------------------
+# -- scaling (Q3) and performance (item 2) -------------------------------------------
 def _scaling(task: dict) -> list[dict]:
-    rows = ev.time_algorithms(task["source"], timeout=task["timeout"])
-    out = [dict({k: v for k, v in task.items() if k != "source"}, **r) for r in rows]
-    if task.get("ablation"):
-        from localizer import mcs
-        from localizer.encode import encode
-        program = ev.program_from_json(ev.infer_source(task["source"]), task["source"])
-        enc = encode(program)
-        for a in ("oll", "ihs"):
-            en = mcs.make(a, enc, timeout=task["timeout"], minimize_cores=False)
-            row = dict({k: v for k, v in task.items() if k != "source"}, algorithm=f"{a}-nomin",
-                       lines=out[0]["lines"], constraints=out[0]["constraints"])
-            try:
-                m = en.first()
-                row.update(status="ok", time=en.elapsed(), cost=m.cost if m else None)
-            except mcs.Timeout:
-                row.update(status="timeout", time=task["timeout"], cost=None)
-            row.update(sat_calls=en.stats.sat_calls, cores=en.stats.cores)
-            out.append(row)
-    return out
+    data = ev.infer_source(task["source"])
+    rows = []
+    for algorithm, config in task["runs"]:
+        r = ev.time_config(task["source"], algorithm, config, timeout=task["timeout"], data=data)
+        rows.append(dict({k: v for k, v in task.items() if k not in ("source", "runs")}, **r))
+    return rows
 
 
 def cmd_scaling(args) -> None:
+    """Main runs (OLL/IHS/Z3, before/after the performance changes) on one-module
+    programs, an ablation of the changes (OLL), and modular programs."""
     d = CORPUS / "scaling"
     d.mkdir(parents=True, exist_ok=True)
+    main_runs = [(a, c) for a in ("oll", "ihs", "z3") for c in ("before", "after")]
+    ablation = [("oll", c) for c in ("no-core-min", "simplify", "slicing")]
     tasks = []
-    for n in args.sizes:
-        for seed in range(1, args.seeds + 1):
-            src = generate(n, 5000 + seed)
-            p = d / f"gen_{n}_{5000 + seed}.js"
-            p.write_text(src)
-            for k in args.mistakes:
-                s = ev.sample_mistakes(str(p), k, seed)
-                tasks.append(dict(size=n, seed=seed, k=k, mistake_lines=s["lines"], source=s["source"],
-                                  timeout=args.timeout, ablation=n in args.ablation_sizes))
-    # largest first, so that the long runs do not end up alone at the end
-    tasks.sort(key=lambda t: -t["size"])
-    print(f"scaling: {len(tasks)} programs x algorithms", flush=True)
+    for kind, sizes, modules, ks in (("program", args.sizes, 1, args.mistakes),
+                                     ("modular", args.modular_sizes, 8, (1, 4))):
+        for n in sizes:
+            for seed in range(1, args.seeds + 1):
+                src = generate(n, (5000 if modules == 1 else 7000) + seed, modules)
+                p = d / f"{kind}_{n}_{seed}.js"
+                p.write_text(src)
+                for k in ks:
+                    s = ev.sample_mistakes(str(p), k, seed)
+                    runs = main_runs + (ablation if kind == "program" and n in args.ablation_sizes else [])
+                    tasks.append(dict(kind=kind, size=n, modules=modules, seed=seed, k=k,
+                                      mistake_lines=s["lines"], source=s["source"], timeout=args.timeout, runs=runs))
+    tasks.sort(key=lambda t: -t["size"])  # long runs first
+    print(f"scaling: {len(tasks)} programs, {sum(len(t['runs']) for t in tasks)} runs", flush=True)
     rows = run_parallel(_scaling, tasks, args.jobs, "scaling")
-    rows.sort(key=lambda r: (r["size"], r["k"], r["seed"], r["algorithm"]))
+    rows.sort(key=lambda r: (r["kind"], r["size"], r["k"], r["seed"], r["algorithm"], r["config"]))
     write_csv(RESULTS / "scaling.csv", rows)
 
 
@@ -239,11 +232,12 @@ def main() -> None:
     ap.add_argument("--per-op", type=int, default=6, help="max mutants per operator and program")
     ap.add_argument("--programs", type=int, default=40)
     ap.add_argument("--lines", type=int, default=60)
-    ap.add_argument("--sizes", type=int, nargs="+", default=[250, 500, 1000, 2000, 4000, 8000])
+    ap.add_argument("--sizes", type=int, nargs="+", default=[500, 1000, 2000, 4000, 8000])
+    ap.add_argument("--modular-sizes", type=int, nargs="+", default=[2000, 8000])
     ap.add_argument("--mistakes", type=int, nargs="+", default=[1, 4, 16])
-    ap.add_argument("--seeds", type=int, default=3)
+    ap.add_argument("--seeds", type=int, default=2)
     ap.add_argument("--timeout", type=float, default=300.0)
-    ap.add_argument("--ablation-sizes", type=int, nargs="*", default=[1000, 4000])
+    ap.add_argument("--ablation-sizes", type=int, nargs="*", default=[2000, 8000])
     args = ap.parse_args()
     exps = ["mutants", "generated", "multi", "scaling"] if args.experiment == "all" else [args.experiment]
     for e in exps:

@@ -2747,6 +2747,80 @@ for (const [tv, types] of typeofGuardMap.entries()) {
   constraintOrigins.push(typeofGuardOrigins.get(tv));
 }
 
+// ── Per-line facts for the localizer (def/use of variables, kinds of code) ───
+// A separate walk over the AST; it does not influence inference.
+function lineInfo(ast) {
+  const info = {};
+  const at = (line) =>
+    (info[line] ??= {
+      declares: [], assigns: [], uses: [], literals: 0, calls: 0, members: 0,
+      awaits: 0, returns: 0, fnHeader: false, decl: false,
+    });
+  const walk = (node, parent, key) => {
+    if (!node || typeof node.type !== "string") return;
+    const L = node.loc.start.line;
+    switch (node.type) {
+      case "VariableDeclarator":
+        if (node.id.type === "Identifier") at(L).declares.push(node.id.name);
+        break;
+      case "VariableDeclaration":
+        at(L).decl = true;
+        break;
+      case "FunctionDeclaration":
+      case "FunctionExpression":
+      case "ArrowFunctionExpression":
+        if (node.id) at(L).declares.push(node.id.name);
+        for (const p of node.params)
+          if (p.type === "Identifier") at(p.loc.start.line).declares.push(p.name);
+        if (node.loc.end.line > L) at(L).fnHeader = true;
+        break;
+      case "AssignmentExpression":
+        if (node.left.type === "Identifier") at(L).assigns.push(node.left.name);
+        break;
+      case "UpdateExpression":
+        if (node.argument.type === "Identifier") at(L).assigns.push(node.argument.name);
+        break;
+      case "Literal":
+        if (node.value !== null && !node.regex) at(L).literals++;
+        break;
+      case "TemplateLiteral":
+        at(L).literals++;
+        break;
+      case "CallExpression":
+      case "NewExpression":
+        at(L).calls++;
+        break;
+      case "MemberExpression":
+        at(L).members++;
+        break;
+      case "AwaitExpression":
+        at(L).awaits++;
+        break;
+      case "ReturnStatement":
+        at(L).returns++;
+        break;
+      case "Identifier": {
+        const decl =
+          (parent?.type === "VariableDeclarator" && key === "id") ||
+          (parent?.type === "MemberExpression" && key === "property" && !parent.computed) ||
+          (parent?.type === "Property" && key === "key") ||
+          (/Function/.test(parent?.type ?? "") && (key === "id" || key === "params")) ||
+          (parent?.type === "AssignmentExpression" && key === "left");
+        if (!decl) at(L).uses.push(node.name);
+        break;
+      }
+    }
+    for (const k of Object.keys(node)) {
+      if (k === "loc") continue;
+      const v = node[k];
+      if (Array.isArray(v)) v.forEach((c) => walk(c, node, k));
+      else if (v && typeof v.type === "string") walk(v, node, k);
+    }
+  };
+  if (ast) walk(ast, null, null);
+  return info;
+}
+
 // ── Output ────────────────────────────────────────────────────────────────────
 if (jsonOutput) {
   // Same constraints, in the same order as the text output, with their origins.
@@ -2771,6 +2845,7 @@ if (jsonOutput) {
       parsed: ast !== null,
       constraints: tagged,
       functions,
+      lines: lineInfo(ast),
     }) + "\n",
   );
 } else {

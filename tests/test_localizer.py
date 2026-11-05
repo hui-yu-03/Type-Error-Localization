@@ -229,3 +229,37 @@ def test_no_hint_without_missing_code():
     r = rank.rank(encode(load_program(path)), "card-late", path=path, hints=True)
     assert r.hints == [] and r.rank_of(1) == 1
 
+
+
+# -- performance changes keep the results -------------------------------------------------
+@pytest.mark.parametrize("seed", [1, 2, 3])
+def test_simplification_and_slicing_keep_the_mcses(seed):
+    """Eliminating group-local variables and slicing to the conflicting
+    components change the formula, never its smallest correction subsets."""
+    import sys
+    import tempfile
+
+    sys.path.insert(0, str(REPO_ROOT / "bench"))
+    import evaluate as ev
+    from generate import generate
+    from localizer.slicing import slice_to_conflicts
+
+    with tempfile.TemporaryDirectory() as d:
+        base = Path(d) / "base.js"
+        base.write_text(generate(240, 400 + seed, modules=4))
+        sample = ev.sample_mistakes(str(base), 4, seed)
+    program = program_from_json(ev.infer_source(sample["source"]), sample["source"])
+
+    def smallest(enc):
+        found = []
+        for m in mcs.make("oll", enc).enumerate():
+            if found and m.cost > found[0][0]:
+                break
+            found.append((m.cost, tuple(m.sorted())))
+        return sorted(found)
+
+    plain = encode(program, simplify=False)
+    simplified = encode(program)
+    sliced, stats = slice_to_conflicts(simplified)
+    assert smallest(plain) == smallest(simplified) == smallest(sliced)
+    assert stats["components"] >= 4

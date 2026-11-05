@@ -35,6 +35,9 @@ from pysat.formula import WCNF
 from .encode import Encoding
 
 
+MINIMIZE_UP_TO = 300  # groups
+
+
 class Timeout(Exception):
     pass
 
@@ -70,7 +73,7 @@ class Enumerator:
         enc: Encoding,
         weights: Optional[dict[int, int]] = None,
         timeout: Optional[float] = None,
-        minimize_cores: bool = True,
+        minimize_cores: Optional[bool] = None,
     ) -> None:
         self.enc = enc
         self.lines = enc.lines
@@ -78,7 +81,9 @@ class Enumerator:
         if any(w <= 0 for w in self.weights.values()):
             raise ValueError("weights must be positive")
         self.timeout = timeout
-        self.minimize_cores = minimize_cores
+        # None: minimize cores only for small formulas (each deletion step is a
+        # SAT call on the whole formula, which does not pay off on large ones)
+        self.minimize_cores = len(self.lines) <= MINIMIZE_UP_TO if minimize_cores is None else minimize_cores
         self.stats = Stats()
         self._t0 = time.perf_counter()
         self.sel = enc.selectors

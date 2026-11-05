@@ -125,12 +125,21 @@ class Encoding:
     hard: list[z3.BoolRef]
     groups: "OrderedDict"  # key -> conjunction of the group's constraints
     selectors: "OrderedDict"  # key -> selector literal
-    per_constraint: list[tuple[Constraint, z3.BoolRef]]  # every constraint, in order
+    _per_constraint: Optional[list]  # every constraint, in order (None: built on demand)
     encoder: "Encoder"
     group_sizes: dict = field(default_factory=dict)  # key -> number of constraints
     group_by: str = "line"
     order: dict = field(default_factory=dict)  # key -> position in source order
     span: dict = field(default_factory=dict)  # key -> (first line, last line)
+    stats: dict = field(default_factory=dict)
+
+    @property
+    def per_constraint(self) -> list[tuple[Constraint, z3.BoolRef]]:
+        """Every constraint with its own formula, without simplification (for
+        the first-conflict baseline, which adds constraints one by one)."""
+        if self._per_constraint is None:
+            self._per_constraint = [(c, self.encoder.constraint(c)) for c in self.program.constraints]
+        return self._per_constraint
 
     def line_of(self, key) -> int:
         return self.span[key][0]
@@ -364,7 +373,10 @@ class Encoder:
         return out
 
 
-def encode(program: Program, plus: str = "strict", closed_fields: bool = False, group_by: str = "line") -> Encoding:
+def encode(program: Program, plus: str = "strict", closed_fields: bool = False, group_by: str = "line",
+           simplify: bool = True) -> Encoding:
+    """simplify: eliminate type variables local to one group (simplify.py);
+    not combined with closed_fields, whose formulas link variables of groups."""
     if group_by not in GROUPINGS:
         raise ValueError(group_by)
     enc = Encoder(plus=plus, closed_fields=closed_fields)
@@ -388,23 +400,34 @@ def encode(program: Program, plus: str = "strict", closed_fields: bool = False, 
         guard = lambda line: z3.BoolVal(True) if line is None else line_selector[line]  # noqa: E731
         for cid, f in enc.closed_field_formulas(program, guard):
             extra.setdefault(cid, []).append(f)
-    hard: list[z3.BoolRef] = []
-    parts: dict = {k: [] for k in keys}
-    per_constraint = []
     sizes: dict = {}
     for c in program.constraints:
+        if not c.hard:
+            sizes[key_of[c.id]] = sizes.get(key_of[c.id], 0) + 1
+    constraints, stats = program.constraints, {}
+    if simplify and not closed_fields:
+        from .simplify import simplify as eliminate_local
+
+        constraints, dropped = eliminate_local(program, lambda c: key_of[c.id])
+        stats = {"dropped_equations": dropped}
+    hard: list[z3.BoolRef] = []
+    hard_ids: list[int] = []  # the constraint behind each hard formula
+    parts: dict = {k: [] for k in keys}
+    per_constraint = [] if constraints is program.constraints else None
+    for c in constraints:
         f = enc.constraint(c)
         if c.id in extra:
             f = z3.And(f, *extra[c.id])
-        per_constraint.append((c, f))
+        if per_constraint is not None:
+            per_constraint.append((c, f))
         if c.hard:
             hard.append(f)
+            hard_ids.append(c.id)
         else:
-            k = key_of[c.id]
-            parts[k].append(f)
-            sizes[k] = sizes.get(k, 0) + 1
+            parts[key_of[c.id]].append(f)
     groups = OrderedDict((k, z3.And(parts[k])) for k in keys)
-    return Encoding(program, hard, groups, selectors, per_constraint, enc, sizes, group_by, order, span)
+    stats["hard_ids"] = hard_ids
+    return Encoding(program, hard, groups, selectors, per_constraint, enc, sizes, group_by, order, span, stats)
 
 
 # -- models -------------------------------------------------------------------

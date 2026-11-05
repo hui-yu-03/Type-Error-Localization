@@ -60,6 +60,7 @@ class Program:
     constraints: list[Constraint]
     parsed: bool = True
     unparsed: list[str] = field(default_factory=list)
+    line_info: dict = field(default_factory=dict)  # line -> facts from infer.js (def/use, ...)
 
     @property
     def hard(self) -> list[Constraint]:
@@ -124,6 +125,7 @@ def program_from_json(data: dict, source_text: str, path: str = "<input>") -> Pr
         constraints=constraints,
         parsed=data.get("parsed", True),
         unparsed=unparsed,
+        line_info={int(k): v for k, v in data.get("lines", {}).items()},
     )
 
 

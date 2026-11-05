@@ -1,0 +1,42 @@
+{
+ "features": [
+  "position",
+  "latest",
+  "earliest",
+  "log_constraints",
+  "fewest_constraints",
+  "defines_for_tie",
+  "uses_from_tie",
+  "log_fanout",
+  "declaration",
+  "literal",
+  "call",
+  "member",
+  "await",
+  "return",
+  "function_header",
+  "mcs_frequency"
+ ],
+ "weights": [
+  0.4751,
+  0.1627,
+  -0.4375,
+  -1.2312,
+  -0.0704,
+  -0.5482,
+  0.8262,
+  0.3028,
+  0.9008,
+  1.4334,
+  0.147,
+  0.7577,
+  -0.144,
+  -1.487,
+  -0.3078,
+  0.0018
+ ],
+ "trained_on": {
+  "mutants": 256,
+  "generated": 647
+ }
+}
