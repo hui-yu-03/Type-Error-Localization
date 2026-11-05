@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import sys
+from math import comb
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -36,11 +37,23 @@ METHODS = ["first conflict (solver.js)", "first conflict (SMT order)", "MCS card
            "full pipeline"]
 
 
+def _norm(line: str) -> str:
+    return " ".join(line.split())
+
+
+def similarity(buggy: str, fixed: str) -> float:
+    """How much of the two versions is the same, by lines (1.0 = identical up to whitespace)."""
+    a, b = [_norm(x) for x in buggy.split("\n")], [_norm(x) for x in fixed.split("\n")]
+    return difflib.SequenceMatcher(None, a, b, autojunk=False).ratio()
+
+
 def mistake_lines(buggy: str, fixed: str) -> list[int]:
-    """Lines of the buggy version changed by the fix (1-based)."""
+    """Lines of the buggy version changed by the fix (1-based); changes of
+    whitespace only (indentation, line endings) do not count."""
     a, b = buggy.split("\n"), fixed.split("\n")
     out: set[int] = set()
-    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+    matcher = difflib.SequenceMatcher(None, [_norm(x) for x in a], [_norm(x) for x in b], autojunk=False)
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag in ("replace", "delete"):
             out.update(range(i1 + 1, i2 + 1))
         elif tag == "insert":  # missing code: the neighbouring lines
@@ -55,7 +68,8 @@ def _rank_in(lines: list[int], targets: list[int]):
 
 def evaluate_pair(name: str, buggy: str, fixed: str) -> dict:
     targets = mistake_lines(buggy, fixed)
-    row = {"name": name, "mistake_lines": targets, "lines": buggy.count("\n") + 1}
+    row = {"name": name, "mistake_lines": targets, "lines": buggy.count("\n") + 1,
+           "similarity": round(similarity(buggy, fixed), 3)}
     fixed_ok, _ = ev.is_clean(fixed)
     data = ev.infer_source(buggy)
     program = ev.program_from_json(data, buggy)
@@ -66,6 +80,12 @@ def evaluate_pair(name: str, buggy: str, fixed: str) -> dict:
     row["solver_js_reports"] = bool(js["conflicts"])
     if not row["buggy_ill_typed"]:
         return row
+    # a random order of the lines that have constraints, for comparison
+    blamable = {enc.line_of(g) for g in enc.groups}
+    n, t = len(blamable), len(blamable & set(targets))
+    row["blamable_lines"] = n
+    row["random_top1"] = t / n if n else 0.0
+    row["random_top3"] = (1 - comb(n - t, 3) / comb(n, 3)) if n >= 3 else float(t > 0)
     ranks = {
         "first conflict (solver.js)": _rank_in(baseline.solver_js_lines(js), targets),
         "first conflict (SMT order)": _rank_in(baseline.first_conflicts(enc, k=5), targets),
@@ -101,6 +121,9 @@ def report(rows: list[dict], name: str) -> str:
             r1 = sum(1 for r in both if r[f"rank: {m}"] is not None and r[f"rank: {m}"] <= 1) / len(both)
             r3 = sum(1 for r in both if r[f"rank: {m}"] is not None and r[f"rank: {m}"] <= 3) / len(both)
             lines.append(f"| {m} | {100 * r1:.0f} | {100 * r3:.0f} |")
+        r1 = sum(r["random_top1"] for r in both) / len(both)
+        r3 = sum(r["random_top3"] for r in both) / len(both)
+        lines.append(f"| random line (expected) | {100 * r1:.0f} | {100 * r3:.0f} |")
     return "\n".join(lines) + "\n"
 
 

@@ -599,4 +599,21 @@ summaries.__typeProps__ = {
   },
 };
 
+// The tables are looked up by names taken from the program (`x.constructor`,
+// `new toString()`, ...), so they must not inherit Object.prototype: with a
+// normal prototype, summaries.__typeMethods__.str.constructor is the function
+// Object, which is not a signature.
+function withoutPrototype(table) {
+  Object.setPrototypeOf(table, null);
+  return table;
+}
+for (const [name, table] of Object.entries(summaries)) {
+  if (!table || typeof table !== "object" || Array.isArray(table)) continue;
+  withoutPrototype(table);
+  if (name === "__typeMethods__" || name === "__typeProps__") {
+    for (const sub of Object.values(table)) withoutPrototype(sub);
+  }
+}
+withoutPrototype(summaries);
+
 module.exports = summaries;

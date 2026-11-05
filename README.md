@@ -1060,7 +1060,8 @@ compiler errors other than type errors. To run it:
 ## The inferencer: what was found and fixed
 
 Building a second, declarative solver next to the union-find solver turned up
-the following. Items 1–8 were fixed (improvement 5); 9–11 remain.
+the following. Items 1–8 were fixed (improvement 5), item 12 was found on real
+code and fixed (improvement 6); 9–11 remain.
 
 1. **Order dependence of deferred constraints in `solver.js`** — *fixed.* `+`,
    `?:` and `&&`/`||` were resolved after the main pass, once, with heuristics
@@ -1112,6 +1113,11 @@ the following. Items 1–8 were fixed (improvement 5); 9–11 remain.
     the generator uses a separate loop variable per module.
 11. **Strings with array methods** (`s.push(1)` on a string) are still accepted
     as `str | Array<T>` by `solver.js` (see §2.4).
+12. **Names inherited from `Object.prototype`** (new, found on FixJS) — *fixed*.
+    The library tables of `summaries.js` were plain objects, so a property or
+    constructor called `constructor`, `toString`, `valueOf`, … found the members
+    of `Object.prototype` instead of a signature, and `infer.js` crashed
+    (`spec.params` is undefined). The tables now have no prototype.
 
 ---
 
