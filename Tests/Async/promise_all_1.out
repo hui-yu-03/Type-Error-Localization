@@ -1,0 +1,69 @@
+
+Constraints:
+  C01: T3 <= num
+  C02: T3 <= T4
+  C03: T6 <= Promise<T4,T5>
+  C04: T6 <= T1
+  C05: T7 <= num
+  C06: T7 <= T8
+  C07: T10 <= Promise<T8,T9>
+  C08: T10 <= T1
+  C09: T2 <= Array<T1>
+  C10: T2 <= Array<T11>
+  C11: T11 <= Promise<T12,T13>
+  C12: T14 <= Array<T12>
+  C13: T15 <= Promise<T14,T13>
+  C14: T15 <= results__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, num:bot, T4:bot, T6:bot, Promise<T4,T5>:bot, T1:bot, T7:bot, T8:bot, T10:bot, Promise<T8,T9>:bot, T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+1: [T3 <= num]
+ T3:num, T4:bot, T6:bot, Promise<T4,T5>:bot, T1:bot, T7:bot, T8:bot, T10:bot, Promise<T8,T9>:bot, T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+2: [T3 <= T4]
+ T3:num, T4:num, T6:bot, Promise<T4,T5>:bot, T1:bot, T7:bot, T8:bot, T10:bot, Promise<T8,T9>:bot, T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+3: [T6 <= Promise<T4,T5>]
+ T3:num, T4:num, (T6: Promise<T3, T5>), T1:bot, T7:bot, T8:bot, T10:bot, Promise<T8,T9>:bot, T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+4: [T6 <= T1]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:bot, T8:bot, T10:bot, Promise<T8,T9>:bot, T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+5: [T7 <= num]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:bot, T10:bot, Promise<T8,T9>:bot, T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+6: [T7 <= T8]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, T10:bot, Promise<T8,T9>:bot, T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+7: [T10 <= Promise<T8,T9>]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T7, T9>), T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+8: [T10 <= T1]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T3, T5>), T2:bot, Array<T1>:bot, Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+9: [T2 <= Array<T1>]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T3, T5>), (T2: Array<T6>), Array<T11>:bot, T11:bot, Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+10: [T2 <= Array<T11>]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T3, T5>), (T2: Array<T6>), (T11: Promise<T3, T5>), Promise<T12,T13>:bot, T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+11: [T11 <= Promise<T12,T13>]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T3, T5>), (T2: Array<T6>), (T11: Promise<T3, T5>), T14:bot, Array<T12>:bot, T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+12: [T14 <= Array<T12>]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T3, T5>), (T2: Array<T6>), (T11: Promise<T3, T5>), (T14: Array<T3>), T15:bot, Promise<T14,T13>:bot, results__global:bot
+
+13: [T15 <= Promise<T14,T13>]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T3, T5>), (T2: Array<T6>), (T11: Promise<T3, T5>), (T14: Array<T3>), (T15: Promise<T14, T5>), results__global:bot
+
+14: [T15 <= results__global]
+ T3:num, T4:num, (T6: Promise<T3, T5>), (T1: Promise<T3, T5>), T7:num, T8:num, (T10: Promise<T3, T5>), (T2: Array<T6>), (T11: Promise<T3, T5>), (T14: Array<T3>), (T15: Promise<T14, T5>), (results__global: Promise<T14, T5>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  results__global  :  Promise<Array<num>, bot>
+

@@ -1,0 +1,109 @@
+
+Constraints:
+  C01: T1 <= {value: s__parse__global}
+  C02: T1 <= ret__parse__global
+  C03: parse__global <= Func<parse__global>{s__parse__global -> ret__parse__global}
+  C04: T4 <= Promise<T2,T3>
+  C05: resolve__executor_T5__global <= Resolver<T2>
+  C06: reject__executor_T5__global <= Rejector<T3>
+  C07: T6 <= str
+  C08: T6 <= T2
+  C09: T4 <= p__global
+  C10: p__global <= Promise<T8,T9>
+  C11: T8 <= s__then_cb_T11__global
+  C12: s__then_cb_T11__global <= str
+  C13: T12 <= str
+  C14: T13 <= Func<trim>{() -> T12}
+  C15: T13 <= Func<T15>{() -> T14}
+  C16: T14 <= ret__then_cb_T11__global
+  C17: T16 <= Promise<ret__then_cb_T11__global,T9>
+  C18: T16 <= Promise<T17,T18>
+  C19: T17 <= T20
+  C20: parse__global <= Func<then_ref>{T20 -> T21}
+  C21: T22 <= Promise<T21,T18>
+  C22: T22 <= result__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, {value: s__parse__global}:bot, ret__parse__global:bot, parse__global:bot, Func<parse__global>{s__parse__global -> ret__parse__global}:bot, s__parse__global:bot, T4:bot, Promise<T2,T3>:bot, resolve__executor_T5__global:bot, Resolver<T2>:bot, reject__executor_T5__global:bot, Rejector<T3>:bot, T6:bot, str:bot, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+1: [T1 <= {value: s__parse__global}]
+ (T1: {value: s__parse__global}), ret__parse__global:bot, parse__global:bot, Func<parse__global>{s__parse__global -> ret__parse__global}:bot, s__parse__global:bot, T4:bot, Promise<T2,T3>:bot, resolve__executor_T5__global:bot, Resolver<T2>:bot, reject__executor_T5__global:bot, Rejector<T3>:bot, T6:bot, str:bot, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+2: [T1 <= ret__parse__global]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), parse__global:bot, Func<parse__global>{s__parse__global -> ret__parse__global}:bot, s__parse__global:bot, T4:bot, Promise<T2,T3>:bot, resolve__executor_T5__global:bot, Resolver<T2>:bot, reject__executor_T5__global:bot, Rejector<T3>:bot, T6:bot, str:bot, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+3: [parse__global <= Func<parse__global>{s__parse__global -> ret__parse__global}]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, T4:bot, Promise<T2,T3>:bot, resolve__executor_T5__global:bot, Resolver<T2>:bot, reject__executor_T5__global:bot, Rejector<T3>:bot, T6:bot, str:bot, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+4: [T4 <= Promise<T2,T3>]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T2, T3>), resolve__executor_T5__global:bot, Resolver<T2>:bot, reject__executor_T5__global:bot, Rejector<T3>:bot, T6:bot, str:bot, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+5: [resolve__executor_T5__global <= Resolver<T2>]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T2, T3>), (resolve__executor_T5__global: Resolver<T2>), reject__executor_T5__global:bot, Rejector<T3>:bot, T6:bot, str:bot, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+6: [reject__executor_T5__global <= Rejector<T3>]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T2, T3>), (resolve__executor_T5__global: Resolver<T2>), (reject__executor_T5__global: Rejector<T3>), T6:bot, str:bot, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+7: [T6 <= str]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T2, T3>), (resolve__executor_T5__global: Resolver<T2>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:bot, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+8: [T6 <= T2]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, p__global:bot, Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+9: [T4 <= p__global]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), Promise<T8,T9>:bot, T8:bot, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+10: [p__global <= Promise<T8,T9>]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:bot, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+11: [T8 <= s__then_cb_T11__global]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+12: [s__then_cb_T11__global <= str]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:bot, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+13: [T12 <= str]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, T13:bot, Func<trim>{() -> T12}:bot, Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+14: [T13 <= Func<trim>{() -> T12}]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), Func<T15>{() -> T14}:bot, T14:bot, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+15: [T13 <= Func<T15>{() -> T14}]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:bot, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+16: [T14 <= ret__then_cb_T11__global]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:str, T16:bot, Promise<ret__then_cb_T11__global,T9>:bot, Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+17: [T16 <= Promise<ret__then_cb_T11__global,T9>]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:str, (T16: Promise<T12, T3>), Promise<T17,T18>:bot, T17:bot, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+18: [T16 <= Promise<T17,T18>]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:str, (T16: Promise<T12, T3>), T17:str, T20:bot, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+19: [T17 <= T20]
+ (T1: {value: s__parse__global}), (ret__parse__global: {value: s__parse__global}), (parse__global: Func<parse__global>{s__parse__global -> T1}), s__parse__global:bot, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:str, (T16: Promise<T12, T3>), T17:str, T20:str, Func<then_ref>{T20 -> T21}:bot, T21:bot, T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+20: [parse__global <= Func<then_ref>{T20 -> T21}]
+ (T1: {value: T12}), (ret__parse__global: {value: T12}), (parse__global: Func<parse__global>{T12 -> T1}), s__parse__global:str, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:str, (T16: Promise<T12, T3>), T17:str, T20:str, (T21: {value: T12}), T22:bot, Promise<T21,T18>:bot, result__global:bot
+
+21: [T22 <= Promise<T21,T18>]
+ (T1: {value: T12}), (ret__parse__global: {value: T12}), (parse__global: Func<parse__global>{T12 -> T1}), s__parse__global:str, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:str, (T16: Promise<T12, T3>), T17:str, T20:str, (T21: {value: T12}), (T22: Promise<T1, T3>), result__global:bot
+
+22: [T22 <= result__global]
+ (T1: {value: T12}), (ret__parse__global: {value: T12}), (parse__global: Func<parse__global>{T12 -> T1}), s__parse__global:str, (T4: Promise<T6, T3>), (resolve__executor_T5__global: Resolver<T6>), (reject__executor_T5__global: Rejector<T3>), T6:str, T2:str, (p__global: Promise<T6, T3>), T8:str, s__then_cb_T11__global:str, T12:str, (T13: Func<trim>{() -> T12}), T14:str, ret__then_cb_T11__global:str, (T16: Promise<T12, T3>), T17:str, T20:str, (T21: {value: T12}), (T22: Promise<T1, T3>), (result__global: Promise<T1, T3>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  p__global                     :  Promise<str, bot>
+  parse__global                 :  Func<parse__global>{str -> {value: str}}
+  reject__executor_T5__global   :  Rejector<bot>
+  resolve__executor_T5__global  :  Resolver<str>
+  result__global                :  Promise<{value: str}, bot>
+  ret__parse__global            :  {value: str}
+  ret__then_cb_T11__global      :  str
+  s__parse__global              :  str
+  s__then_cb_T11__global        :  str
+

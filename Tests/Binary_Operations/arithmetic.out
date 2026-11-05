@@ -1,0 +1,107 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= a__global
+  C03: T2 <= num
+  C04: T2 <= b__global
+  C05: T3 <= num
+  C06: T3 <= c__global
+  C07: T4 <= num
+  C08: T5 <= num
+  C09: T6 <= d__global
+  C10: T7 <= num
+  C11: T8 <= e__global
+  C12: T9 <= tmp1__global
+  C13: tmp1__global <= num
+  C14: c__global <= num
+  C15: T10 <= num
+  C16: T10 <= tmp2__global
+  C17: T11 <= num
+  C18: tmp2__global <= num
+  C19: T11 <= num
+  C20: T12 <= num
+  C21: T12 <= final__global
+  C22: plus(T4,T5,T6)
+  C23: plus(d__global,T7,T8)
+  C24: plus(a__global,b__global,T9)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, a__global:bot, T2:bot, b__global:bot, T3:bot, c__global:bot, T4:bot, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+1: [T1 <= num]
+ T1:num, a__global:bot, T2:bot, b__global:bot, T3:bot, c__global:bot, T4:bot, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+2: [T1 <= a__global]
+ T1:num, a__global:num, T2:bot, b__global:bot, T3:bot, c__global:bot, T4:bot, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+3: [T2 <= num]
+ T1:num, a__global:num, T2:num, b__global:bot, T3:bot, c__global:bot, T4:bot, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+4: [T2 <= b__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:bot, c__global:bot, T4:bot, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+5: [T3 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:bot, T4:bot, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+6: [T3 <= c__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:bot, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+7: [T4 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:bot, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+8: [T5 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+9: [T6 <= d__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:bot, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+10: [T7 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+11: [T8 <= e__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+12: [T9 <= tmp1__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:bot, tmp1__global:bot, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+13: [tmp1__global <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+14: [c__global <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:bot, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+15: [T10 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:num, tmp2__global:bot, T11:bot, T12:bot, final__global:bot
+
+16: [T10 <= tmp2__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:num, tmp2__global:num, T11:bot, T12:bot, final__global:bot
+
+17: [T11 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:num, tmp2__global:num, T11:num, T12:bot, final__global:bot
+
+18: [tmp2__global <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:num, tmp2__global:num, T11:num, T12:bot, final__global:bot
+
+19: [T11 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:num, tmp2__global:num, T11:num, T12:bot, final__global:bot
+
+20: [T12 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:num, tmp2__global:num, T11:num, T12:num, final__global:bot
+
+21: [T12 <= final__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:num, c__global:num, T4:num, T5:num, T6:bot, d__global:bot, T7:num, T8:bot, e__global:bot, T9:num, tmp1__global:num, T10:num, tmp2__global:num, T11:num, T12:num, final__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global      :  num
+  b__global      :  num
+  c__global      :  num
+  d__global      :  num
+  e__global      :  num
+  final__global  :  num
+  tmp1__global   :  num
+  tmp2__global   :  num
+

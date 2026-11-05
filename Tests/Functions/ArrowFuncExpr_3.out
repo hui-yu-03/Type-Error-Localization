@@ -1,0 +1,68 @@
+
+Constraints:
+  C01: T1 <= {id: id__makeObj__global}
+  C02: T1 <= {value: value__makeObj__global}
+  C03: T1 <= ret__makeObj__global
+  C04: makeObj__global <= Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> ret__makeObj__global}
+  C05: T2 <= num
+  C06: T2 <= id__makeObj_2__global
+  C07: T3 <= num
+  C08: T3 <= value__makeObj_2__global
+  C09: T4 <= {id: id__makeObj_2__global}
+  C10: T4 <= {value: value__makeObj_2__global}
+  C11: T4 <= ret__makeObj_2__global
+  C12: makeObj_2__global <= Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, {id: id__makeObj__global}:bot, {value: value__makeObj__global}:bot, ret__makeObj__global:bot, makeObj__global:bot, Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> ret__makeObj__global}:bot, id__makeObj__global:bot, value__makeObj__global:bot, T2:bot, num:bot, id__makeObj_2__global:bot, T3:bot, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+1: [T1 <= {id: id__makeObj__global}]
+ (T1: {id: id__makeObj__global}), {value: value__makeObj__global}:bot, ret__makeObj__global:bot, makeObj__global:bot, Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> ret__makeObj__global}:bot, id__makeObj__global:bot, value__makeObj__global:bot, T2:bot, num:bot, id__makeObj_2__global:bot, T3:bot, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+2: [T1 <= {value: value__makeObj__global}]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), ret__makeObj__global:bot, makeObj__global:bot, Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> ret__makeObj__global}:bot, id__makeObj__global:bot, value__makeObj__global:bot, T2:bot, num:bot, id__makeObj_2__global:bot, T3:bot, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+3: [T1 <= ret__makeObj__global]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), makeObj__global:bot, Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> ret__makeObj__global}:bot, id__makeObj__global:bot, value__makeObj__global:bot, T2:bot, num:bot, id__makeObj_2__global:bot, T3:bot, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+4: [makeObj__global <= Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> ret__makeObj__global}]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:bot, num:bot, id__makeObj_2__global:bot, T3:bot, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+5: [T2 <= num]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:bot, T3:bot, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+6: [T2 <= id__makeObj_2__global]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:num, T3:bot, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+7: [T3 <= num]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:num, T3:num, value__makeObj_2__global:bot, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+8: [T3 <= value__makeObj_2__global]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:num, T3:num, value__makeObj_2__global:num, T4:bot, {id: id__makeObj_2__global}:bot, {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+9: [T4 <= {id: id__makeObj_2__global}]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:num, T3:num, value__makeObj_2__global:num, (T4: {id: T2}), {value: value__makeObj_2__global}:bot, ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+10: [T4 <= {value: value__makeObj_2__global}]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:num, T3:num, value__makeObj_2__global:num, (T4: {id: T2, value: T3}), ret__makeObj_2__global:bot, makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+11: [T4 <= ret__makeObj_2__global]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:num, T3:num, value__makeObj_2__global:num, (T4: {id: T2, value: T3}), (ret__makeObj_2__global: {id: T2, value: T3}), makeObj_2__global:bot, Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}:bot
+
+12: [makeObj_2__global <= Func<makeObj_2__global>{id__makeObj_2__global -> value__makeObj_2__global -> ret__makeObj_2__global}]
+ (T1: {id: id__makeObj__global, value: value__makeObj__global}), (ret__makeObj__global: {id: id__makeObj__global, value: value__makeObj__global}), (makeObj__global: Func<makeObj__global>{id__makeObj__global -> value__makeObj__global -> T1}), id__makeObj__global:bot, value__makeObj__global:bot, T2:num, id__makeObj_2__global:num, T3:num, value__makeObj_2__global:num, (T4: {id: T2, value: T3}), (ret__makeObj_2__global: {id: T2, value: T3}), (makeObj_2__global: Func<makeObj_2__global>{T2 -> T3 -> T4})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  id__makeObj_2__global     :  num
+  id__makeObj__global       :  bot
+  makeObj_2__global         :  Func<makeObj_2__global>{num -> num -> {id: num, value: num}}
+  makeObj__global           :  Func<makeObj__global>{bot -> bot -> {id: bot, value: bot}}
+  ret__makeObj_2__global    :  {id: num, value: num}
+  ret__makeObj__global      :  {id: bot, value: bot}
+  value__makeObj_2__global  :  num
+  value__makeObj__global    :  bot
+

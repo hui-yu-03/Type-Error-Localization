@@ -1,0 +1,54 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= a__global
+  C03: T2 <= num
+  C04: T2 <= b__global
+  C05: T3 <= x__global
+  C06: T4 <= str
+  C07: x__global <= {label: T4}
+  C08: T5 <= y__global
+  C09: x__global <= {label: T5}
+  C10: plus(a__global,b__global,T3)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, a__global:bot, T2:bot, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, {label: T5}:bot
+
+1: [T1 <= num]
+ T1:num, a__global:bot, T2:bot, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, {label: T5}:bot
+
+2: [T1 <= a__global]
+ T1:num, a__global:num, T2:bot, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, {label: T5}:bot
+
+3: [T2 <= num]
+ T1:num, a__global:num, T2:num, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, {label: T5}:bot
+
+4: [T2 <= b__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, {label: T5}:bot
+
+5: [T3 <= x__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, {label: T5}:bot
+
+6: [T4 <= str]
+ T1:num, a__global:num, T2:num, b__global:num, T3:bot, x__global:bot, T4:str, {label: T4}:bot, T5:bot, y__global:bot, {label: T5}:bot
+
+7: [x__global <= {label: T4}]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:bot, y__global:bot, {label: T5}:bot
+
+8: [T5 <= y__global]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:bot, y__global:bot, {label: T5}:bot
+
+9: [x__global <= {label: T5}]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T5}), (x__global: {label: T5}), T4:str, T5:str, y__global:str
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: obj vs num  (T3 <= num)
+
+FINAL:
+  a__global  :  num
+  b__global  :  num
+  x__global  :  num
+  y__global  :  str
+

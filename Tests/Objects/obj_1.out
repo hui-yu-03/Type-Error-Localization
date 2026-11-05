@@ -1,0 +1,49 @@
+
+Constraints:
+  C1: person__global <= {}
+  C2: T1 <= num
+  C3: person__global <= {age: T1}
+  C4: T2 <= a__global
+  C5: person__global <= {age: T2}
+  C6: a__global <= b__global
+  C7: void <= ret__greet__global
+  C8: greet__global <= Func<greet__global>{() -> ret__greet__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ person__global:bot, {}:bot, T1:bot, num:bot, {age: T1}:bot, T2:bot, a__global:bot, {age: T2}:bot, b__global:bot, void:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+1: [person__global <= {}]
+ person__global:{}, T1:bot, num:bot, {age: T1}:bot, T2:bot, a__global:bot, {age: T2}:bot, b__global:bot, void:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+2: [T1 <= num]
+ person__global:{}, T1:num, {age: T1}:bot, T2:bot, a__global:bot, {age: T2}:bot, b__global:bot, void:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+3: [person__global <= {age: T1}]
+ (person__global: {age: T1}), T1:num, T2:bot, a__global:bot, {age: T2}:bot, b__global:bot, void:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+4: [T2 <= a__global]
+ (person__global: {age: T1}), T1:num, T2:bot, a__global:bot, {age: T2}:bot, b__global:bot, void:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+5: [person__global <= {age: T2}]
+ (person__global: {age: T2}), T1:num, T2:num, a__global:num, b__global:bot, void:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+6: [a__global <= b__global]
+ (person__global: {age: T2}), T1:num, T2:num, a__global:num, b__global:num, void:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+7: [void <= ret__greet__global]
+ (person__global: {age: T2}), T1:num, T2:num, a__global:num, b__global:num, void:bot, ret__greet__global:void, greet__global:bot, Func<greet__global>{() -> ret__greet__global}:bot
+
+8: [greet__global <= Func<greet__global>{() -> ret__greet__global}]
+ (person__global: {age: T2}), T1:num, T2:num, a__global:num, b__global:num, void:bot, ret__greet__global:void, (greet__global: Func<greet__global>{() -> ret__greet__global})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global           :  num
+  b__global           :  num
+  greet__global       :  Func<greet__global>{() -> void}
+  person__global      :  {age: num}
+  ret__greet__global  :  void
+

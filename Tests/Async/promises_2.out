@@ -1,0 +1,90 @@
+
+Constraints:
+  C01: T3 <= Promise<T1,T2>
+  C02: res__executor_T4__global <= Resolver<T1>
+  C03: rej__executor_T4__global <= Rejector<T2>
+  C04: T5 <= num
+  C05: T5 <= T1
+  C06: T3 <= p__global
+  C07: p__global <= Promise<T7,T8>
+  C08: T7 <= x__then_cb_T10__global
+  C09: T11 <= num
+  C10: T12 <= ret__then_cb_T10__global
+  C11: T13 <= Promise<ret__then_cb_T10__global,T8>
+  C12: T13 <= q__global
+  C13: q__global <= Promise<T14,T15>
+  C14: T14 <= y__then_cb_T17__global
+  C15: y__then_cb_T17__global <= r__global
+  C16: void <= ret__then_cb_T17__global
+  C17: T18 <= Promise<ret__then_cb_T17__global,T15>
+  C18: plus(x__then_cb_T10__global,T11,T12)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, Promise<T1,T2>:bot, res__executor_T4__global:bot, Resolver<T1>:bot, rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+1: [T3 <= Promise<T1,T2>]
+ (T3: Promise<T1, T2>), res__executor_T4__global:bot, Resolver<T1>:bot, rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+2: [res__executor_T4__global <= Resolver<T1>]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+3: [rej__executor_T4__global <= Rejector<T2>]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), (rej__executor_T4__global: Rejector<T2>), T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+4: [T5 <= num]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+5: [T5 <= T1]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+6: [T3 <= p__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+7: [p__global <= Promise<T7,T8>]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:bot, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+8: [T7 <= x__then_cb_T10__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:bot, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+9: [T11 <= num]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+10: [T12 <= ret__then_cb_T10__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, T13:bot, Promise<ret__then_cb_T10__global,T8>:bot, q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+11: [T13 <= Promise<ret__then_cb_T10__global,T8>]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, (T13: Promise<T12, T2>), q__global:bot, Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+12: [T13 <= q__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, (T13: Promise<T12, T2>), (q__global: Promise<T12, T2>), Promise<T14,T15>:bot, T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+13: [q__global <= Promise<T14,T15>]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, (T13: Promise<T12, T2>), (q__global: Promise<T12, T2>), T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+14: [T14 <= y__then_cb_T17__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, (T13: Promise<T12, T2>), (q__global: Promise<T12, T2>), T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+15: [y__then_cb_T17__global <= r__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, (T13: Promise<T12, T2>), (q__global: Promise<T12, T2>), T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:bot, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+16: [void <= ret__then_cb_T17__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, (T13: Promise<T12, T2>), (q__global: Promise<T12, T2>), T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:void, T18:bot, Promise<ret__then_cb_T17__global,T15>:bot
+
+17: [T18 <= Promise<ret__then_cb_T17__global,T15>]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, T11:num, T12:bot, ret__then_cb_T10__global:bot, (T13: Promise<T12, T2>), (q__global: Promise<T12, T2>), T14:bot, y__then_cb_T17__global:bot, r__global:bot, void:bot, ret__then_cb_T17__global:void, (T18: Promise<ret__then_cb_T17__global, T2>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  p__global                 :  Promise<num, bot>
+  q__global                 :  Promise<num, bot>
+  r__global                 :  num
+  rej__executor_T4__global  :  Rejector<bot>
+  res__executor_T4__global  :  Resolver<num>
+  ret__then_cb_T10__global  :  num
+  ret__then_cb_T17__global  :  void
+  x__then_cb_T10__global    :  num
+  y__then_cb_T17__global    :  num
+

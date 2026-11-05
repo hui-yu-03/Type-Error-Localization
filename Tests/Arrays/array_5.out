@@ -1,0 +1,97 @@
+
+Constraints:
+  C01: T3 <= str
+  C02: T3 <= T1
+  C03: T4 <= str
+  C04: T4 <= T1
+  C05: T2 <= Array<T1>
+  C06: T2 <= parts__global
+  C07: parts__global <= Array<T5>
+  C08: T5 <= first__global
+  C09: T5 <= second__global
+  C10: T6 <= str
+  C11: T6 <= str__global
+  C12: T7 <= str|regexp
+  C13: T8 <= str
+  C14: T9 <= Array<T8>
+  C15: T10 <= Func<split>{T7 -> T9}
+  C16: T10 <= Func<T13>{T12 -> T11}
+  C17: T14 <= str
+  C18: T14 <= T12
+  C19: T11 <= Array<T15>
+  C20: T15 <= head__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, str:bot, T1:bot, T4:bot, T2:bot, Array<T1>:bot, parts__global:bot, Array<T5>:bot, T5:bot, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+1: [T3 <= str]
+ T3:str, T1:bot, T4:bot, T2:bot, Array<T1>:bot, parts__global:bot, Array<T5>:bot, T5:bot, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+2: [T3 <= T1]
+ T3:str, T1:str, T4:bot, T2:bot, Array<T1>:bot, parts__global:bot, Array<T5>:bot, T5:bot, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+3: [T4 <= str]
+ T3:str, T1:str, T4:str, T2:bot, Array<T1>:bot, parts__global:bot, Array<T5>:bot, T5:bot, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+4: [T4 <= T1]
+ T3:str, T1:str, T4:str, T2:bot, Array<T1>:bot, parts__global:bot, Array<T5>:bot, T5:bot, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+5: [T2 <= Array<T1>]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), parts__global:bot, Array<T5>:bot, T5:bot, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+6: [T2 <= parts__global]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), Array<T5>:bot, T5:bot, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+7: [parts__global <= Array<T5>]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:bot, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+8: [T5 <= first__global]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:bot, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+9: [T5 <= second__global]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:bot, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+10: [T6 <= str]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:bot, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+11: [T6 <= str__global]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:bot, str|regexp:bot, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+12: [T7 <= str|regexp]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str|regexp, T8:bot, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+13: [T8 <= str]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str|regexp, T8:str, T9:bot, Array<T8>:bot, T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+14: [T9 <= Array<T8>]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str|regexp, T8:str, (T9: Array<T8>), T10:bot, Func<split>{T7 -> T9}:bot, Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+15: [T10 <= Func<split>{T7 -> T9}]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str|regexp, T8:str, (T9: Array<T8>), (T10: Func<split>{T7 -> T9}), Func<T13>{T12 -> T11}:bot, T12:bot, T11:bot, T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+16: [T10 <= Func<T13>{T12 -> T11}]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str|regexp, T8:str, (T9: Array<T8>), (T10: Func<split>{T7 -> T9}), T12:str|regexp, (T11: Array<T8>), T14:bot, Array<T15>:bot, T15:bot, head__global:bot
+
+17: [T14 <= str]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str|regexp, T8:str, (T9: Array<T8>), (T10: Func<split>{T7 -> T9}), T12:str|regexp, (T11: Array<T8>), T14:str, Array<T15>:bot, T15:bot, head__global:bot
+
+18: [T14 <= T12]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str, T8:str, (T9: Array<T8>), (T10: Func<split>{T7 -> T9}), T12:str, (T11: Array<T8>), T14:str, Array<T15>:bot, T15:bot, head__global:bot
+
+19: [T11 <= Array<T15>]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str, T8:str, (T9: Array<T8>), (T10: Func<split>{T7 -> T9}), T12:str, (T11: Array<T8>), T14:str, T15:str, head__global:bot
+
+20: [T15 <= head__global]
+ T3:str, T1:str, T4:str, (T2: Array<T3>), (parts__global: Array<T3>), T5:str, first__global:str, second__global:str, T6:str, str__global:str, T7:str, T8:str, (T9: Array<T8>), (T10: Func<split>{T7 -> T9}), T12:str, (T11: Array<T8>), T14:str, T15:str, head__global:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  first__global   :  str
+  head__global    :  str
+  parts__global   :  Array<str>
+  second__global  :  str
+  str__global     :  str
+

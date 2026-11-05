@@ -1,0 +1,122 @@
+
+Constraints:
+  C01: T1 <= str
+  C02: T1 <= s__global
+  C03: T2 <= num
+  C04: T2 <= len__global
+  C05: T3 <= str
+  C06: T4 <= Func<toUpperCase>{() -> T3}
+  C07: T4 <= Func<T6>{() -> T5}
+  C08: T5 <= upper__global
+  C09: T7 <= str
+  C10: T8 <= Func<trim>{() -> T7}
+  C11: T8 <= Func<T10>{() -> T9}
+  C12: T9 <= trimmed__global
+  C13: T11 <= str
+  C14: T12 <= bool
+  C15: T13 <= Func<includes>{T11 -> T12}
+  C16: T13 <= Func<T16>{T15 -> T14}
+  C17: T17 <= str
+  C18: T17 <= T15
+  C19: T14 <= ok__global
+  C20: T18 <= str
+  C21: T19 <= num
+  C22: T20 <= Func<indexOf>{T18 -> T19}
+  C23: T20 <= Func<T23>{T22 -> T21}
+  C24: T24 <= str
+  C25: T24 <= T22
+  C26: T21 <= idx__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, s__global:bot, T2:bot, num:bot, len__global:bot, T3:bot, T4:bot, Func<toUpperCase>{() -> T3}:bot, Func<T6>{() -> T5}:bot, T5:bot, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+1: [T1 <= str]
+ T1:str, s__global:bot, T2:bot, num:bot, len__global:bot, T3:bot, T4:bot, Func<toUpperCase>{() -> T3}:bot, Func<T6>{() -> T5}:bot, T5:bot, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+2: [T1 <= s__global]
+ T1:str, s__global:str, T2:bot, num:bot, len__global:bot, T3:bot, T4:bot, Func<toUpperCase>{() -> T3}:bot, Func<T6>{() -> T5}:bot, T5:bot, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+3: [T2 <= num]
+ T1:str, s__global:str, T2:num, len__global:bot, T3:bot, T4:bot, Func<toUpperCase>{() -> T3}:bot, Func<T6>{() -> T5}:bot, T5:bot, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+4: [T2 <= len__global]
+ T1:str, s__global:str, T2:num, len__global:num, T3:bot, T4:bot, Func<toUpperCase>{() -> T3}:bot, Func<T6>{() -> T5}:bot, T5:bot, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+5: [T3 <= str]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, T4:bot, Func<toUpperCase>{() -> T3}:bot, Func<T6>{() -> T5}:bot, T5:bot, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+6: [T4 <= Func<toUpperCase>{() -> T3}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), Func<T6>{() -> T5}:bot, T5:bot, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+7: [T4 <= Func<T6>{() -> T5}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:bot, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+8: [T5 <= upper__global]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:bot, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+9: [T7 <= str]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, T8:bot, Func<trim>{() -> T7}:bot, Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+10: [T8 <= Func<trim>{() -> T7}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), Func<T10>{() -> T9}:bot, T9:bot, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+11: [T8 <= Func<T10>{() -> T9}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:bot, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+12: [T9 <= trimmed__global]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:bot, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+13: [T11 <= str]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bot, bool:bot, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+14: [T12 <= bool]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, T13:bot, Func<includes>{T11 -> T12}:bot, Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+15: [T13 <= Func<includes>{T11 -> T12}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), Func<T16>{T15 -> T14}:bot, T15:bot, T14:bot, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+16: [T13 <= Func<T16>{T15 -> T14}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:bot, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+17: [T17 <= str]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+18: [T17 <= T15]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bot, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+19: [T14 <= ok__global]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:bot, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+20: [T18 <= str]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:str, T19:bot, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+21: [T19 <= num]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:str, T19:num, T20:bot, Func<indexOf>{T18 -> T19}:bot, Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+22: [T20 <= Func<indexOf>{T18 -> T19}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:str, T19:num, (T20: Func<indexOf>{T18 -> T19}), Func<T23>{T22 -> T21}:bot, T22:bot, T21:bot, T24:bot, idx__global:bot
+
+23: [T20 <= Func<T23>{T22 -> T21}]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:str, T19:num, (T20: Func<indexOf>{T18 -> T19}), T22:str, T21:num, T24:bot, idx__global:bot
+
+24: [T24 <= str]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:str, T19:num, (T20: Func<indexOf>{T18 -> T19}), T22:str, T21:num, T24:str, idx__global:bot
+
+25: [T24 <= T22]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:str, T19:num, (T20: Func<indexOf>{T18 -> T19}), T22:str, T21:num, T24:str, idx__global:bot
+
+26: [T21 <= idx__global]
+ T1:str, s__global:str, T2:num, len__global:num, T3:str, (T4: Func<toUpperCase>{() -> T3}), T5:str, upper__global:str, T7:str, (T8: Func<trim>{() -> T7}), T9:str, trimmed__global:str, T11:str, T12:bool, (T13: Func<includes>{T11 -> T12}), T15:str, T14:bool, T17:str, ok__global:bool, T18:str, T19:num, (T20: Func<indexOf>{T18 -> T19}), T22:str, T21:num, T24:str, idx__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  idx__global      :  num
+  len__global      :  num
+  ok__global       :  bool
+  s__global        :  str
+  trimmed__global  :  str
+  upper__global    :  str
+

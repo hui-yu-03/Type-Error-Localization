@@ -1,0 +1,49 @@
+
+Constraints:
+  C1: T1 <= str
+  C2: T1 <= c__global
+  C3: T1 <= b__global
+  C4: T1 <= a__global
+  C5: T2 <= num
+  C6: exports__global <= {y: T2}
+  C7: exports__global <= {x: T2}
+  C8: T2 <= x__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, c__global:bot, b__global:bot, a__global:bot, T2:bot, num:bot, exports__global:bot, {y: T2}:bot, {x: T2}:bot, x__global:bot
+
+1: [T1 <= str]
+ T1:str, c__global:bot, b__global:bot, a__global:bot, T2:bot, num:bot, exports__global:bot, {y: T2}:bot, {x: T2}:bot, x__global:bot
+
+2: [T1 <= c__global]
+ T1:str, c__global:str, b__global:bot, a__global:bot, T2:bot, num:bot, exports__global:bot, {y: T2}:bot, {x: T2}:bot, x__global:bot
+
+3: [T1 <= b__global]
+ T1:str, c__global:str, b__global:str, a__global:bot, T2:bot, num:bot, exports__global:bot, {y: T2}:bot, {x: T2}:bot, x__global:bot
+
+4: [T1 <= a__global]
+ T1:str, c__global:str, b__global:str, a__global:str, T2:bot, num:bot, exports__global:bot, {y: T2}:bot, {x: T2}:bot, x__global:bot
+
+5: [T2 <= num]
+ T1:str, c__global:str, b__global:str, a__global:str, T2:num, exports__global:bot, {y: T2}:bot, {x: T2}:bot, x__global:bot
+
+6: [exports__global <= {y: T2}]
+ T1:str, c__global:str, b__global:str, a__global:str, T2:num, (exports__global: {y: T2}), {x: T2}:bot, x__global:bot
+
+7: [exports__global <= {x: T2}]
+ T1:str, c__global:str, b__global:str, a__global:str, T2:num, (exports__global: {y: T2, x: T2}), x__global:bot
+
+8: [T2 <= x__global]
+ T1:str, c__global:str, b__global:str, a__global:str, T2:num, (exports__global: {y: T2, x: T2}), x__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global        :  str
+  b__global        :  str
+  c__global        :  str
+  exports__global  :  {y: num, x: num}
+  x__global        :  num
+

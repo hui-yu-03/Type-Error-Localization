@@ -1,0 +1,21 @@
+
+Constraints:
+  C1: T1 <= str
+  C2: T1 <= msg__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, msg__global:bot
+
+1: [T1 <= str]
+ T1:str, msg__global:bot
+
+2: [T1 <= msg__global]
+ T1:str, msg__global:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  msg__global  :  str
+

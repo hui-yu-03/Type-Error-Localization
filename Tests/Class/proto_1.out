@@ -1,0 +1,90 @@
+
+Constraints:
+  C01: T3 <= Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}
+  C02: Counter__global <= Class<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]
+  C03: start__Counter__global <= T1
+  C04: void <= ret__Counter__global
+  C05: Counter__global <= Func<Counter__global>{start__Counter__global -> ret__Counter__global}
+  C06: T4 <= T2
+  C07: T2 <= ret__increment__Counter
+  C08: increment__global <= Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}
+  C09: T5 <= num
+  C10: T5 <= start__Counter__global
+  C11: T6 <= Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]
+  C12: T6 <= c__global
+  C13: T7 <= num
+  C14: T7 <= n__increment__Counter
+  C15: c__global <= {count: T2}
+  C16: c__global <= {increment: T3}
+  C17: ret__increment__Counter <= x__global
+  C18: plus(T2,n__increment__Counter,T4)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}:bot, n__increment__Counter:bot, ret__increment__Counter:bot, Counter__global:bot, Class<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:bot, Func<Counter__global>{start__Counter__global -> ret__Counter__global}:bot, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+1: [T3 <= Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}]
+ (T3: Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}), n__increment__Counter:bot, ret__increment__Counter:bot, Counter__global:bot, Class<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:bot, Func<Counter__global>{start__Counter__global -> ret__Counter__global}:bot, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+2: [Counter__global <= Class<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]]
+ (T3: Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Class<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:bot, Func<Counter__global>{start__Counter__global -> ret__Counter__global}:bot, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+3: [start__Counter__global <= T1]
+ (T3: Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Class<Counter>[count: start__Counter__global, increment: n__increment__Counter -> ret__increment__Counter]), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:bot, Func<Counter__global>{start__Counter__global -> ret__Counter__global}:bot, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+4: [void <= ret__Counter__global]
+ (T3: Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Class<Counter>[count: start__Counter__global, increment: n__increment__Counter -> ret__increment__Counter]), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:void, Func<Counter__global>{start__Counter__global -> ret__Counter__global}:bot, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+5: [Counter__global <= Func<Counter__global>{start__Counter__global -> ret__Counter__global}]
+ (T3: Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:void, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+6: [T4 <= T2]
+ (T3: Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:void, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+7: [T2 <= ret__increment__Counter]
+ (T3: Func<increment__Counter>{n__increment__Counter -> T4}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:void, T4:bot, T2:bot, increment__global:bot, T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+8: [increment__global <= Func<increment__Counter>{n__increment__Counter -> ret__increment__Counter}]
+ (T3: Func<increment__Counter>{n__increment__Counter -> T4}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:void, T4:bot, T2:bot, (increment__global: Func<increment__Counter>{n__increment__Counter -> T4}), T5:bot, num:bot, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+9: [T5 <= num]
+ (T3: Func<increment__Counter>{n__increment__Counter -> T4}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:bot, T1:bot, void:bot, ret__Counter__global:void, T4:bot, T2:bot, (increment__global: Func<increment__Counter>{n__increment__Counter -> T4}), T5:num, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+10: [T5 <= start__Counter__global]
+ (T3: Func<increment__Counter>{n__increment__Counter -> T4}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:bot, T2:bot, (increment__global: Func<increment__Counter>{n__increment__Counter -> T4}), T5:num, T6:bot, Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]:bot, c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+11: [T6 <= Obj<Counter>[count: T1, increment: n__increment__Counter -> ret__increment__Counter]]
+ (T3: Func<increment__Counter>{n__increment__Counter -> T4}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:bot, T2:bot, (increment__global: Func<increment__Counter>{n__increment__Counter -> T4}), T5:num, (T6: Obj<Counter>[count: start__Counter__global, increment: n__increment__Counter -> T4]), c__global:bot, T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+12: [T6 <= c__global]
+ (T3: Func<increment__Counter>{n__increment__Counter -> T4}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:bot, T2:bot, (increment__global: Func<increment__Counter>{n__increment__Counter -> T4}), T5:num, (T6: Obj<Counter>[count: start__Counter__global, increment: n__increment__Counter -> T4]), (c__global: Obj<Counter>[count: start__Counter__global, increment: n__increment__Counter -> T4]), T7:bot, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+13: [T7 <= num]
+ (T3: Func<increment__Counter>{n__increment__Counter -> T4}), n__increment__Counter:bot, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:bot, T2:bot, (increment__global: Func<increment__Counter>{n__increment__Counter -> T4}), T5:num, (T6: Obj<Counter>[count: start__Counter__global, increment: n__increment__Counter -> T4]), (c__global: Obj<Counter>[count: start__Counter__global, increment: n__increment__Counter -> T4]), T7:num, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+14: [T7 <= n__increment__Counter]
+ (T3: Func<increment__Counter>{T7 -> T4}), n__increment__Counter:num, ret__increment__Counter:bot, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:bot, T2:bot, (increment__global: Func<increment__Counter>{T7 -> T4}), T5:num, (T6: Obj<Counter>[count: start__Counter__global, increment: T7 -> T4]), (c__global: Obj<Counter>[count: start__Counter__global, increment: T7 -> T4]), T7:num, {count: T2}:bot, {increment: T3}:bot, x__global:bot
+
+15: [c__global <= {count: T2}]
+ (T3: Func<increment__Counter>{T7 -> start__Counter__global}), n__increment__Counter:num, ret__increment__Counter:num, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:num, T2:num, (increment__global: Func<increment__Counter>{T7 -> start__Counter__global}), T5:num, (T6: Obj<Counter>[count: start__Counter__global, increment: T7 -> start__Counter__global]), (c__global: Obj<Counter>[count: start__Counter__global, increment: T7 -> start__Counter__global]), T7:num, {increment: T3}:bot, x__global:bot
+
+16: [c__global <= {increment: T3}]
+ (T3: Func<increment__Counter>{T7 -> start__Counter__global}), n__increment__Counter:num, ret__increment__Counter:num, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:num, T2:num, (increment__global: Func<increment__Counter>{T7 -> start__Counter__global}), T5:num, (T6: Obj<Counter>[count: start__Counter__global, increment: T7 -> start__Counter__global]), (c__global: Obj<Counter>[count: start__Counter__global, increment: T7 -> start__Counter__global]), T7:num, x__global:bot
+
+17: [ret__increment__Counter <= x__global]
+ (T3: Func<increment__Counter>{T7 -> start__Counter__global}), n__increment__Counter:num, ret__increment__Counter:num, (Counter__global: Func<Counter__global>{start__Counter__global -> ret__Counter__global}), start__Counter__global:num, T1:num, void:bot, ret__Counter__global:void, T4:num, T2:num, (increment__global: Func<increment__Counter>{T7 -> start__Counter__global}), T5:num, (T6: Obj<Counter>[count: start__Counter__global, increment: T7 -> start__Counter__global]), (c__global: Obj<Counter>[count: start__Counter__global, increment: T7 -> start__Counter__global]), T7:num, x__global:num
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: arity mismatch on method increment (2 vs 1)
+
+FINAL:
+  Counter__global          :  Class<Counter>[count: num, increment: num -> num]
+  c__global                :  Obj<Counter>[count: num, increment: num -> num]
+  increment__global        :  Func<increment__Counter>{num -> num}
+  n__increment__Counter    :  num
+  ret__Counter__global     :  void
+  ret__increment__Counter  :  num
+  start__Counter__global   :  num
+  x__global                :  num
+

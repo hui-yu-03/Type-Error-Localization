@@ -1,0 +1,42 @@
+
+Constraints:
+  C1: flag__global <= {}
+  C2: T1 <= bool
+  C3: flag__global <= {active: T1}
+  C4: T2 <= num
+  C5: T2 <= x__global
+  C6: T3 <= num
+  C7: T3 <= x__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ flag__global:bot, {}:bot, T1:bot, bool:bot, {active: T1}:bot, T2:bot, num:bot, x__global:bot, T3:bot
+
+1: [flag__global <= {}]
+ flag__global:{}, T1:bot, bool:bot, {active: T1}:bot, T2:bot, num:bot, x__global:bot, T3:bot
+
+2: [T1 <= bool]
+ flag__global:{}, T1:bool, {active: T1}:bot, T2:bot, num:bot, x__global:bot, T3:bot
+
+3: [flag__global <= {active: T1}]
+ (flag__global: {active: T1}), T1:bool, T2:bot, num:bot, x__global:bot, T3:bot
+
+4: [T2 <= num]
+ (flag__global: {active: T1}), T1:bool, T2:num, x__global:bot, T3:bot
+
+5: [T2 <= x__global]
+ (flag__global: {active: T1}), T1:bool, T2:num, x__global:num, T3:bot
+
+6: [T3 <= num]
+ (flag__global: {active: T1}), T1:bool, T2:num, x__global:num, T3:num
+
+7: [T3 <= x__global]
+ (flag__global: {active: T1}), T1:bool, T2:num, x__global:num, T3:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  flag__global  :  {active: bool}
+  x__global     :  num
+

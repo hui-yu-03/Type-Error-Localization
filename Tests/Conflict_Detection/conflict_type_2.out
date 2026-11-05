@@ -1,0 +1,63 @@
+
+Constraints:
+  C01: shared__global <= {}
+  C02: T1 <= num
+  C03: shared__global <= {value: T1}
+  C04: void <= ret__setNum__global
+  C05: setNum__global <= Func<setNum__global>{() -> ret__setNum__global}
+  C06: T2 <= str
+  C07: shared__global <= {value: T2}
+  C08: void <= ret__setStr__global
+  C09: setStr__global <= Func<setStr__global>{() -> ret__setStr__global}
+  C10: T3 <= v__global
+  C11: shared__global <= {value: T3}
+
+──────────────────────────────────────────────────────
+Inicio:
+ shared__global:bot, {}:bot, T1:bot, num:bot, {value: T1}:bot, void:bot, ret__setNum__global:bot, setNum__global:bot, Func<setNum__global>{() -> ret__setNum__global}:bot, T2:bot, str:bot, {value: T2}:bot, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+1: [shared__global <= {}]
+ shared__global:{}, T1:bot, num:bot, {value: T1}:bot, void:bot, ret__setNum__global:bot, setNum__global:bot, Func<setNum__global>{() -> ret__setNum__global}:bot, T2:bot, str:bot, {value: T2}:bot, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+2: [T1 <= num]
+ shared__global:{}, T1:num, {value: T1}:bot, void:bot, ret__setNum__global:bot, setNum__global:bot, Func<setNum__global>{() -> ret__setNum__global}:bot, T2:bot, str:bot, {value: T2}:bot, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+3: [shared__global <= {value: T1}]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:bot, setNum__global:bot, Func<setNum__global>{() -> ret__setNum__global}:bot, T2:bot, str:bot, {value: T2}:bot, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+4: [void <= ret__setNum__global]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:void, setNum__global:bot, Func<setNum__global>{() -> ret__setNum__global}:bot, T2:bot, str:bot, {value: T2}:bot, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+5: [setNum__global <= Func<setNum__global>{() -> ret__setNum__global}]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:void, (setNum__global: Func<setNum__global>{() -> ret__setNum__global}), T2:bot, str:bot, {value: T2}:bot, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+6: [T2 <= str]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:void, (setNum__global: Func<setNum__global>{() -> ret__setNum__global}), T2:str, {value: T2}:bot, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+7: [shared__global <= {value: T2}]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:void, (setNum__global: Func<setNum__global>{() -> ret__setNum__global}), T2:str, ret__setStr__global:bot, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+8: [void <= ret__setStr__global]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:void, (setNum__global: Func<setNum__global>{() -> ret__setNum__global}), T2:str, ret__setStr__global:void, setStr__global:bot, Func<setStr__global>{() -> ret__setStr__global}:bot, T3:bot, v__global:bot, {value: T3}:bot
+
+9: [setStr__global <= Func<setStr__global>{() -> ret__setStr__global}]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:void, (setNum__global: Func<setNum__global>{() -> ret__setNum__global}), T2:str, ret__setStr__global:void, (setStr__global: Func<setStr__global>{() -> ret__setStr__global}), T3:bot, v__global:bot, {value: T3}:bot
+
+10: [T3 <= v__global]
+ (shared__global: {value: T1}), T1:num, void:bot, ret__setNum__global:void, (setNum__global: Func<setNum__global>{() -> ret__setNum__global}), T2:str, ret__setStr__global:void, (setStr__global: Func<setStr__global>{() -> ret__setStr__global}), T3:bot, v__global:bot, {value: T3}:bot
+
+11: [shared__global <= {value: T3}]
+ (shared__global: {value: T3}), T1:num, void:bot, ret__setNum__global:void, (setNum__global: Func<setNum__global>{() -> ret__setNum__global}), T2:str, ret__setStr__global:void, (setStr__global: Func<setStr__global>{() -> ret__setStr__global}), T3:num, v__global:num
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: num vs str  (union(T1,T2))
+
+FINAL:
+  ret__setNum__global  :  void
+  ret__setStr__global  :  void
+  setNum__global       :  Func<setNum__global>{() -> void}
+  setStr__global       :  Func<setStr__global>{() -> void}
+  shared__global       :  {value: num}
+  v__global            :  num
+

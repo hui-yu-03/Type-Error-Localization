@@ -1,0 +1,104 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= val__global
+  C03: val__transform__global <= local__transform__global
+  C04: local__transform__global <= out__transform__global
+  C05: void <= ret__transform__global
+  C06: transform__global <= Func<transform__global>{val__transform__global -> ret__transform__global}
+  C07: val__global <= copy__global
+  C08: settings__global <= {}
+  C09: T2 <= str
+  C10: settings__global <= {host: T2}
+  C11: T3 <= num
+  C12: settings__global <= {port: T3}
+  C13: void <= ret__setNetwork__global
+  C14: setNetwork__global <= Func<setNetwork__global>{() -> ret__setNetwork__global}
+  C15: T4 <= bool
+  C16: settings__global <= {debug: T4}
+  C17: T5 <= num
+  C18: settings__global <= {version: T5}
+  C19: void <= ret__setApp__global
+  C20: setApp__global <= Func<setApp__global>{() -> ret__setApp__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, val__global:bot, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:bot, transform__global:bot, Func<transform__global>{val__transform__global -> ret__transform__global}:bot, copy__global:bot, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+1: [T1 <= num]
+ T1:num, val__global:bot, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:bot, transform__global:bot, Func<transform__global>{val__transform__global -> ret__transform__global}:bot, copy__global:bot, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+2: [T1 <= val__global]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:bot, transform__global:bot, Func<transform__global>{val__transform__global -> ret__transform__global}:bot, copy__global:bot, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+3: [val__transform__global <= local__transform__global]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:bot, transform__global:bot, Func<transform__global>{val__transform__global -> ret__transform__global}:bot, copy__global:bot, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+4: [local__transform__global <= out__transform__global]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:bot, transform__global:bot, Func<transform__global>{val__transform__global -> ret__transform__global}:bot, copy__global:bot, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+5: [void <= ret__transform__global]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, transform__global:bot, Func<transform__global>{val__transform__global -> ret__transform__global}:bot, copy__global:bot, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+6: [transform__global <= Func<transform__global>{val__transform__global -> ret__transform__global}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:bot, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+7: [val__global <= copy__global]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, settings__global:bot, {}:bot, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+8: [settings__global <= {}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, settings__global:{}, T2:bot, str:bot, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+9: [T2 <= str]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, settings__global:{}, T2:str, {host: T2}:bot, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+10: [settings__global <= {host: T2}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2}), T2:str, T3:bot, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+11: [T3 <= num]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2}), T2:str, T3:num, {port: T3}:bot, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+12: [settings__global <= {port: T3}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3}), T2:str, T3:num, ret__setNetwork__global:bot, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+13: [void <= ret__setNetwork__global]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3}), T2:str, T3:num, ret__setNetwork__global:void, setNetwork__global:bot, Func<setNetwork__global>{() -> ret__setNetwork__global}:bot, T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+14: [setNetwork__global <= Func<setNetwork__global>{() -> ret__setNetwork__global}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3}), T2:str, T3:num, ret__setNetwork__global:void, (setNetwork__global: Func<setNetwork__global>{() -> ret__setNetwork__global}), T4:bot, bool:bot, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+15: [T4 <= bool]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3}), T2:str, T3:num, ret__setNetwork__global:void, (setNetwork__global: Func<setNetwork__global>{() -> ret__setNetwork__global}), T4:bool, {debug: T4}:bot, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+16: [settings__global <= {debug: T4}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3, debug: T4}), T2:str, T3:num, ret__setNetwork__global:void, (setNetwork__global: Func<setNetwork__global>{() -> ret__setNetwork__global}), T4:bool, T5:bot, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+17: [T5 <= num]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3, debug: T4}), T2:str, T3:num, ret__setNetwork__global:void, (setNetwork__global: Func<setNetwork__global>{() -> ret__setNetwork__global}), T4:bool, T5:num, {version: T5}:bot, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+18: [settings__global <= {version: T5}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3, debug: T4, version: T5}), T2:str, T3:num, ret__setNetwork__global:void, (setNetwork__global: Func<setNetwork__global>{() -> ret__setNetwork__global}), T4:bool, T5:num, ret__setApp__global:bot, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+19: [void <= ret__setApp__global]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3, debug: T4, version: T5}), T2:str, T3:num, ret__setNetwork__global:void, (setNetwork__global: Func<setNetwork__global>{() -> ret__setNetwork__global}), T4:bool, T5:num, ret__setApp__global:void, setApp__global:bot, Func<setApp__global>{() -> ret__setApp__global}:bot
+
+20: [setApp__global <= Func<setApp__global>{() -> ret__setApp__global}]
+ T1:num, val__global:num, val__transform__global:bot, local__transform__global:bot, out__transform__global:bot, void:bot, ret__transform__global:void, (transform__global: Func<transform__global>{val__transform__global -> ret__transform__global}), copy__global:num, (settings__global: {host: T2, port: T3, debug: T4, version: T5}), T2:str, T3:num, ret__setNetwork__global:void, (setNetwork__global: Func<setNetwork__global>{() -> ret__setNetwork__global}), T4:bool, T5:num, ret__setApp__global:void, (setApp__global: Func<setApp__global>{() -> ret__setApp__global})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  copy__global              :  num
+  local__transform__global  :  bot
+  out__transform__global    :  bot
+  ret__setApp__global       :  void
+  ret__setNetwork__global   :  void
+  ret__transform__global    :  void
+  setApp__global            :  Func<setApp__global>{() -> void}
+  setNetwork__global        :  Func<setNetwork__global>{() -> void}
+  settings__global          :  {host: str, port: num, debug: bool, version: num}
+  transform__global         :  Func<transform__global>{bot -> void}
+  val__global               :  num
+  val__transform__global    :  bot
+

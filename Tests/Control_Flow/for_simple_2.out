@@ -1,0 +1,94 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= count__global
+  C03: T2 <= num
+  C04: T2 <= j__f__global
+  C05: T3 <= num
+  C06: j__f__global <= T3
+  C07: T3 <= j__f__global
+  C08: T4 <= bool
+  C09: T5 <= num
+  C10: count__global <= num
+  C11: T5 <= num
+  C12: T6 <= num
+  C13: T6 <= count__global
+  C14: T7 <= num
+  C15: T8 <= j__f__global
+  C16: void <= ret__f__global
+  C17: f__global <= Func<f__global>{j__f__global -> ret__f__global}
+  C18: T9 <= bool
+  C19: T9 <= done__global
+  C20: plus(j__f__global,T7,T8)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, count__global:bot, T2:bot, j__f__global:bot, T3:bot, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+1: [T1 <= num]
+ T1:num, count__global:bot, T2:bot, j__f__global:bot, T3:bot, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+2: [T1 <= count__global]
+ T1:num, count__global:num, T2:bot, j__f__global:bot, T3:bot, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+3: [T2 <= num]
+ T1:num, count__global:num, T2:num, j__f__global:bot, T3:bot, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+4: [T2 <= j__f__global]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:bot, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+5: [T3 <= num]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+6: [j__f__global <= T3]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+7: [T3 <= j__f__global]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bot, bool:bot, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+8: [T4 <= bool]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:bot, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+9: [T5 <= num]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+10: [count__global <= num]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+11: [T5 <= num]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:bot, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+12: [T6 <= num]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+13: [T6 <= count__global]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:bot, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+14: [T7 <= num]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:num, T8:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+15: [T8 <= j__f__global]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:num, T8:num, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+16: [void <= ret__f__global]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:num, T8:num, void:bot, ret__f__global:void, f__global:bot, Func<f__global>{j__f__global -> ret__f__global}:bot, T9:bot, done__global:bot
+
+17: [f__global <= Func<f__global>{j__f__global -> ret__f__global}]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:num, T8:num, void:bot, ret__f__global:void, (f__global: Func<f__global>{T2 -> ret__f__global}), T9:bot, done__global:bot
+
+18: [T9 <= bool]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:num, T8:num, void:bot, ret__f__global:void, (f__global: Func<f__global>{T2 -> ret__f__global}), T9:bool, done__global:bot
+
+19: [T9 <= done__global]
+ T1:num, count__global:num, T2:num, j__f__global:num, T3:num, T4:bool, T5:num, T6:num, T7:num, T8:num, void:bot, ret__f__global:void, (f__global: Func<f__global>{T2 -> ret__f__global}), T9:bool, done__global:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  count__global   :  num
+  done__global    :  bool
+  f__global       :  Func<f__global>{num -> void}
+  j__f__global    :  num
+  ret__f__global  :  void
+

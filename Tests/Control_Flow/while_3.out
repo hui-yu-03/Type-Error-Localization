@@ -1,0 +1,58 @@
+
+Constraints:
+  C01: state__global <= {}
+  C02: T1 <= num
+  C03: state__global <= {count: T1}
+  C04: T2 <= bool
+  C05: T2 <= valid__global
+  C06: state__global <= {count: T3}
+  C07: T4 <= num
+  C08: state__global <= {count: T5}
+  C09: void <= ret__g__global
+  C10: g__global <= Func<g__global>{valid__g__global -> ret__g__global}
+  C11: plus(T3,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ state__global:bot, {}:bot, T1:bot, num:bot, {count: T1}:bot, T2:bot, bool:bot, valid__global:bot, {count: T3}:bot, T4:bot, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:bot, T5:bot
+
+1: [state__global <= {}]
+ state__global:{}, T1:bot, num:bot, {count: T1}:bot, T2:bot, bool:bot, valid__global:bot, {count: T3}:bot, T4:bot, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:bot, T5:bot
+
+2: [T1 <= num]
+ state__global:{}, T1:num, {count: T1}:bot, T2:bot, bool:bot, valid__global:bot, {count: T3}:bot, T4:bot, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:bot, T5:bot
+
+3: [state__global <= {count: T1}]
+ (state__global: {count: T1}), T1:num, T2:bot, bool:bot, valid__global:bot, {count: T3}:bot, T4:bot, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:bot, T5:bot
+
+4: [T2 <= bool]
+ (state__global: {count: T1}), T1:num, T2:bool, valid__global:bot, {count: T3}:bot, T4:bot, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:bot, T5:bot
+
+5: [T2 <= valid__global]
+ (state__global: {count: T1}), T1:num, T2:bool, valid__global:bool, {count: T3}:bot, T4:bot, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:bot, T5:bot
+
+6: [state__global <= {count: T3}]
+ (state__global: {count: T1}), T1:num, T2:bool, valid__global:bool, T4:bot, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:num, T5:bot
+
+7: [T4 <= num]
+ (state__global: {count: T1}), T1:num, T2:bool, valid__global:bool, T4:num, {count: T5}:bot, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:num, T5:bot
+
+8: [state__global <= {count: T5}]
+ (state__global: {count: T1}), T1:num, T2:bool, valid__global:bool, T4:num, void:bot, ret__g__global:bot, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:num, T5:num
+
+9: [void <= ret__g__global]
+ (state__global: {count: T1}), T1:num, T2:bool, valid__global:bool, T4:num, void:bot, ret__g__global:void, g__global:bot, Func<g__global>{valid__g__global -> ret__g__global}:bot, valid__g__global:bot, T3:num, T5:num
+
+10: [g__global <= Func<g__global>{valid__g__global -> ret__g__global}]
+ (state__global: {count: T1}), T1:num, T2:bool, valid__global:bool, T4:num, void:bot, ret__g__global:void, (g__global: Func<g__global>{valid__g__global -> ret__g__global}), valid__g__global:bot, T3:num, T5:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  g__global         :  Func<g__global>{bot -> void}
+  ret__g__global    :  void
+  state__global     :  {count: num}
+  valid__g__global  :  bot
+  valid__global     :  bool
+

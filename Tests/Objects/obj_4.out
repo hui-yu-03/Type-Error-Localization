@@ -1,0 +1,57 @@
+
+Constraints:
+  C01: obj1__global <= {}
+  C02: T1 <= num
+  C03: obj1__global <= {data: T1}
+  C04: obj2__global <= {}
+  C05: T2 <= shared__global
+  C06: obj1__global <= {data: T2}
+  C07: obj2__global <= {data: shared__global}
+  C08: obj2__global <= {data: T3}
+  C09: T4 <= num
+  C10: T5 <= result__global
+  C11: plus(T3,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ obj1__global:bot, {}:bot, T1:bot, num:bot, {data: T1}:bot, obj2__global:bot, T2:bot, shared__global:bot, {data: T2}:bot, {data: shared__global}:bot, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+1: [obj1__global <= {}]
+ obj1__global:{}, T1:bot, num:bot, {data: T1}:bot, obj2__global:bot, T2:bot, shared__global:bot, {data: T2}:bot, {data: shared__global}:bot, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+2: [T1 <= num]
+ obj1__global:{}, T1:num, {data: T1}:bot, obj2__global:bot, T2:bot, shared__global:bot, {data: T2}:bot, {data: shared__global}:bot, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+3: [obj1__global <= {data: T1}]
+ (obj1__global: {data: T1}), T1:num, obj2__global:bot, T2:bot, shared__global:bot, {data: T2}:bot, {data: shared__global}:bot, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+4: [obj2__global <= {}]
+ (obj1__global: {data: T1}), T1:num, obj2__global:{}, T2:bot, shared__global:bot, {data: T2}:bot, {data: shared__global}:bot, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+5: [T2 <= shared__global]
+ (obj1__global: {data: T1}), T1:num, obj2__global:{}, T2:bot, shared__global:bot, {data: T2}:bot, {data: shared__global}:bot, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+6: [obj1__global <= {data: T2}]
+ (obj1__global: {data: T2}), T1:num, obj2__global:{}, T2:num, shared__global:num, {data: shared__global}:bot, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+7: [obj2__global <= {data: shared__global}]
+ (obj1__global: {data: T2}), T1:num, (obj2__global: {data: T2}), T2:num, shared__global:num, {data: T3}:bot, T4:bot, T5:bot, result__global:bot, T3:bot
+
+8: [obj2__global <= {data: T3}]
+ (obj1__global: {data: T2}), T1:num, (obj2__global: {data: T2}), T2:num, shared__global:num, T4:bot, T5:bot, result__global:bot, T3:num
+
+9: [T4 <= num]
+ (obj1__global: {data: T2}), T1:num, (obj2__global: {data: T2}), T2:num, shared__global:num, T4:num, T5:bot, result__global:bot, T3:num
+
+10: [T5 <= result__global]
+ (obj1__global: {data: T2}), T1:num, (obj2__global: {data: T2}), T2:num, shared__global:num, T4:num, T5:bot, result__global:bot, T3:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  obj1__global    :  {data: num}
+  obj2__global    :  {data: num}
+  result__global  :  num
+  shared__global  :  num
+

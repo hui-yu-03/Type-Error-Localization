@@ -1,0 +1,49 @@
+
+Constraints:
+  C1: T1 <= Func<greet__Greeter>{name__greet__Greeter -> ret__greet__Greeter}
+  C2: name__greet__Greeter <= ret__greet__Greeter
+  C3: Greeter__global <= Class<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]
+  C4: T2 <= Obj<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]
+  C5: T2 <= g__global
+  C6: T3 <= str
+  C7: T3 <= name__greet__Greeter
+  C8: g__global <= {greet: T1}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Func<greet__Greeter>{name__greet__Greeter -> ret__greet__Greeter}:bot, name__greet__Greeter:bot, ret__greet__Greeter:bot, Greeter__global:bot, Class<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]:bot, T2:bot, Obj<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]:bot, g__global:bot, T3:bot, str:bot, {greet: T1}:bot
+
+1: [T1 <= Func<greet__Greeter>{name__greet__Greeter -> ret__greet__Greeter}]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> ret__greet__Greeter}), name__greet__Greeter:bot, ret__greet__Greeter:bot, Greeter__global:bot, Class<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]:bot, T2:bot, Obj<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]:bot, g__global:bot, T3:bot, str:bot, {greet: T1}:bot
+
+2: [name__greet__Greeter <= ret__greet__Greeter]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> name__greet__Greeter}), name__greet__Greeter:bot, ret__greet__Greeter:bot, Greeter__global:bot, Class<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]:bot, T2:bot, Obj<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]:bot, g__global:bot, T3:bot, str:bot, {greet: T1}:bot
+
+3: [Greeter__global <= Class<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> name__greet__Greeter}), name__greet__Greeter:bot, ret__greet__Greeter:bot, (Greeter__global: Class<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), T2:bot, Obj<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]:bot, g__global:bot, T3:bot, str:bot, {greet: T1}:bot
+
+4: [T2 <= Obj<Greeter>[greet: name__greet__Greeter -> ret__greet__Greeter]]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> name__greet__Greeter}), name__greet__Greeter:bot, ret__greet__Greeter:bot, (Greeter__global: Class<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (T2: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), g__global:bot, T3:bot, str:bot, {greet: T1}:bot
+
+5: [T2 <= g__global]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> name__greet__Greeter}), name__greet__Greeter:bot, ret__greet__Greeter:bot, (Greeter__global: Class<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (T2: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (g__global: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), T3:bot, str:bot, {greet: T1}:bot
+
+6: [T3 <= str]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> name__greet__Greeter}), name__greet__Greeter:bot, ret__greet__Greeter:bot, (Greeter__global: Class<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (T2: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (g__global: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), T3:str, {greet: T1}:bot
+
+7: [T3 <= name__greet__Greeter]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> name__greet__Greeter}), name__greet__Greeter:str, ret__greet__Greeter:str, (Greeter__global: Class<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (T2: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (g__global: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), T3:str, {greet: T1}:bot
+
+8: [g__global <= {greet: T1}]
+ (T1: Func<greet__Greeter>{name__greet__Greeter -> name__greet__Greeter}), name__greet__Greeter:str, ret__greet__Greeter:str, (Greeter__global: Class<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (T2: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), (g__global: Obj<Greeter>[greet: name__greet__Greeter -> name__greet__Greeter]), T3:str
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: arity mismatch on method greet (2 vs 1)
+
+FINAL:
+  Greeter__global       :  Class<Greeter>[greet: str -> str]
+  g__global             :  Obj<Greeter>[greet: str -> str]
+  name__greet__Greeter  :  str
+  ret__greet__Greeter   :  str
+

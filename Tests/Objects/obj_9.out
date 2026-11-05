@@ -1,0 +1,52 @@
+
+Constraints:
+  C01: obj__global <= {}
+  C02: T1 <= num
+  C03: obj__global <= {score: T1}
+  C04: T2 <= val__global
+  C05: obj__global <= {score: T2}
+  C06: T3 <= val__global
+  C07: obj__global <= {score: T3}
+  C08: T4 <= num
+  C09: T5 <= used__global
+  C10: plus(val__global,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ obj__global:bot, {}:bot, T1:bot, num:bot, {score: T1}:bot, T2:bot, val__global:bot, {score: T2}:bot, T3:bot, {score: T3}:bot, T4:bot, T5:bot, used__global:bot
+
+1: [obj__global <= {}]
+ obj__global:{}, T1:bot, num:bot, {score: T1}:bot, T2:bot, val__global:bot, {score: T2}:bot, T3:bot, {score: T3}:bot, T4:bot, T5:bot, used__global:bot
+
+2: [T1 <= num]
+ obj__global:{}, T1:num, {score: T1}:bot, T2:bot, val__global:bot, {score: T2}:bot, T3:bot, {score: T3}:bot, T4:bot, T5:bot, used__global:bot
+
+3: [obj__global <= {score: T1}]
+ (obj__global: {score: T1}), T1:num, T2:bot, val__global:bot, {score: T2}:bot, T3:bot, {score: T3}:bot, T4:bot, T5:bot, used__global:bot
+
+4: [T2 <= val__global]
+ (obj__global: {score: T1}), T1:num, T2:bot, val__global:bot, {score: T2}:bot, T3:bot, {score: T3}:bot, T4:bot, T5:bot, used__global:bot
+
+5: [obj__global <= {score: T2}]
+ (obj__global: {score: T2}), T1:num, T2:num, val__global:num, T3:bot, {score: T3}:bot, T4:bot, T5:bot, used__global:bot
+
+6: [T3 <= val__global]
+ (obj__global: {score: T2}), T1:num, T2:num, val__global:num, T3:num, {score: T3}:bot, T4:bot, T5:bot, used__global:bot
+
+7: [obj__global <= {score: T3}]
+ (obj__global: {score: T2}), T1:num, T2:num, val__global:num, T3:num, T4:bot, T5:bot, used__global:bot
+
+8: [T4 <= num]
+ (obj__global: {score: T2}), T1:num, T2:num, val__global:num, T3:num, T4:num, T5:bot, used__global:bot
+
+9: [T5 <= used__global]
+ (obj__global: {score: T2}), T1:num, T2:num, val__global:num, T3:num, T4:num, T5:bot, used__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  obj__global   :  {score: num}
+  used__global  :  num
+  val__global   :  num
+

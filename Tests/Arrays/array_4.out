@@ -1,0 +1,53 @@
+
+Constraints:
+  C01: T4 <= str
+  C02: T3 <= {hello: T4}
+  C03: T3 <= T1
+  C04: T6 <= str
+  C05: T5 <= {hello: T6}
+  C06: T7 <= str
+  C07: T5 <= {olá: T7}
+  C08: T5 <= T1
+  C09: T2 <= Array<T1>
+  C10: T2 <= a__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T4:bot, str:bot, T3:bot, {hello: T4}:bot, T1:bot, T6:bot, T5:bot, {hello: T6}:bot, T7:bot, {olá: T7}:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+1: [T4 <= str]
+ T4:str, T3:bot, {hello: T4}:bot, T1:bot, T6:bot, T5:bot, {hello: T6}:bot, T7:bot, {olá: T7}:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+2: [T3 <= {hello: T4}]
+ T4:str, (T3: {hello: T4}), T1:bot, T6:bot, T5:bot, {hello: T6}:bot, T7:bot, {olá: T7}:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+3: [T3 <= T1]
+ T4:str, (T3: {hello: T4}), (T1: {hello: T4}), T6:bot, T5:bot, {hello: T6}:bot, T7:bot, {olá: T7}:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+4: [T6 <= str]
+ T4:str, (T3: {hello: T4}), (T1: {hello: T4}), T6:str, T5:bot, {hello: T6}:bot, T7:bot, {olá: T7}:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+5: [T5 <= {hello: T6}]
+ T4:str, (T3: {hello: T4}), (T1: {hello: T4}), T6:str, (T5: {hello: T6}), T7:bot, {olá: T7}:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+6: [T7 <= str]
+ T4:str, (T3: {hello: T4}), (T1: {hello: T4}), T6:str, (T5: {hello: T6}), T7:str, {olá: T7}:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+7: [T5 <= {olá: T7}]
+ T4:str, (T3: {hello: T4}), (T1: {hello: T4}), T6:str, (T5: {hello: T6, olá: T7}), T7:str, T2:bot, Array<T1>:bot, a__global:bot
+
+8: [T5 <= T1]
+ T4:str, (T3: {hello: T4, olá: T7}), (T1: {hello: T4, olá: T7}), T6:str, (T5: {hello: T4, olá: T7}), T7:str, T2:bot, Array<T1>:bot, a__global:bot
+
+9: [T2 <= Array<T1>]
+ T4:str, (T3: {hello: T4, olá: T7}), (T1: {hello: T4, olá: T7}), T6:str, (T5: {hello: T4, olá: T7}), T7:str, (T2: Array<T3>), a__global:bot
+
+10: [T2 <= a__global]
+ T4:str, (T3: {hello: T4, olá: T7}), (T1: {hello: T4, olá: T7}), T6:str, (T5: {hello: T4, olá: T7}), T7:str, (T2: Array<T3>), (a__global: Array<T3>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global  :  Array<{hello: str, olá: str}>
+

@@ -1,0 +1,27 @@
+
+Constraints:
+  C1: T1 <= Func<getName__Person>{name__getName__Person -> ret__getName__Person}
+  C2: name__getName__Person <= ret__getName__Person
+  C3: Person__global <= Class<Person>[getName: name__getName__Person -> ret__getName__Person]
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Func<getName__Person>{name__getName__Person -> ret__getName__Person}:bot, name__getName__Person:bot, ret__getName__Person:bot, Person__global:bot, Class<Person>[getName: name__getName__Person -> ret__getName__Person]:bot
+
+1: [T1 <= Func<getName__Person>{name__getName__Person -> ret__getName__Person}]
+ (T1: Func<getName__Person>{name__getName__Person -> ret__getName__Person}), name__getName__Person:bot, ret__getName__Person:bot, Person__global:bot, Class<Person>[getName: name__getName__Person -> ret__getName__Person]:bot
+
+2: [name__getName__Person <= ret__getName__Person]
+ (T1: Func<getName__Person>{name__getName__Person -> name__getName__Person}), name__getName__Person:bot, ret__getName__Person:bot, Person__global:bot, Class<Person>[getName: name__getName__Person -> ret__getName__Person]:bot
+
+3: [Person__global <= Class<Person>[getName: name__getName__Person -> ret__getName__Person]]
+ (T1: Func<getName__Person>{name__getName__Person -> name__getName__Person}), name__getName__Person:bot, ret__getName__Person:bot, (Person__global: Class<Person>[getName: name__getName__Person -> name__getName__Person])
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Person__global         :  Class<Person>[getName: bot -> bot]
+  name__getName__Person  :  bot
+  ret__getName__Person   :  bot
+

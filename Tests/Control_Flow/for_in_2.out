@@ -1,0 +1,47 @@
+
+Constraints:
+  C1: T2 <= num
+  C2: T1 <= {value: T2}
+  C3: T3 <= bool
+  C4: T1 <= {active: T3}
+  C5: T1 <= data__global
+  C6: keyName__global <= str
+  C7: T4 <= bool
+  C8: T4 <= hasRun__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T2:bot, num:bot, T1:bot, {value: T2}:bot, T3:bot, bool:bot, {active: T3}:bot, data__global:bot, keyName__global:bot, str:bot, T4:bot, hasRun__global:bot
+
+1: [T2 <= num]
+ T2:num, T1:bot, {value: T2}:bot, T3:bot, bool:bot, {active: T3}:bot, data__global:bot, keyName__global:bot, str:bot, T4:bot, hasRun__global:bot
+
+2: [T1 <= {value: T2}]
+ T2:num, (T1: {value: T2}), T3:bot, bool:bot, {active: T3}:bot, data__global:bot, keyName__global:bot, str:bot, T4:bot, hasRun__global:bot
+
+3: [T3 <= bool]
+ T2:num, (T1: {value: T2}), T3:bool, {active: T3}:bot, data__global:bot, keyName__global:bot, str:bot, T4:bot, hasRun__global:bot
+
+4: [T1 <= {active: T3}]
+ T2:num, (T1: {value: T2, active: T3}), T3:bool, data__global:bot, keyName__global:bot, str:bot, T4:bot, hasRun__global:bot
+
+5: [T1 <= data__global]
+ T2:num, (T1: {value: T2, active: T3}), T3:bool, (data__global: {value: T2, active: T3}), keyName__global:bot, str:bot, T4:bot, hasRun__global:bot
+
+6: [keyName__global <= str]
+ T2:num, (T1: {value: T2, active: T3}), T3:bool, (data__global: {value: T2, active: T3}), keyName__global:str, T4:bot, hasRun__global:bot
+
+7: [T4 <= bool]
+ T2:num, (T1: {value: T2, active: T3}), T3:bool, (data__global: {value: T2, active: T3}), keyName__global:str, T4:bool, hasRun__global:bot
+
+8: [T4 <= hasRun__global]
+ T2:num, (T1: {value: T2, active: T3}), T3:bool, (data__global: {value: T2, active: T3}), keyName__global:str, T4:bool, hasRun__global:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  data__global     :  {value: num, active: bool}
+  hasRun__global   :  bool
+  keyName__global  :  str
+

@@ -1,0 +1,58 @@
+
+Constraints:
+  C01: stats__global <= {}
+  C02: T1 <= num
+  C03: stats__global <= {value: T1}
+  C04: T2 <= str
+  C05: stats__global <= {value: T2}
+  C06: void <= ret__corrupt__global
+  C07: corrupt__global <= Func<corrupt__global>{() -> ret__corrupt__global}
+  C08: stats__global <= {value: T3}
+  C09: T4 <= num
+  C10: T5 <= safe__global
+  C11: plus(T3,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ stats__global:bot, {}:bot, T1:bot, num:bot, {value: T1}:bot, T2:bot, str:bot, {value: T2}:bot, void:bot, ret__corrupt__global:bot, corrupt__global:bot, Func<corrupt__global>{() -> ret__corrupt__global}:bot, {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+1: [stats__global <= {}]
+ stats__global:{}, T1:bot, num:bot, {value: T1}:bot, T2:bot, str:bot, {value: T2}:bot, void:bot, ret__corrupt__global:bot, corrupt__global:bot, Func<corrupt__global>{() -> ret__corrupt__global}:bot, {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+2: [T1 <= num]
+ stats__global:{}, T1:num, {value: T1}:bot, T2:bot, str:bot, {value: T2}:bot, void:bot, ret__corrupt__global:bot, corrupt__global:bot, Func<corrupt__global>{() -> ret__corrupt__global}:bot, {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+3: [stats__global <= {value: T1}]
+ (stats__global: {value: T1}), T1:num, T2:bot, str:bot, {value: T2}:bot, void:bot, ret__corrupt__global:bot, corrupt__global:bot, Func<corrupt__global>{() -> ret__corrupt__global}:bot, {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+4: [T2 <= str]
+ (stats__global: {value: T1}), T1:num, T2:str, {value: T2}:bot, void:bot, ret__corrupt__global:bot, corrupt__global:bot, Func<corrupt__global>{() -> ret__corrupt__global}:bot, {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+5: [stats__global <= {value: T2}]
+ (stats__global: {value: T1}), T1:num, T2:str, void:bot, ret__corrupt__global:bot, corrupt__global:bot, Func<corrupt__global>{() -> ret__corrupt__global}:bot, {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+6: [void <= ret__corrupt__global]
+ (stats__global: {value: T1}), T1:num, T2:str, void:bot, ret__corrupt__global:void, corrupt__global:bot, Func<corrupt__global>{() -> ret__corrupt__global}:bot, {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+7: [corrupt__global <= Func<corrupt__global>{() -> ret__corrupt__global}]
+ (stats__global: {value: T1}), T1:num, T2:str, void:bot, ret__corrupt__global:void, (corrupt__global: Func<corrupt__global>{() -> ret__corrupt__global}), {value: T3}:bot, T4:bot, T5:bot, safe__global:bot, T3:bot
+
+8: [stats__global <= {value: T3}]
+ (stats__global: {value: T1}), T1:num, T2:str, void:bot, ret__corrupt__global:void, (corrupt__global: Func<corrupt__global>{() -> ret__corrupt__global}), T4:bot, T5:bot, safe__global:bot, T3:num
+
+9: [T4 <= num]
+ (stats__global: {value: T1}), T1:num, T2:str, void:bot, ret__corrupt__global:void, (corrupt__global: Func<corrupt__global>{() -> ret__corrupt__global}), T4:num, T5:bot, safe__global:bot, T3:num
+
+10: [T5 <= safe__global]
+ (stats__global: {value: T1}), T1:num, T2:str, void:bot, ret__corrupt__global:void, (corrupt__global: Func<corrupt__global>{() -> ret__corrupt__global}), T4:num, T5:bot, safe__global:bot, T3:num
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: num vs str  (union(T1,T2))
+
+FINAL:
+  corrupt__global       :  Func<corrupt__global>{() -> void}
+  ret__corrupt__global  :  void
+  safe__global          :  num
+  stats__global         :  {value: num}
+

@@ -1,0 +1,17 @@
+
+Constraints:
+  C1: T1 <= fs__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, fs__global:bot
+
+1: [T1 <= fs__global]
+ T1:bot, fs__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  fs__global  :  bot
+

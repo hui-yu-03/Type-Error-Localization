@@ -1,0 +1,43 @@
+
+Constraints:
+  C1: T1 <= str
+  C2: T1 <= input__global
+  C3: T2 <= bool
+  C4: T3 <= str
+  C5: T3 <= input__global
+  C6: T4 <= str
+  C7: T5 <= fallback__global
+  C8: logical_union(input__global,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, input__global:bot, T2:bot, bool:bot, T3:bot, T4:bot, T5:bot, fallback__global:bot
+
+1: [T1 <= str]
+ T1:str, input__global:bot, T2:bot, bool:bot, T3:bot, T4:bot, T5:bot, fallback__global:bot
+
+2: [T1 <= input__global]
+ T1:str, input__global:str, T2:bot, bool:bot, T3:bot, T4:bot, T5:bot, fallback__global:bot
+
+3: [T2 <= bool]
+ T1:str, input__global:str, T2:bool, T3:bot, T4:bot, T5:bot, fallback__global:bot
+
+4: [T3 <= str]
+ T1:str, input__global:str, T2:bool, T3:str, T4:bot, T5:bot, fallback__global:bot
+
+5: [T3 <= input__global]
+ T1:str, input__global:str, T2:bool, T3:str, T4:bot, T5:bot, fallback__global:bot
+
+6: [T4 <= str]
+ T1:str, input__global:str, T2:bool, T3:str, T4:str, T5:bot, fallback__global:bot
+
+7: [T5 <= fallback__global]
+ T1:str, input__global:str, T2:bool, T3:str, T4:str, T5:bot, fallback__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  fallback__global  :  str
+  input__global     :  str
+

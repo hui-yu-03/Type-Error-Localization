@@ -1,0 +1,36 @@
+
+Constraints:
+  C1: box__global <= {}
+  C2: T1 <= num
+  C3: box__global <= {val: T1}
+  C4: T2 <= num
+  C5: T3 <= total__global
+  C6: plus(box__global,T2,T3)
+
+──────────────────────────────────────────────────────
+Inicio:
+ box__global:bot, {}:bot, T1:bot, num:bot, {val: T1}:bot, T2:bot, T3:bot, total__global:bot
+
+1: [box__global <= {}]
+ box__global:{}, T1:bot, num:bot, {val: T1}:bot, T2:bot, T3:bot, total__global:bot
+
+2: [T1 <= num]
+ box__global:{}, T1:num, {val: T1}:bot, T2:bot, T3:bot, total__global:bot
+
+3: [box__global <= {val: T1}]
+ (box__global: {val: T1}), T1:num, T2:bot, T3:bot, total__global:bot
+
+4: [T2 <= num]
+ (box__global: {val: T1}), T1:num, T2:num, T3:bot, total__global:bot
+
+5: [T3 <= total__global]
+ (box__global: {val: T1}), T1:num, T2:num, T3:bot, total__global:bot
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: obj vs num  (box__global <= num)
+
+FINAL:
+  box__global    :  {val: num}
+  total__global  :  num
+

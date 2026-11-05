@@ -1,0 +1,66 @@
+
+Constraints:
+  C01: T1 <= Func<add__MathHelper>{a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper}
+  C02: T2 <= ret__add__MathHelper
+  C03: MathHelper__global <= Class<MathHelper>[add: a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper]
+  C04: T3 <= num
+  C05: T3 <= a__add__MathHelper
+  C06: T4 <= num
+  C07: T4 <= b__add__MathHelper
+  C08: T5 <= num
+  C09: T5 <= a__add__MathHelper
+  C10: T6 <= num
+  C11: T6 <= b__add__MathHelper
+  C12: ret__add__MathHelper <= a__global
+  C13: plus(a__add__MathHelper,b__add__MathHelper,T2)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Func<add__MathHelper>{a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper}:bot, a__add__MathHelper:bot, b__add__MathHelper:bot, ret__add__MathHelper:bot, T2:bot, MathHelper__global:bot, Class<MathHelper>[add: a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper]:bot, T3:bot, num:bot, T4:bot, T5:bot, T6:bot, a__global:bot
+
+1: [T1 <= Func<add__MathHelper>{a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper}]
+ (T1: Func<add__MathHelper>{a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper}), a__add__MathHelper:bot, b__add__MathHelper:bot, ret__add__MathHelper:bot, T2:bot, MathHelper__global:bot, Class<MathHelper>[add: a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper]:bot, T3:bot, num:bot, T4:bot, T5:bot, T6:bot, a__global:bot
+
+2: [T2 <= ret__add__MathHelper]
+ (T1: Func<add__MathHelper>{a__add__MathHelper -> b__add__MathHelper -> T2}), a__add__MathHelper:bot, b__add__MathHelper:bot, ret__add__MathHelper:bot, T2:bot, MathHelper__global:bot, Class<MathHelper>[add: a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper]:bot, T3:bot, num:bot, T4:bot, T5:bot, T6:bot, a__global:bot
+
+3: [MathHelper__global <= Class<MathHelper>[add: a__add__MathHelper -> b__add__MathHelper -> ret__add__MathHelper]]
+ (T1: Func<add__MathHelper>{a__add__MathHelper -> b__add__MathHelper -> T2}), a__add__MathHelper:bot, b__add__MathHelper:bot, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: a__add__MathHelper -> b__add__MathHelper -> T2]), T3:bot, num:bot, T4:bot, T5:bot, T6:bot, a__global:bot
+
+4: [T3 <= num]
+ (T1: Func<add__MathHelper>{a__add__MathHelper -> b__add__MathHelper -> T2}), a__add__MathHelper:bot, b__add__MathHelper:bot, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: a__add__MathHelper -> b__add__MathHelper -> T2]), T3:num, T4:bot, T5:bot, T6:bot, a__global:bot
+
+5: [T3 <= a__add__MathHelper]
+ (T1: Func<add__MathHelper>{T3 -> b__add__MathHelper -> T2}), a__add__MathHelper:num, b__add__MathHelper:bot, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> b__add__MathHelper -> T2]), T3:num, T4:bot, T5:bot, T6:bot, a__global:bot
+
+6: [T4 <= num]
+ (T1: Func<add__MathHelper>{T3 -> b__add__MathHelper -> T2}), a__add__MathHelper:num, b__add__MathHelper:bot, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> b__add__MathHelper -> T2]), T3:num, T4:num, T5:bot, T6:bot, a__global:bot
+
+7: [T4 <= b__add__MathHelper]
+ (T1: Func<add__MathHelper>{T3 -> T4 -> T2}), a__add__MathHelper:num, b__add__MathHelper:num, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> T4 -> T2]), T3:num, T4:num, T5:bot, T6:bot, a__global:bot
+
+8: [T5 <= num]
+ (T1: Func<add__MathHelper>{T3 -> T4 -> T2}), a__add__MathHelper:num, b__add__MathHelper:num, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> T4 -> T2]), T3:num, T4:num, T5:num, T6:bot, a__global:bot
+
+9: [T5 <= a__add__MathHelper]
+ (T1: Func<add__MathHelper>{T3 -> T4 -> T2}), a__add__MathHelper:num, b__add__MathHelper:num, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> T4 -> T2]), T3:num, T4:num, T5:num, T6:bot, a__global:bot
+
+10: [T6 <= num]
+ (T1: Func<add__MathHelper>{T3 -> T4 -> T2}), a__add__MathHelper:num, b__add__MathHelper:num, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> T4 -> T2]), T3:num, T4:num, T5:num, T6:num, a__global:bot
+
+11: [T6 <= b__add__MathHelper]
+ (T1: Func<add__MathHelper>{T3 -> T4 -> T2}), a__add__MathHelper:num, b__add__MathHelper:num, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> T4 -> T2]), T3:num, T4:num, T5:num, T6:num, a__global:bot
+
+12: [ret__add__MathHelper <= a__global]
+ (T1: Func<add__MathHelper>{T3 -> T4 -> T2}), a__add__MathHelper:num, b__add__MathHelper:num, ret__add__MathHelper:bot, T2:bot, (MathHelper__global: Class<MathHelper>[add: T3 -> T4 -> T2]), T3:num, T4:num, T5:num, T6:num, a__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  MathHelper__global    :  Class<MathHelper>[add: num -> num -> num]
+  a__add__MathHelper    :  num
+  a__global             :  num
+  b__add__MathHelper    :  num
+  ret__add__MathHelper  :  num
+

@@ -1,0 +1,35 @@
+
+Constraints:
+  C1: T1 <= str
+  C2: T3 <= message__greet__global
+  C3: message__greet__global <= ret__greet__global
+  C4: greet__global <= Func<greet__global>{name__greet__global -> greeting__greet__global -> ret__greet__global}
+  C5: plus(greeting__greet__global,T1,T2)
+  C6: plus(T2,name__greet__global,T3)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, T3:bot, message__greet__global:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{name__greet__global -> greeting__greet__global -> ret__greet__global}:bot, name__greet__global:bot, greeting__greet__global:bot, T2:bot
+
+1: [T1 <= str]
+ T1:str, T3:bot, message__greet__global:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{name__greet__global -> greeting__greet__global -> ret__greet__global}:bot, name__greet__global:bot, greeting__greet__global:bot, T2:bot
+
+2: [T3 <= message__greet__global]
+ T1:str, T3:bot, message__greet__global:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{name__greet__global -> greeting__greet__global -> ret__greet__global}:bot, name__greet__global:bot, greeting__greet__global:bot, T2:bot
+
+3: [message__greet__global <= ret__greet__global]
+ T1:str, T3:bot, message__greet__global:bot, ret__greet__global:bot, greet__global:bot, Func<greet__global>{name__greet__global -> greeting__greet__global -> ret__greet__global}:bot, name__greet__global:bot, greeting__greet__global:bot, T2:bot
+
+4: [greet__global <= Func<greet__global>{name__greet__global -> greeting__greet__global -> ret__greet__global}]
+ T1:str, T3:bot, message__greet__global:bot, ret__greet__global:bot, (greet__global: Func<greet__global>{name__greet__global -> greeting__greet__global -> T3}), name__greet__global:bot, greeting__greet__global:bot, T2:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  greet__global            :  Func<greet__global>{str -> str -> str}
+  greeting__greet__global  :  str
+  message__greet__global   :  str
+  name__greet__global      :  str
+  ret__greet__global       :  str
+

@@ -1,0 +1,49 @@
+
+Constraints:
+  C01: T1 <= bool
+  C02: T1 <= flag__global
+  C03: T2 <= num
+  C04: T3 <= num
+  C05: T4 <= x__global
+  C06: T5 <= str
+  C07: T6 <= str
+  C08: T7 <= y__global
+  C09: union(T2,T3,T4)
+  C10: union(T5,T6,T7)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, bool:bot, flag__global:bot, T2:bot, num:bot, T3:bot, T4:bot, x__global:bot, T5:bot, str:bot, T6:bot, T7:bot, y__global:bot
+
+1: [T1 <= bool]
+ T1:bool, flag__global:bot, T2:bot, num:bot, T3:bot, T4:bot, x__global:bot, T5:bot, str:bot, T6:bot, T7:bot, y__global:bot
+
+2: [T1 <= flag__global]
+ T1:bool, flag__global:bool, T2:bot, num:bot, T3:bot, T4:bot, x__global:bot, T5:bot, str:bot, T6:bot, T7:bot, y__global:bot
+
+3: [T2 <= num]
+ T1:bool, flag__global:bool, T2:num, T3:bot, T4:bot, x__global:bot, T5:bot, str:bot, T6:bot, T7:bot, y__global:bot
+
+4: [T3 <= num]
+ T1:bool, flag__global:bool, T2:num, T3:num, T4:bot, x__global:bot, T5:bot, str:bot, T6:bot, T7:bot, y__global:bot
+
+5: [T4 <= x__global]
+ T1:bool, flag__global:bool, T2:num, T3:num, T4:bot, x__global:bot, T5:bot, str:bot, T6:bot, T7:bot, y__global:bot
+
+6: [T5 <= str]
+ T1:bool, flag__global:bool, T2:num, T3:num, T4:bot, x__global:bot, T5:str, T6:bot, T7:bot, y__global:bot
+
+7: [T6 <= str]
+ T1:bool, flag__global:bool, T2:num, T3:num, T4:bot, x__global:bot, T5:str, T6:str, T7:bot, y__global:bot
+
+8: [T7 <= y__global]
+ T1:bool, flag__global:bool, T2:num, T3:num, T4:bot, x__global:bot, T5:str, T6:str, T7:bot, y__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  flag__global  :  bool
+  x__global     :  num
+  y__global     :  str
+

@@ -1,0 +1,95 @@
+
+Constraints:
+  C01: obj__global <= {}
+  C02: T1 <= num
+  C03: obj__global <= {value: T1}
+  C04: T2 <= tmp__global
+  C05: obj__global <= {value: T2}
+  C06: out__global <= {}
+  C07: out__global <= {result: tmp__global}
+  C08: data__global <= {}
+  C09: T3 <= num
+  C10: data__global <= {id: T3}
+  C11: data__process__global <= {}
+  C12: T4 <= str
+  C13: data__process__global <= {id: T4}
+  C14: T5 <= bool
+  C15: data__process__global <= {active: T5}
+  C16: void <= ret__process__global
+  C17: process__global <= Func<process__global>{() -> ret__process__global}
+  C18: T6 <= str
+  C19: data__global <= {active: T6}
+
+──────────────────────────────────────────────────────
+Inicio:
+ obj__global:bot, {}:bot, T1:bot, num:bot, {value: T1}:bot, T2:bot, tmp__global:bot, {value: T2}:bot, out__global:bot, {result: tmp__global}:bot, data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+1: [obj__global <= {}]
+ obj__global:{}, T1:bot, num:bot, {value: T1}:bot, T2:bot, tmp__global:bot, {value: T2}:bot, out__global:bot, {result: tmp__global}:bot, data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+2: [T1 <= num]
+ obj__global:{}, T1:num, {value: T1}:bot, T2:bot, tmp__global:bot, {value: T2}:bot, out__global:bot, {result: tmp__global}:bot, data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+3: [obj__global <= {value: T1}]
+ (obj__global: {value: T1}), T1:num, T2:bot, tmp__global:bot, {value: T2}:bot, out__global:bot, {result: tmp__global}:bot, data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+4: [T2 <= tmp__global]
+ (obj__global: {value: T1}), T1:num, T2:bot, tmp__global:bot, {value: T2}:bot, out__global:bot, {result: tmp__global}:bot, data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+5: [obj__global <= {value: T2}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, out__global:bot, {result: tmp__global}:bot, data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+6: [out__global <= {}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, out__global:{}, {result: tmp__global}:bot, data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+7: [out__global <= {result: tmp__global}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), data__global:bot, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+8: [data__global <= {}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), data__global:{}, T3:bot, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+9: [T3 <= num]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), data__global:{}, T3:num, {id: T3}:bot, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+10: [data__global <= {id: T3}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, data__process__global:bot, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+11: [data__process__global <= {}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, data__process__global:{}, T4:bot, str:bot, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+12: [T4 <= str]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, data__process__global:{}, T4:str, {id: T4}:bot, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+13: [data__process__global <= {id: T4}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, (data__process__global: {id: T4}), T4:str, T5:bot, bool:bot, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+14: [T5 <= bool]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, (data__process__global: {id: T4}), T4:str, T5:bool, {active: T5}:bot, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+15: [data__process__global <= {active: T5}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, (data__process__global: {id: T4, active: T5}), T4:str, T5:bool, void:bot, ret__process__global:bot, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+16: [void <= ret__process__global]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, (data__process__global: {id: T4, active: T5}), T4:str, T5:bool, void:bot, ret__process__global:void, process__global:bot, Func<process__global>{() -> ret__process__global}:bot, T6:bot, {active: T6}:bot
+
+17: [process__global <= Func<process__global>{() -> ret__process__global}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, (data__process__global: {id: T4, active: T5}), T4:str, T5:bool, void:bot, ret__process__global:void, (process__global: Func<process__global>{() -> ret__process__global}), T6:bot, {active: T6}:bot
+
+18: [T6 <= str]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3}), T3:num, (data__process__global: {id: T4, active: T5}), T4:str, T5:bool, void:bot, ret__process__global:void, (process__global: Func<process__global>{() -> ret__process__global}), T6:str, {active: T6}:bot
+
+19: [data__global <= {active: T6}]
+ (obj__global: {value: T2}), T1:num, T2:num, tmp__global:num, (out__global: {result: T2}), (data__global: {id: T3, active: T6}), T3:num, (data__process__global: {id: T4, active: T5}), T4:str, T5:bool, void:bot, ret__process__global:void, (process__global: Func<process__global>{() -> ret__process__global}), T6:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  data__global           :  {id: num, active: str}
+  data__process__global  :  {id: str, active: bool}
+  obj__global            :  {value: num}
+  out__global            :  {result: num}
+  process__global        :  Func<process__global>{() -> void}
+  ret__process__global   :  void
+  tmp__global            :  num
+

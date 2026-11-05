@@ -1,0 +1,123 @@
+
+Constraints:
+  C01: state__global <= {}
+  C02: T1 <= num
+  C03: state__global <= {score: T1}
+  C04: T2 <= num
+  C05: state__global <= {lives: T2}
+  C06: T3 <= bool
+  C07: T3 <= running__global
+  C08: state__global <= {score: T4}
+  C09: T5 <= num
+  C10: T6 <= score__tick__global
+  C11: state__global <= {score: score__tick__global}
+  C12: T7 <= lives__tick__global
+  C13: state__global <= {lives: T7}
+  C14: T8 <= bool
+  C15: T8 <= ok__tick__global
+  C16: T9 <= num
+  C17: state__global <= {lives: T10}
+  C18: T11 <= num
+  C19: state__global <= {lives: T12}
+  C20: void <= ret__tick__global
+  C21: tick__global <= Func<tick__global>{() -> ret__tick__global}
+  C22: T13 <= num
+  C23: T13 <= x__global
+  C24: T14 <= x__global
+  C25: state__global <= {score: T14}
+  C26: plus(T4,T5,T6)
+  C27: plus(lives__tick__global,T9,T10)
+  C28: plus(lives__tick__global,T11,T12)
+
+──────────────────────────────────────────────────────
+Inicio:
+ state__global:bot, {}:bot, T1:bot, num:bot, {score: T1}:bot, T2:bot, {lives: T2}:bot, T3:bot, bool:bot, running__global:bot, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+1: [state__global <= {}]
+ state__global:{}, T1:bot, num:bot, {score: T1}:bot, T2:bot, {lives: T2}:bot, T3:bot, bool:bot, running__global:bot, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+2: [T1 <= num]
+ state__global:{}, T1:num, {score: T1}:bot, T2:bot, {lives: T2}:bot, T3:bot, bool:bot, running__global:bot, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+3: [state__global <= {score: T1}]
+ (state__global: {score: T1}), T1:num, T2:bot, {lives: T2}:bot, T3:bot, bool:bot, running__global:bot, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+4: [T2 <= num]
+ (state__global: {score: T1}), T1:num, T2:num, {lives: T2}:bot, T3:bot, bool:bot, running__global:bot, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+5: [state__global <= {lives: T2}]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bot, bool:bot, running__global:bot, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+6: [T3 <= bool]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bool, running__global:bot, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+7: [T3 <= running__global]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bool, running__global:bool, {score: T4}:bot, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:bot, T10:bot, T12:bot
+
+8: [state__global <= {score: T4}]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bool, running__global:bool, T5:bot, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+9: [T5 <= num]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+10: [T6 <= score__tick__global]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:bot, score__tick__global:bot, {score: score__tick__global}:bot, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+11: [state__global <= {score: score__tick__global}]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+12: [T7 <= lives__tick__global]
+ (state__global: {score: T1, lives: T2}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:bot, lives__tick__global:bot, {lives: T7}:bot, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+13: [state__global <= {lives: T7}]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bot, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+14: [T8 <= bool]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bot, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+15: [T8 <= ok__tick__global]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:bot, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+16: [T9 <= num]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, {lives: T10}:bot, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:bot, T12:bot
+
+17: [state__global <= {lives: T10}]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:bot, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:num, T12:bot
+
+18: [T11 <= num]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, {lives: T12}:bot, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:num, T12:bot
+
+19: [state__global <= {lives: T12}]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, void:bot, ret__tick__global:bot, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:num, T12:num
+
+20: [void <= ret__tick__global]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, void:bot, ret__tick__global:void, tick__global:bot, Func<tick__global>{() -> ret__tick__global}:bot, T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:num, T12:num
+
+21: [tick__global <= Func<tick__global>{() -> ret__tick__global}]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, void:bot, ret__tick__global:void, (tick__global: Func<tick__global>{() -> ret__tick__global}), T13:bot, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:num, T12:num
+
+22: [T13 <= num]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, void:bot, ret__tick__global:void, (tick__global: Func<tick__global>{() -> ret__tick__global}), T13:num, x__global:bot, T14:bot, {score: T14}:bot, T4:num, T10:num, T12:num
+
+23: [T13 <= x__global]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, void:bot, ret__tick__global:void, (tick__global: Func<tick__global>{() -> ret__tick__global}), T13:num, x__global:num, T14:bot, {score: T14}:bot, T4:num, T10:num, T12:num
+
+24: [T14 <= x__global]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, void:bot, ret__tick__global:void, (tick__global: Func<tick__global>{() -> ret__tick__global}), T13:num, x__global:num, T14:num, {score: T14}:bot, T4:num, T10:num, T12:num
+
+25: [state__global <= {score: T14}]
+ (state__global: {score: T1, lives: T7}), T1:num, T2:num, T3:bool, running__global:bool, T5:num, T6:num, score__tick__global:num, T7:num, lives__tick__global:num, T8:bool, ok__tick__global:bool, T9:num, T11:num, void:bot, ret__tick__global:void, (tick__global: Func<tick__global>{() -> ret__tick__global}), T13:num, x__global:num, T14:num, T4:num, T10:num, T12:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  lives__tick__global  :  num
+  ok__tick__global     :  bool
+  ret__tick__global    :  void
+  running__global      :  bool
+  score__tick__global  :  num
+  state__global        :  {score: num, lives: num}
+  tick__global         :  Func<tick__global>{() -> void}
+  x__global            :  num
+

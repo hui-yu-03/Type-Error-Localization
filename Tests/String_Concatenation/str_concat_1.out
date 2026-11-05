@@ -1,0 +1,28 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T2 <= ret__foo__global
+  C3: foo__global <= Func<foo__global>{p__foo__global -> ret__foo__global}
+  C4: plus(p__foo__global,T1,T2)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, T2:bot, ret__foo__global:bot, foo__global:bot, Func<foo__global>{p__foo__global -> ret__foo__global}:bot, p__foo__global:bot
+
+1: [T1 <= num]
+ T1:num, T2:bot, ret__foo__global:bot, foo__global:bot, Func<foo__global>{p__foo__global -> ret__foo__global}:bot, p__foo__global:bot
+
+2: [T2 <= ret__foo__global]
+ T1:num, T2:bot, ret__foo__global:bot, foo__global:bot, Func<foo__global>{p__foo__global -> ret__foo__global}:bot, p__foo__global:bot
+
+3: [foo__global <= Func<foo__global>{p__foo__global -> ret__foo__global}]
+ T1:num, T2:bot, ret__foo__global:bot, (foo__global: Func<foo__global>{p__foo__global -> T2}), p__foo__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  foo__global       :  Func<foo__global>{num|str -> num|str}
+  p__foo__global    :  num|str
+  ret__foo__global  :  num|str
+

@@ -1,0 +1,63 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= T2
+  C03: T4 <= Promise<T2,T3>
+  C04: T4 <= Promise<T5,T6>
+  C05: T5 <= x__then_cb_T8__global
+  C06: T9 <= num
+  C07: x__then_cb_T8__global <= num
+  C08: T9 <= num
+  C09: T10 <= num
+  C10: T10 <= ret__then_cb_T8__global
+  C11: T11 <= Promise<ret__then_cb_T8__global,T6>
+  C12: T11 <= q__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, T2:bot, T4:bot, Promise<T2,T3>:bot, Promise<T5,T6>:bot, T5:bot, x__then_cb_T8__global:bot, T9:bot, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+1: [T1 <= num]
+ T1:num, T2:bot, T4:bot, Promise<T2,T3>:bot, Promise<T5,T6>:bot, T5:bot, x__then_cb_T8__global:bot, T9:bot, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+2: [T1 <= T2]
+ T1:num, T2:num, T4:bot, Promise<T2,T3>:bot, Promise<T5,T6>:bot, T5:bot, x__then_cb_T8__global:bot, T9:bot, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+3: [T4 <= Promise<T2,T3>]
+ T1:num, T2:num, (T4: Promise<T1, T3>), Promise<T5,T6>:bot, T5:bot, x__then_cb_T8__global:bot, T9:bot, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+4: [T4 <= Promise<T5,T6>]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:bot, T9:bot, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+5: [T5 <= x__then_cb_T8__global]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:bot, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+6: [T9 <= num]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:num, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+7: [x__then_cb_T8__global <= num]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:num, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+8: [T9 <= num]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:num, T10:bot, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+9: [T10 <= num]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:num, T10:num, ret__then_cb_T8__global:bot, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+10: [T10 <= ret__then_cb_T8__global]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:num, T10:num, ret__then_cb_T8__global:num, T11:bot, Promise<ret__then_cb_T8__global,T6>:bot, q__global:bot
+
+11: [T11 <= Promise<ret__then_cb_T8__global,T6>]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:num, T10:num, ret__then_cb_T8__global:num, (T11: Promise<T10, T3>), q__global:bot
+
+12: [T11 <= q__global]
+ T1:num, T2:num, (T4: Promise<T1, T3>), T5:num, x__then_cb_T8__global:num, T9:num, T10:num, ret__then_cb_T8__global:num, (T11: Promise<T10, T3>), (q__global: Promise<T10, T3>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  q__global                :  Promise<num, bot>
+  ret__then_cb_T8__global  :  num
+  x__then_cb_T8__global    :  num
+

@@ -1,0 +1,26 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: exports__global <= {foo: T1}
+  C3: T1 <= foo__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, exports__global:bot, {foo: T1}:bot, foo__global:bot
+
+1: [T1 <= num]
+ T1:num, exports__global:bot, {foo: T1}:bot, foo__global:bot
+
+2: [exports__global <= {foo: T1}]
+ T1:num, (exports__global: {foo: T1}), foo__global:bot
+
+3: [T1 <= foo__global]
+ T1:num, (exports__global: {foo: T1}), foo__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  exports__global  :  {foo: num}
+  foo__global      :  num
+

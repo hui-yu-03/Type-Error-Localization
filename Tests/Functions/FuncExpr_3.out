@@ -1,0 +1,69 @@
+
+Constraints:
+  C01: T2 <= str
+  C02: T1 <= {description: T2}
+  C03: T4 <= Array<{}>
+  C04: T5 <= ret__calculator.add__global
+  C05: T3 <= Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> ret__calculator.add__global}
+  C06: T1 <= {add: T3}
+  C07: T1 <= calculator__global
+  C08: x__add__global <= num
+  C09: y__add__global <= num
+  C10: T6 <= num
+  C11: T6 <= ret__add__global
+  C12: add__global <= Func<add__global>{x__add__global -> y__add__global -> ret__add__global}
+  C13: plus(x__calculator.add__global,y__calculator.add__global,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T2:bot, str:bot, T1:bot, {description: T2}:bot, T4:bot, Array<{}>:bot, T5:bot, ret__calculator.add__global:bot, T3:bot, Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> ret__calculator.add__global}:bot, x__calculator.add__global:bot, y__calculator.add__global:bot, {add: T3}:bot, calculator__global:bot, x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+1: [T2 <= str]
+ T2:str, T1:bot, {description: T2}:bot, T4:bot, Array<{}>:bot, T5:bot, ret__calculator.add__global:bot, T3:bot, Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> ret__calculator.add__global}:bot, x__calculator.add__global:bot, y__calculator.add__global:bot, {add: T3}:bot, calculator__global:bot, x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+2: [T1 <= {description: T2}]
+ T2:str, (T1: {description: T2}), T4:bot, Array<{}>:bot, T5:bot, ret__calculator.add__global:bot, T3:bot, Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> ret__calculator.add__global}:bot, x__calculator.add__global:bot, y__calculator.add__global:bot, {add: T3}:bot, calculator__global:bot, x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+3: [T4 <= Array<{}>]
+ T2:str, (T1: {description: T2}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, T3:bot, Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> ret__calculator.add__global}:bot, x__calculator.add__global:bot, y__calculator.add__global:bot, {add: T3}:bot, calculator__global:bot, x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+4: [T5 <= ret__calculator.add__global]
+ T2:str, (T1: {description: T2}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, T3:bot, Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> ret__calculator.add__global}:bot, x__calculator.add__global:bot, y__calculator.add__global:bot, {add: T3}:bot, calculator__global:bot, x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+5: [T3 <= Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> ret__calculator.add__global}]
+ T2:str, (T1: {description: T2}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, {add: T3}:bot, calculator__global:bot, x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+6: [T1 <= {add: T3}]
+ T2:str, (T1: {description: T2, add: T3}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, calculator__global:bot, x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+7: [T1 <= calculator__global]
+ T2:str, (T1: {description: T2, add: T3}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, (calculator__global: {description: T2, add: T3}), x__add__global:bot, num:bot, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+8: [x__add__global <= num]
+ T2:str, (T1: {description: T2, add: T3}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, (calculator__global: {description: T2, add: T3}), x__add__global:num, y__add__global:bot, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+9: [y__add__global <= num]
+ T2:str, (T1: {description: T2, add: T3}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, (calculator__global: {description: T2, add: T3}), x__add__global:num, y__add__global:num, T6:bot, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+10: [T6 <= num]
+ T2:str, (T1: {description: T2, add: T3}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, (calculator__global: {description: T2, add: T3}), x__add__global:num, y__add__global:num, T6:num, ret__add__global:bot, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+11: [T6 <= ret__add__global]
+ T2:str, (T1: {description: T2, add: T3}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, (calculator__global: {description: T2, add: T3}), x__add__global:num, y__add__global:num, T6:num, ret__add__global:num, add__global:bot, Func<add__global>{x__add__global -> y__add__global -> ret__add__global}:bot
+
+12: [add__global <= Func<add__global>{x__add__global -> y__add__global -> ret__add__global}]
+ T2:str, (T1: {description: T2, add: T3}), (T4: Array<{}>), T5:bot, ret__calculator.add__global:bot, (T3: Func<calculator.add__global>{x__calculator.add__global -> y__calculator.add__global -> T5}), x__calculator.add__global:bot, y__calculator.add__global:bot, (calculator__global: {description: T2, add: T3}), x__add__global:num, y__add__global:num, T6:num, ret__add__global:num, (add__global: Func<add__global>{x__add__global -> y__add__global -> T6})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  add__global                  :  Func<add__global>{num -> num -> num}
+  calculator__global           :  {description: str, add: Func<calculator.add__global>{num|str -> num|str -> num|str}}
+  ret__add__global             :  num
+  ret__calculator.add__global  :  num|str
+  x__add__global               :  num
+  x__calculator.add__global    :  num|str
+  y__add__global               :  num
+  y__calculator.add__global    :  num|str
+

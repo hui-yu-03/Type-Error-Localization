@@ -1,0 +1,165 @@
+
+Constraints:
+  C01: T1 <= str
+  C02: T1 <= s__global
+  C03: T2 <= str|regexp
+  C04: T3 <= str
+  C05: T4 <= Array<T3>
+  C06: T5 <= Func<split>{T2 -> T4}
+  C07: T5 <= Func<T8>{T7 -> T6}
+  C08: T9 <= str
+  C09: T9 <= T7
+  C10: T6 <= parts__global
+  C11: T10 <= num
+  C12: T11 <= num
+  C13: T12 <= str
+  C14: T13 <= Func<slice>{T10 -> T11 -> T12}
+  C15: T13 <= Func<T17>{T15 -> T16 -> T14}
+  C16: T18 <= num
+  C17: T18 <= T15
+  C18: T19 <= num
+  C19: T19 <= T16
+  C20: T14 <= sub__global
+  C21: T20 <= str|regexp
+  C22: T21 <= str
+  C23: T22 <= str
+  C24: T23 <= Func<replace>{T20 -> T21 -> T22}
+  C25: T23 <= Func<T27>{T25 -> T26 -> T24}
+  C26: T28 <= str
+  C27: T28 <= T25
+  C28: T29 <= str
+  C29: T29 <= T26
+  C30: T24 <= replaced__global
+  C31: T30 <= str
+  C32: T31 <= bool
+  C33: T32 <= Func<startsWith>{T30 -> T31}
+  C34: T32 <= Func<T35>{T34 -> T33}
+  C35: T36 <= str
+  C36: T36 <= T34
+  C37: T33 <= starts__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, s__global:bot, T2:bot, str|regexp:bot, T3:bot, T4:bot, Array<T3>:bot, T5:bot, Func<split>{T2 -> T4}:bot, Func<T8>{T7 -> T6}:bot, T7:bot, T6:bot, T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+1: [T1 <= str]
+ T1:str, s__global:bot, T2:bot, str|regexp:bot, T3:bot, T4:bot, Array<T3>:bot, T5:bot, Func<split>{T2 -> T4}:bot, Func<T8>{T7 -> T6}:bot, T7:bot, T6:bot, T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+2: [T1 <= s__global]
+ T1:str, s__global:str, T2:bot, str|regexp:bot, T3:bot, T4:bot, Array<T3>:bot, T5:bot, Func<split>{T2 -> T4}:bot, Func<T8>{T7 -> T6}:bot, T7:bot, T6:bot, T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+3: [T2 <= str|regexp]
+ T1:str, s__global:str, T2:str|regexp, T3:bot, T4:bot, Array<T3>:bot, T5:bot, Func<split>{T2 -> T4}:bot, Func<T8>{T7 -> T6}:bot, T7:bot, T6:bot, T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+4: [T3 <= str]
+ T1:str, s__global:str, T2:str|regexp, T3:str, T4:bot, Array<T3>:bot, T5:bot, Func<split>{T2 -> T4}:bot, Func<T8>{T7 -> T6}:bot, T7:bot, T6:bot, T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+5: [T4 <= Array<T3>]
+ T1:str, s__global:str, T2:str|regexp, T3:str, (T4: Array<T3>), T5:bot, Func<split>{T2 -> T4}:bot, Func<T8>{T7 -> T6}:bot, T7:bot, T6:bot, T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+6: [T5 <= Func<split>{T2 -> T4}]
+ T1:str, s__global:str, T2:str|regexp, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), Func<T8>{T7 -> T6}:bot, T7:bot, T6:bot, T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+7: [T5 <= Func<T8>{T7 -> T6}]
+ T1:str, s__global:str, T2:str|regexp, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str|regexp, (T6: Array<T3>), T9:bot, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+8: [T9 <= str]
+ T1:str, s__global:str, T2:str|regexp, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str|regexp, (T6: Array<T3>), T9:str, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+9: [T9 <= T7]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, parts__global:bot, T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+10: [T6 <= parts__global]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:bot, num:bot, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+11: [T10 <= num]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:bot, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+12: [T11 <= num]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:bot, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+13: [T12 <= str]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, T13:bot, Func<slice>{T10 -> T11 -> T12}:bot, Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+14: [T13 <= Func<slice>{T10 -> T11 -> T12}]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), Func<T17>{T15 -> T16 -> T14}:bot, T15:bot, T16:bot, T14:bot, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+15: [T13 <= Func<T17>{T15 -> T16 -> T14}]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:bot, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+16: [T18 <= num]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+17: [T18 <= T15]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:bot, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+18: [T19 <= num]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+19: [T19 <= T16]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:bot, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+20: [T14 <= sub__global]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:bot, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+21: [T20 <= str|regexp]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str|regexp, T21:bot, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+22: [T21 <= str]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str|regexp, T21:str, T22:bot, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+23: [T22 <= str]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str|regexp, T21:str, T22:str, T23:bot, Func<replace>{T20 -> T21 -> T22}:bot, Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+24: [T23 <= Func<replace>{T20 -> T21 -> T22}]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str|regexp, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), Func<T27>{T25 -> T26 -> T24}:bot, T25:bot, T26:bot, T24:bot, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+25: [T23 <= Func<T27>{T25 -> T26 -> T24}]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str|regexp, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str|regexp, T26:str, T24:str, T28:bot, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+26: [T28 <= str]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str|regexp, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str|regexp, T26:str, T24:str, T28:str, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+27: [T28 <= T25]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:bot, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+28: [T29 <= str]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+29: [T29 <= T26]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:bot, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+30: [T24 <= replaced__global]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:bot, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+31: [T30 <= str]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:str, T31:bot, bool:bot, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+32: [T31 <= bool]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:str, T31:bool, T32:bot, Func<startsWith>{T30 -> T31}:bot, Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+33: [T32 <= Func<startsWith>{T30 -> T31}]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:str, T31:bool, (T32: Func<startsWith>{T30 -> T31}), Func<T35>{T34 -> T33}:bot, T34:bot, T33:bot, T36:bot, starts__global:bot
+
+34: [T32 <= Func<T35>{T34 -> T33}]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:str, T31:bool, (T32: Func<startsWith>{T30 -> T31}), T34:str, T33:bool, T36:bot, starts__global:bot
+
+35: [T36 <= str]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:str, T31:bool, (T32: Func<startsWith>{T30 -> T31}), T34:str, T33:bool, T36:str, starts__global:bot
+
+36: [T36 <= T34]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:str, T31:bool, (T32: Func<startsWith>{T30 -> T31}), T34:str, T33:bool, T36:str, starts__global:bot
+
+37: [T33 <= starts__global]
+ T1:str, s__global:str, T2:str, T3:str, (T4: Array<T3>), (T5: Func<split>{T2 -> T4}), T7:str, (T6: Array<T3>), T9:str, (parts__global: Array<T3>), T10:num, T11:num, T12:str, (T13: Func<slice>{T10 -> T11 -> T12}), T15:num, T16:num, T14:str, T18:num, T19:num, sub__global:str, T20:str, T21:str, T22:str, (T23: Func<replace>{T20 -> T21 -> T22}), T25:str, T26:str, T24:str, T28:str, T29:str, replaced__global:str, T30:str, T31:bool, (T32: Func<startsWith>{T30 -> T31}), T34:str, T33:bool, T36:str, starts__global:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  parts__global     :  Array<str>
+  replaced__global  :  str
+  s__global         :  str
+  starts__global    :  bool
+  sub__global       :  str
+

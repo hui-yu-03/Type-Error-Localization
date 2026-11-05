@@ -1,0 +1,118 @@
+
+Constraints:
+  C01: T1 <= str
+  C02: T2 <= str
+  C03: T1 <= T2
+  C04: T2 <= T1
+  C05: T3 <= bool
+  C06: T5 <= str
+  C07: T6 <= Func<trim>{() -> T5}
+  C08: T6 <= Func<T8>{() -> T7}
+  C09: T7 <= s__check__global
+  C10: T9 <= str
+  C11: T10 <= str
+  C12: T9 <= T10
+  C13: T10 <= T9
+  C14: T11 <= bool
+  C15: T13 <= num
+  C16: T14 <= num
+  C17: T15 <= Func<abs>{T13 -> T14}
+  C18: Math__global <= {abs: T15}
+  C19: T16 <= num
+  C20: T12 <= T16
+  C21: T17 <= num
+  C22: T17 <= n__check__global
+  C23: void <= ret__check__global
+  C24: check__global <= Func<check__global>{value__check__global -> ret__check__global}
+  C25: value__check__global <= num|str
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, T2:bot, T3:bot, bool:bot, T5:bot, T6:bot, Func<trim>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+1: [T1 <= str]
+ T1:str, T2:bot, T3:bot, bool:bot, T5:bot, T6:bot, Func<trim>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+2: [T2 <= str]
+ T1:str, T2:str, T3:bot, bool:bot, T5:bot, T6:bot, Func<trim>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+3: [T1 <= T2]
+ T1:str, T2:str, T3:bot, bool:bot, T5:bot, T6:bot, Func<trim>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+4: [T2 <= T1]
+ T1:str, T2:str, T3:bot, bool:bot, T5:bot, T6:bot, Func<trim>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+5: [T3 <= bool]
+ T1:str, T2:str, T3:bool, T5:bot, T6:bot, Func<trim>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+6: [T5 <= str]
+ T1:str, T2:str, T3:bool, T5:str, T6:bot, Func<trim>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+7: [T6 <= Func<trim>{() -> T5}]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), Func<T8>{() -> T7}:bot, T7:bot, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+8: [T6 <= Func<T8>{() -> T7}]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:bot, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+9: [T7 <= s__check__global]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:bot, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+10: [T9 <= str]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:bot, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+11: [T10 <= str]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+12: [T9 <= T10]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+13: [T10 <= T9]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bot, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+14: [T11 <= bool]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:bot, num:bot, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+15: [T13 <= num]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:bot, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+16: [T14 <= num]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, T15:bot, Func<abs>{T13 -> T14}:bot, Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+17: [T15 <= Func<abs>{T13 -> T14}]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), Math__global:bot, {abs: T15}:bot, T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+18: [Math__global <= {abs: T15}]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:bot, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+19: [T16 <= num]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:num, T12:bot, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+20: [T12 <= T16]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:num, T12:num, T17:bot, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+21: [T17 <= num]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:num, T12:num, T17:num, n__check__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+22: [T17 <= n__check__global]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:num, T12:num, T17:num, n__check__global:num, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+23: [void <= ret__check__global]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:num, T12:num, T17:num, n__check__global:num, void:bot, ret__check__global:void, check__global:bot, Func<check__global>{value__check__global -> ret__check__global}:bot, value__check__global:bot, num|str:bot
+
+24: [check__global <= Func<check__global>{value__check__global -> ret__check__global}]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:num, T12:num, T17:num, n__check__global:num, void:bot, ret__check__global:void, (check__global: Func<check__global>{value__check__global -> ret__check__global}), value__check__global:bot, num|str:bot
+
+25: [value__check__global <= num|str]
+ T1:str, T2:str, T3:bool, T5:str, (T6: Func<trim>{() -> T5}), T7:str, s__check__global:str, T9:str, T10:str, T11:bool, T13:num, T14:num, (T15: Func<abs>{T13 -> T14}), (Math__global: {abs: T15}), T16:num, T12:num, T17:num, n__check__global:num, void:bot, ret__check__global:void, (check__global: Func<check__global>{value__check__global -> ret__check__global}), value__check__global:num|str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Math__global          :  {abs: Func<abs>{num -> num}}
+  check__global         :  Func<check__global>{num|str -> void}
+  n__check__global      :  num
+  ret__check__global    :  void
+  s__check__global      :  str
+  value__check__global  :  num|str
+

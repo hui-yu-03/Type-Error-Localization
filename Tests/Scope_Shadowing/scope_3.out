@@ -1,0 +1,91 @@
+
+Constraints:
+  C01: data__global <= {}
+  C02: T1 <= num
+  C03: data__global <= {x: T1}
+  C04: store__global <= {}
+  C05: T2 <= num
+  C06: store__global <= {log: T2}
+  C07: data__outer__global <= local__outer__global
+  C08: T3 <= cur__inner__outer__global
+  C09: store__global <= {log: T3}
+  C10: T4 <= num
+  C11: store__global <= {log: T5}
+  C12: void <= ret__inner__outer__global
+  C13: inner__outer__global <= Func<inner__outer__global>{() -> ret__inner__outer__global}
+  C14: T6 <= check__outer__global
+  C15: store__global <= {log: T6}
+  C16: void <= ret__outer__global
+  C17: outer__global <= Func<outer__global>{data__outer__global -> ret__outer__global}
+  C18: plus(cur__inner__outer__global,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ data__global:bot, {}:bot, T1:bot, num:bot, {x: T1}:bot, store__global:bot, T2:bot, {log: T2}:bot, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+1: [data__global <= {}]
+ data__global:{}, T1:bot, num:bot, {x: T1}:bot, store__global:bot, T2:bot, {log: T2}:bot, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+2: [T1 <= num]
+ data__global:{}, T1:num, {x: T1}:bot, store__global:bot, T2:bot, {log: T2}:bot, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+3: [data__global <= {x: T1}]
+ (data__global: {x: T1}), T1:num, store__global:bot, T2:bot, {log: T2}:bot, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+4: [store__global <= {}]
+ (data__global: {x: T1}), T1:num, store__global:{}, T2:bot, {log: T2}:bot, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+5: [T2 <= num]
+ (data__global: {x: T1}), T1:num, store__global:{}, T2:num, {log: T2}:bot, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+6: [store__global <= {log: T2}]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T2}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+7: [data__outer__global <= local__outer__global]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T2}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+8: [T3 <= cur__inner__outer__global]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T2}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:bot, cur__inner__outer__global:bot, {log: T3}:bot, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+9: [store__global <= {log: T3}]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:bot, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+10: [T4 <= num]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, {log: T5}:bot, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:bot
+
+11: [store__global <= {log: T5}]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, void:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:num
+
+12: [void <= ret__inner__outer__global]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, void:bot, ret__inner__outer__global:void, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:num
+
+13: [inner__outer__global <= Func<inner__outer__global>{() -> ret__inner__outer__global}]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, void:bot, ret__inner__outer__global:void, (inner__outer__global: Func<inner__outer__global>{() -> ret__inner__outer__global}), T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:num
+
+14: [T6 <= check__outer__global]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, void:bot, ret__inner__outer__global:void, (inner__outer__global: Func<inner__outer__global>{() -> ret__inner__outer__global}), T6:bot, check__outer__global:bot, {log: T6}:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:num
+
+15: [store__global <= {log: T6}]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, void:bot, ret__inner__outer__global:void, (inner__outer__global: Func<inner__outer__global>{() -> ret__inner__outer__global}), T6:num, check__outer__global:num, ret__outer__global:bot, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:num
+
+16: [void <= ret__outer__global]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, void:bot, ret__inner__outer__global:void, (inner__outer__global: Func<inner__outer__global>{() -> ret__inner__outer__global}), T6:num, check__outer__global:num, ret__outer__global:void, outer__global:bot, Func<outer__global>{data__outer__global -> ret__outer__global}:bot, T5:num
+
+17: [outer__global <= Func<outer__global>{data__outer__global -> ret__outer__global}]
+ (data__global: {x: T1}), T1:num, (store__global: {log: T3}), T2:num, data__outer__global:bot, local__outer__global:bot, T3:num, cur__inner__outer__global:num, T4:num, void:bot, ret__inner__outer__global:void, (inner__outer__global: Func<inner__outer__global>{() -> ret__inner__outer__global}), T6:num, check__outer__global:num, ret__outer__global:void, (outer__global: Func<outer__global>{data__outer__global -> ret__outer__global}), T5:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  check__outer__global       :  num
+  cur__inner__outer__global  :  num
+  data__global               :  {x: num}
+  data__outer__global        :  bot
+  inner__outer__global       :  Func<inner__outer__global>{() -> void}
+  local__outer__global       :  bot
+  outer__global              :  Func<outer__global>{bot -> void}
+  ret__inner__outer__global  :  void
+  ret__outer__global         :  void
+  store__global              :  {log: num}
+

@@ -1,0 +1,40 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T1 <= a__f__global
+  C3: T2 <= str
+  C4: T2 <= b__f__global
+  C5: void <= ret__f__global
+  C6: f__global <= Func<f__global>{a__f__global -> b__f__global -> ret__f__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, a__f__global:bot, T2:bot, str:bot, b__f__global:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot
+
+1: [T1 <= num]
+ T1:num, a__f__global:bot, T2:bot, str:bot, b__f__global:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot
+
+2: [T1 <= a__f__global]
+ T1:num, a__f__global:num, T2:bot, str:bot, b__f__global:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot
+
+3: [T2 <= str]
+ T1:num, a__f__global:num, T2:str, b__f__global:bot, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot
+
+4: [T2 <= b__f__global]
+ T1:num, a__f__global:num, T2:str, b__f__global:str, void:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot
+
+5: [void <= ret__f__global]
+ T1:num, a__f__global:num, T2:str, b__f__global:str, void:bot, ret__f__global:void, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot
+
+6: [f__global <= Func<f__global>{a__f__global -> b__f__global -> ret__f__global}]
+ T1:num, a__f__global:num, T2:str, b__f__global:str, void:bot, ret__f__global:void, (f__global: Func<f__global>{T1 -> T2 -> ret__f__global})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__f__global    :  num
+  b__f__global    :  str
+  f__global       :  Func<f__global>{num -> str -> void}
+  ret__f__global  :  void
+

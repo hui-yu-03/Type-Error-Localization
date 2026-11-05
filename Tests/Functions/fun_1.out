@@ -1,0 +1,44 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T1 <= x__global
+  C3: x__global <= num
+  C4: x__global <= ret__f__global
+  C5: f__global <= Func<f__global>{() -> ret__f__global}
+  C6: f__global <= Func<f__global>{() -> ret__f__global}
+  C7: ret__f__global <= b__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, x__global:bot, ret__f__global:bot, f__global:bot, Func<f__global>{() -> ret__f__global}:bot, b__global:bot
+
+1: [T1 <= num]
+ T1:num, x__global:bot, ret__f__global:bot, f__global:bot, Func<f__global>{() -> ret__f__global}:bot, b__global:bot
+
+2: [T1 <= x__global]
+ T1:num, x__global:num, ret__f__global:bot, f__global:bot, Func<f__global>{() -> ret__f__global}:bot, b__global:bot
+
+3: [x__global <= num]
+ T1:num, x__global:num, ret__f__global:bot, f__global:bot, Func<f__global>{() -> ret__f__global}:bot, b__global:bot
+
+4: [x__global <= ret__f__global]
+ T1:num, x__global:num, ret__f__global:num, f__global:bot, Func<f__global>{() -> ret__f__global}:bot, b__global:bot
+
+5: [f__global <= Func<f__global>{() -> ret__f__global}]
+ T1:num, x__global:num, ret__f__global:num, (f__global: Func<f__global>{() -> T1}), b__global:bot
+
+6: [f__global <= Func<f__global>{() -> ret__f__global}]
+ T1:num, x__global:num, ret__f__global:num, (f__global: Func<f__global>{() -> T1}), b__global:bot
+
+7: [ret__f__global <= b__global]
+ T1:num, x__global:num, ret__f__global:num, (f__global: Func<f__global>{() -> T1}), b__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  b__global       :  num
+  f__global       :  Func<f__global>{() -> num}
+  ret__f__global  :  num
+  x__global       :  num
+

@@ -1,0 +1,58 @@
+
+Constraints:
+  C01: T1 <= bool
+  C02: T1 <= x__global
+  C03: T2 <= bool
+  C04: T2 <= y__global
+  C05: T3 <= bool
+  C06: T3 <= z__global
+  C07: x__global <= a__global
+  C08: z__global <= b__global
+  C09: a__global <= c__global
+  C10: c__global <= a__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, bool:bot, x__global:bot, T2:bot, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot, c__global:bot
+
+1: [T1 <= bool]
+ T1:bool, x__global:bot, T2:bot, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot, c__global:bot
+
+2: [T1 <= x__global]
+ T1:bool, x__global:bool, T2:bot, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot, c__global:bot
+
+3: [T2 <= bool]
+ T1:bool, x__global:bool, T2:bool, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot, c__global:bot
+
+4: [T2 <= y__global]
+ T1:bool, x__global:bool, T2:bool, y__global:bool, T3:bot, z__global:bot, a__global:bot, b__global:bot, c__global:bot
+
+5: [T3 <= bool]
+ T1:bool, x__global:bool, T2:bool, y__global:bool, T3:bool, z__global:bot, a__global:bot, b__global:bot, c__global:bot
+
+6: [T3 <= z__global]
+ T1:bool, x__global:bool, T2:bool, y__global:bool, T3:bool, z__global:bool, a__global:bot, b__global:bot, c__global:bot
+
+7: [x__global <= a__global]
+ T1:bool, x__global:bool, T2:bool, y__global:bool, T3:bool, z__global:bool, a__global:bool, b__global:bot, c__global:bot
+
+8: [z__global <= b__global]
+ T1:bool, x__global:bool, T2:bool, y__global:bool, T3:bool, z__global:bool, a__global:bool, b__global:bool, c__global:bot
+
+9: [a__global <= c__global]
+ T1:bool, x__global:bool, T2:bool, y__global:bool, T3:bool, z__global:bool, a__global:bool, b__global:bool, c__global:bool
+
+10: [c__global <= a__global]
+ T1:bool, x__global:bool, T2:bool, y__global:bool, T3:bool, z__global:bool, a__global:bool, b__global:bool, c__global:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global  :  bool
+  b__global  :  bool
+  c__global  :  bool
+  x__global  :  bool
+  y__global  :  bool
+  z__global  :  bool
+

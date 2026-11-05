@@ -1,0 +1,39 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T1 <= y__global
+  C3: T2 <= str
+  C4: T2 <= z__global
+  C5: T3 <= num
+  C6: T3 <= x__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, y__global:bot, T2:bot, str:bot, z__global:bot, T3:bot, x__global:bot
+
+1: [T1 <= num]
+ T1:num, y__global:bot, T2:bot, str:bot, z__global:bot, T3:bot, x__global:bot
+
+2: [T1 <= y__global]
+ T1:num, y__global:num, T2:bot, str:bot, z__global:bot, T3:bot, x__global:bot
+
+3: [T2 <= str]
+ T1:num, y__global:num, T2:str, z__global:bot, T3:bot, x__global:bot
+
+4: [T2 <= z__global]
+ T1:num, y__global:num, T2:str, z__global:str, T3:bot, x__global:bot
+
+5: [T3 <= num]
+ T1:num, y__global:num, T2:str, z__global:str, T3:num, x__global:bot
+
+6: [T3 <= x__global]
+ T1:num, y__global:num, T2:str, z__global:str, T3:num, x__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  x__global  :  num
+  y__global  :  num
+  z__global  :  str
+

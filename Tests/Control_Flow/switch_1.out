@@ -1,0 +1,117 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= x__global
+  C03: T2 <= num
+  C04: x__global <= T2
+  C05: T2 <= x__global
+  C06: T3 <= str
+  C07: T3 <= y__global
+  C08: x__global <= num
+  C09: T4 <= num
+  C10: x__global <= T4
+  C11: T4 <= x__global
+  C12: T5 <= num
+  C13: T5 <= z__global
+  C14: x__global <= num
+  C15: T6 <= num
+  C16: x__global <= T6
+  C17: T6 <= x__global
+  C18: T7 <= num
+  C19: T7 <= t__global
+  C20: T8 <= num
+  C21: T8 <= x__global
+  C22: T9 <= num
+  C23: T9 <= k__global
+  C24: T10 <= num
+  C25: T10 <= x__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, x__global:bot, T2:bot, T3:bot, str:bot, y__global:bot, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+1: [T1 <= num]
+ T1:num, x__global:bot, T2:bot, T3:bot, str:bot, y__global:bot, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+2: [T1 <= x__global]
+ T1:num, x__global:num, T2:bot, T3:bot, str:bot, y__global:bot, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+3: [T2 <= num]
+ T1:num, x__global:num, T2:num, T3:bot, str:bot, y__global:bot, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+4: [x__global <= T2]
+ T1:num, x__global:num, T2:num, T3:bot, str:bot, y__global:bot, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+5: [T2 <= x__global]
+ T1:num, x__global:num, T2:num, T3:bot, str:bot, y__global:bot, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+6: [T3 <= str]
+ T1:num, x__global:num, T2:num, T3:str, y__global:bot, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+7: [T3 <= y__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+8: [x__global <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:bot, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+9: [T4 <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+10: [x__global <= T4]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+11: [T4 <= x__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:bot, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+12: [T5 <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:bot, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+13: [T5 <= z__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+14: [x__global <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:bot, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+15: [T6 <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+16: [x__global <= T6]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+17: [T6 <= x__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:bot, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+18: [T7 <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:bot, T8:bot, T9:bot, k__global:bot, T10:bot
+
+19: [T7 <= t__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:num, T8:bot, T9:bot, k__global:bot, T10:bot
+
+20: [T8 <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:num, T8:num, T9:bot, k__global:bot, T10:bot
+
+21: [T8 <= x__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:num, T8:num, T9:bot, k__global:bot, T10:bot
+
+22: [T9 <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:num, T8:num, T9:num, k__global:bot, T10:bot
+
+23: [T9 <= k__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:num, T8:num, T9:num, k__global:num, T10:bot
+
+24: [T10 <= num]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:num, T8:num, T9:num, k__global:num, T10:num
+
+25: [T10 <= x__global]
+ T1:num, x__global:num, T2:num, T3:str, y__global:str, T4:num, T5:num, z__global:num, T6:num, T7:num, t__global:num, T8:num, T9:num, k__global:num, T10:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  k__global  :  num
+  t__global  :  num
+  x__global  :  num
+  y__global  :  str
+  z__global  :  num
+

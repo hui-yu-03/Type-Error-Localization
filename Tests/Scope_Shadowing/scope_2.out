@@ -1,0 +1,58 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= x__global
+  C03: T2 <= str
+  C04: T2 <= msg__global
+  C05: T3 <= str
+  C06: T3 <= x__shadow__global
+  C07: T4 <= num
+  C08: T4 <= msg__shadow__global
+  C09: void <= ret__shadow__global
+  C10: shadow__global <= Func<shadow__global>{() -> ret__shadow__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, x__global:bot, T2:bot, str:bot, msg__global:bot, T3:bot, x__shadow__global:bot, T4:bot, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+1: [T1 <= num]
+ T1:num, x__global:bot, T2:bot, str:bot, msg__global:bot, T3:bot, x__shadow__global:bot, T4:bot, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+2: [T1 <= x__global]
+ T1:num, x__global:num, T2:bot, str:bot, msg__global:bot, T3:bot, x__shadow__global:bot, T4:bot, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+3: [T2 <= str]
+ T1:num, x__global:num, T2:str, msg__global:bot, T3:bot, x__shadow__global:bot, T4:bot, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+4: [T2 <= msg__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:bot, x__shadow__global:bot, T4:bot, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+5: [T3 <= str]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:str, x__shadow__global:bot, T4:bot, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+6: [T3 <= x__shadow__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:str, x__shadow__global:str, T4:bot, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+7: [T4 <= num]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:str, x__shadow__global:str, T4:num, msg__shadow__global:bot, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+8: [T4 <= msg__shadow__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:str, x__shadow__global:str, T4:num, msg__shadow__global:num, void:bot, ret__shadow__global:bot, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+9: [void <= ret__shadow__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:str, x__shadow__global:str, T4:num, msg__shadow__global:num, void:bot, ret__shadow__global:void, shadow__global:bot, Func<shadow__global>{() -> ret__shadow__global}:bot
+
+10: [shadow__global <= Func<shadow__global>{() -> ret__shadow__global}]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:str, x__shadow__global:str, T4:num, msg__shadow__global:num, void:bot, ret__shadow__global:void, (shadow__global: Func<shadow__global>{() -> ret__shadow__global})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  msg__global          :  str
+  msg__shadow__global  :  num
+  ret__shadow__global  :  void
+  shadow__global       :  Func<shadow__global>{() -> void}
+  x__global            :  num
+  x__shadow__global    :  str
+

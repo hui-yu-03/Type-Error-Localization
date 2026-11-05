@@ -1,0 +1,30 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T1 <= a__global
+  C3: T2 <= str
+  C4: T2 <= b__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, a__global:bot, T2:bot, str:bot, b__global:bot
+
+1: [T1 <= num]
+ T1:num, a__global:bot, T2:bot, str:bot, b__global:bot
+
+2: [T1 <= a__global]
+ T1:num, a__global:num, T2:bot, str:bot, b__global:bot
+
+3: [T2 <= str]
+ T1:num, a__global:num, T2:str, b__global:bot
+
+4: [T2 <= b__global]
+ T1:num, a__global:num, T2:str, b__global:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global  :  num
+  b__global  :  str
+

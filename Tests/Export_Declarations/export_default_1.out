@@ -1,0 +1,35 @@
+
+Constraints:
+  C1: n__square__global <= num
+  C2: n__square__global <= num
+  C3: T1 <= num
+  C4: T1 <= ret__square__global
+  C5: square__global <= Func<square__global>{n__square__global -> ret__square__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ n__square__global:bot, num:bot, T1:bot, ret__square__global:bot, square__global:bot, Func<square__global>{n__square__global -> ret__square__global}:bot
+
+1: [n__square__global <= num]
+ n__square__global:num, T1:bot, ret__square__global:bot, square__global:bot, Func<square__global>{n__square__global -> ret__square__global}:bot
+
+2: [n__square__global <= num]
+ n__square__global:num, T1:bot, ret__square__global:bot, square__global:bot, Func<square__global>{n__square__global -> ret__square__global}:bot
+
+3: [T1 <= num]
+ n__square__global:num, T1:num, ret__square__global:bot, square__global:bot, Func<square__global>{n__square__global -> ret__square__global}:bot
+
+4: [T1 <= ret__square__global]
+ n__square__global:num, T1:num, ret__square__global:num, square__global:bot, Func<square__global>{n__square__global -> ret__square__global}:bot
+
+5: [square__global <= Func<square__global>{n__square__global -> ret__square__global}]
+ n__square__global:num, T1:num, ret__square__global:num, (square__global: Func<square__global>{n__square__global -> T1})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  n__square__global    :  num
+  ret__square__global  :  num
+  square__global       :  Func<square__global>{num -> num}
+

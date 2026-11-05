@@ -1,0 +1,60 @@
+
+Constraints:
+  C01: T1 <= Array<{}>
+  C02: a__f__global <= num
+  C03: b__f__global <= num
+  C04: T2 <= num
+  C05: T2 <= ret__f__global
+  C06: f__global <= Func<f__global>{a__f__global -> b__f__global -> ret__f__global}
+  C07: f__global <= Func<f__global>{a__f__global -> b__f__global -> ret__f__global}
+  C08: T3 <= num
+  C09: T3 <= a__f__global
+  C10: T4 <= num
+  C11: T4 <= b__f__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Array<{}>:bot, a__f__global:bot, num:bot, b__f__global:bot, T2:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot, T3:bot, T4:bot
+
+1: [T1 <= Array<{}>]
+ (T1: Array<{}>), a__f__global:bot, num:bot, b__f__global:bot, T2:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot, T3:bot, T4:bot
+
+2: [a__f__global <= num]
+ (T1: Array<{}>), a__f__global:num, b__f__global:bot, T2:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot, T3:bot, T4:bot
+
+3: [b__f__global <= num]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:bot, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot, T3:bot, T4:bot
+
+4: [T2 <= num]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:bot, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot, T3:bot, T4:bot
+
+5: [T2 <= ret__f__global]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:num, f__global:bot, Func<f__global>{a__f__global -> b__f__global -> ret__f__global}:bot, T3:bot, T4:bot
+
+6: [f__global <= Func<f__global>{a__f__global -> b__f__global -> ret__f__global}]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:num, (f__global: Func<f__global>{a__f__global -> b__f__global -> T2}), T3:bot, T4:bot
+
+7: [f__global <= Func<f__global>{a__f__global -> b__f__global -> ret__f__global}]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:num, (f__global: Func<f__global>{a__f__global -> b__f__global -> T2}), T3:bot, T4:bot
+
+8: [T3 <= num]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:num, (f__global: Func<f__global>{a__f__global -> b__f__global -> T2}), T3:num, T4:bot
+
+9: [T3 <= a__f__global]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:num, (f__global: Func<f__global>{T3 -> b__f__global -> T2}), T3:num, T4:bot
+
+10: [T4 <= num]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:num, (f__global: Func<f__global>{T3 -> b__f__global -> T2}), T3:num, T4:num
+
+11: [T4 <= b__f__global]
+ (T1: Array<{}>), a__f__global:num, b__f__global:num, T2:num, ret__f__global:num, (f__global: Func<f__global>{T3 -> T4 -> T2}), T3:num, T4:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__f__global    :  num
+  b__f__global    :  num
+  f__global       :  Func<f__global>{num -> num -> num}
+  ret__f__global  :  num
+

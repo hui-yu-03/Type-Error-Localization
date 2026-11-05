@@ -1,0 +1,17 @@
+
+Constraints:
+  C1: Animal__global <= Class<Animal>[]
+
+──────────────────────────────────────────────────────
+Inicio:
+ Animal__global:bot, Class<Animal>[]:bot
+
+1: [Animal__global <= Class<Animal>[]]
+ (Animal__global: Class<Animal>[])
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Animal__global  :  Class<Animal>[]
+

@@ -1,0 +1,32 @@
+
+Constraints:
+  C1: T1 <= str
+  C2: T1 <= x__global
+  C3: y__global <= z__global
+  C4: y__global <= t__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, x__global:bot, y__global:bot, z__global:bot, t__global:bot
+
+1: [T1 <= str]
+ T1:str, x__global:bot, y__global:bot, z__global:bot, t__global:bot
+
+2: [T1 <= x__global]
+ T1:str, x__global:str, y__global:bot, z__global:bot, t__global:bot
+
+3: [y__global <= z__global]
+ T1:str, x__global:str, y__global:bot, z__global:bot, t__global:bot
+
+4: [y__global <= t__global]
+ T1:str, x__global:str, y__global:bot, z__global:bot, t__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  t__global  :  bot
+  x__global  :  str
+  y__global  :  bot
+  z__global  :  bot
+

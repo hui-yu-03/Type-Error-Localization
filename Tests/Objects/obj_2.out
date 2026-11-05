@@ -1,0 +1,82 @@
+
+Constraints:
+  C01: x__global <= {}
+  C02: T1 <= num
+  C03: x__global <= {age: T1}
+  C04: T2 <= str
+  C05: x__global <= {name: T2}
+  C06: config__global <= {}
+  C07: T3 <= num
+  C08: config__global <= {port: T3}
+  C09: T4 <= str
+  C10: config__global <= {host: T4}
+  C11: T5 <= str
+  C12: T5 <= config__setup__global
+  C13: T6 <= str
+  C14: config__setup__global <= {host: T6}
+  C15: void <= ret__setup__global
+  C16: setup__global <= Func<setup__global>{() -> ret__setup__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ x__global:bot, {}:bot, T1:bot, num:bot, {age: T1}:bot, T2:bot, str:bot, {name: T2}:bot, config__global:bot, T3:bot, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+1: [x__global <= {}]
+ x__global:{}, T1:bot, num:bot, {age: T1}:bot, T2:bot, str:bot, {name: T2}:bot, config__global:bot, T3:bot, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+2: [T1 <= num]
+ x__global:{}, T1:num, {age: T1}:bot, T2:bot, str:bot, {name: T2}:bot, config__global:bot, T3:bot, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+3: [x__global <= {age: T1}]
+ (x__global: {age: T1}), T1:num, T2:bot, str:bot, {name: T2}:bot, config__global:bot, T3:bot, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+4: [T2 <= str]
+ (x__global: {age: T1}), T1:num, T2:str, {name: T2}:bot, config__global:bot, T3:bot, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+5: [x__global <= {name: T2}]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, config__global:bot, T3:bot, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+6: [config__global <= {}]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, config__global:{}, T3:bot, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+7: [T3 <= num]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, config__global:{}, T3:num, {port: T3}:bot, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+8: [config__global <= {port: T3}]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3}), T3:num, T4:bot, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+9: [T4 <= str]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3}), T3:num, T4:str, {host: T4}:bot, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+10: [config__global <= {host: T4}]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3, host: T4}), T3:num, T4:str, T5:bot, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+11: [T5 <= str]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3, host: T4}), T3:num, T4:str, T5:str, config__setup__global:bot, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+12: [T5 <= config__setup__global]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3, host: T4}), T3:num, T4:str, T5:str, config__setup__global:str, T6:bot, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+13: [T6 <= str]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3, host: T4}), T3:num, T4:str, T5:str, config__setup__global:str, T6:str, {host: T6}:bot, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+14: [config__setup__global <= {host: T6}]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3, host: T4}), T3:num, T4:str, T5:str, config__setup__global:str, T6:str, void:bot, ret__setup__global:bot, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+15: [void <= ret__setup__global]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3, host: T4}), T3:num, T4:str, T5:str, config__setup__global:str, T6:str, void:bot, ret__setup__global:void, setup__global:bot, Func<setup__global>{() -> ret__setup__global}:bot
+
+16: [setup__global <= Func<setup__global>{() -> ret__setup__global}]
+ (x__global: {age: T1, name: T2}), T1:num, T2:str, (config__global: {port: T3, host: T4}), T3:num, T4:str, T5:str, config__setup__global:str, T6:str, void:bot, ret__setup__global:void, (setup__global: Func<setup__global>{() -> ret__setup__global})
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: str vs obj
+
+FINAL:
+  config__global         :  {port: num, host: str}
+  config__setup__global  :  str
+  ret__setup__global     :  void
+  setup__global          :  Func<setup__global>{() -> void}
+  x__global              :  {age: num, name: str}
+

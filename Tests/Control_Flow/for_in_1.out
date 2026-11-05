@@ -1,0 +1,48 @@
+
+Constraints:
+  C1: T2 <= str
+  C2: T1 <= {name: T2}
+  C3: T3 <= num
+  C4: T1 <= {age: T3}
+  C5: T1 <= person__global
+  C6: prop__global <= str
+  C7: prop__global <= a__global
+  C8: prop__global <= lastProp__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T2:bot, str:bot, T1:bot, {name: T2}:bot, T3:bot, num:bot, {age: T3}:bot, person__global:bot, prop__global:bot, a__global:bot, lastProp__global:bot
+
+1: [T2 <= str]
+ T2:str, T1:bot, {name: T2}:bot, T3:bot, num:bot, {age: T3}:bot, person__global:bot, prop__global:bot, a__global:bot, lastProp__global:bot
+
+2: [T1 <= {name: T2}]
+ T2:str, (T1: {name: T2}), T3:bot, num:bot, {age: T3}:bot, person__global:bot, prop__global:bot, a__global:bot, lastProp__global:bot
+
+3: [T3 <= num]
+ T2:str, (T1: {name: T2}), T3:num, {age: T3}:bot, person__global:bot, prop__global:bot, a__global:bot, lastProp__global:bot
+
+4: [T1 <= {age: T3}]
+ T2:str, (T1: {name: T2, age: T3}), T3:num, person__global:bot, prop__global:bot, a__global:bot, lastProp__global:bot
+
+5: [T1 <= person__global]
+ T2:str, (T1: {name: T2, age: T3}), T3:num, (person__global: {name: T2, age: T3}), prop__global:bot, a__global:bot, lastProp__global:bot
+
+6: [prop__global <= str]
+ T2:str, (T1: {name: T2, age: T3}), T3:num, (person__global: {name: T2, age: T3}), prop__global:str, a__global:bot, lastProp__global:bot
+
+7: [prop__global <= a__global]
+ T2:str, (T1: {name: T2, age: T3}), T3:num, (person__global: {name: T2, age: T3}), prop__global:str, a__global:str, lastProp__global:bot
+
+8: [prop__global <= lastProp__global]
+ T2:str, (T1: {name: T2, age: T3}), T3:num, (person__global: {name: T2, age: T3}), prop__global:str, a__global:str, lastProp__global:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global         :  str
+  lastProp__global  :  str
+  person__global    :  {name: str, age: num}
+  prop__global      :  str
+

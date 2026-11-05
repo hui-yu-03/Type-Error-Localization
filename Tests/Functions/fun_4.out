@@ -1,0 +1,42 @@
+
+Constraints:
+  C1: T1 <= Array<{}>
+  C2: inner__inner__outer__global <= ret__inner__outer__global
+  C3: inner__outer__global <= Func<inner__outer__global>{() -> ret__inner__outer__global}
+  C4: inner__outer__global <= callback__outer__global
+  C5: void <= ret__outer__global
+  C6: outer__global <= Func<outer__global>{callback__outer__global -> ret__outer__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Array<{}>:bot, inner__inner__outer__global:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, callback__outer__global:bot, void:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{callback__outer__global -> ret__outer__global}:bot
+
+1: [T1 <= Array<{}>]
+ (T1: Array<{}>), inner__inner__outer__global:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, callback__outer__global:bot, void:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{callback__outer__global -> ret__outer__global}:bot
+
+2: [inner__inner__outer__global <= ret__inner__outer__global]
+ (T1: Array<{}>), inner__inner__outer__global:bot, ret__inner__outer__global:bot, inner__outer__global:bot, Func<inner__outer__global>{() -> ret__inner__outer__global}:bot, callback__outer__global:bot, void:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{callback__outer__global -> ret__outer__global}:bot
+
+3: [inner__outer__global <= Func<inner__outer__global>{() -> ret__inner__outer__global}]
+ (T1: Array<{}>), inner__inner__outer__global:bot, ret__inner__outer__global:bot, (inner__outer__global: Func<inner__outer__global>{() -> inner__inner__outer__global}), callback__outer__global:bot, void:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{callback__outer__global -> ret__outer__global}:bot
+
+4: [inner__outer__global <= callback__outer__global]
+ (T1: Array<{}>), inner__inner__outer__global:bot, ret__inner__outer__global:bot, (inner__outer__global: Func<inner__outer__global>{() -> inner__inner__outer__global}), (callback__outer__global: Func<inner__outer__global>{() -> inner__inner__outer__global}), void:bot, ret__outer__global:bot, outer__global:bot, Func<outer__global>{callback__outer__global -> ret__outer__global}:bot
+
+5: [void <= ret__outer__global]
+ (T1: Array<{}>), inner__inner__outer__global:bot, ret__inner__outer__global:bot, (inner__outer__global: Func<inner__outer__global>{() -> inner__inner__outer__global}), (callback__outer__global: Func<inner__outer__global>{() -> inner__inner__outer__global}), void:bot, ret__outer__global:void, outer__global:bot, Func<outer__global>{callback__outer__global -> ret__outer__global}:bot
+
+6: [outer__global <= Func<outer__global>{callback__outer__global -> ret__outer__global}]
+ (T1: Array<{}>), inner__inner__outer__global:bot, ret__inner__outer__global:bot, (inner__outer__global: Func<inner__outer__global>{() -> inner__inner__outer__global}), (callback__outer__global: Func<inner__outer__global>{() -> inner__inner__outer__global}), void:bot, ret__outer__global:void, (outer__global: Func<outer__global>{inner__outer__global -> ret__outer__global})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  callback__outer__global      :  Func<inner__outer__global>{() -> bot}
+  inner__inner__outer__global  :  bot
+  inner__outer__global         :  Func<inner__outer__global>{() -> bot}
+  outer__global                :  Func<outer__global>{Func<inner__outer__global>{() -> bot} -> void}
+  ret__inner__outer__global    :  bot
+  ret__outer__global           :  void
+

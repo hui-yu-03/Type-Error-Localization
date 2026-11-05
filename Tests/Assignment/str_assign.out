@@ -1,0 +1,49 @@
+
+Constraints:
+  C1: T1 <= str
+  C2: T1 <= x__global
+  C3: T2 <= str
+  C4: T2 <= y__global
+  C5: T3 <= str
+  C6: T3 <= z__global
+  C7: y__global <= a__global
+  C8: a__global <= b__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, x__global:bot, T2:bot, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot
+
+1: [T1 <= str]
+ T1:str, x__global:bot, T2:bot, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot
+
+2: [T1 <= x__global]
+ T1:str, x__global:str, T2:bot, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot
+
+3: [T2 <= str]
+ T1:str, x__global:str, T2:str, y__global:bot, T3:bot, z__global:bot, a__global:bot, b__global:bot
+
+4: [T2 <= y__global]
+ T1:str, x__global:str, T2:str, y__global:str, T3:bot, z__global:bot, a__global:bot, b__global:bot
+
+5: [T3 <= str]
+ T1:str, x__global:str, T2:str, y__global:str, T3:str, z__global:bot, a__global:bot, b__global:bot
+
+6: [T3 <= z__global]
+ T1:str, x__global:str, T2:str, y__global:str, T3:str, z__global:str, a__global:bot, b__global:bot
+
+7: [y__global <= a__global]
+ T1:str, x__global:str, T2:str, y__global:str, T3:str, z__global:str, a__global:str, b__global:bot
+
+8: [a__global <= b__global]
+ T1:str, x__global:str, T2:str, y__global:str, T3:str, z__global:str, a__global:str, b__global:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global  :  str
+  b__global  :  str
+  x__global  :  str
+  y__global  :  str
+  z__global  :  str
+

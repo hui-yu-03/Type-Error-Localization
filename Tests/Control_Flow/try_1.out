@@ -1,0 +1,77 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= x__global
+  C03: T2 <= str
+  C04: T2 <= msg__global
+  C05: T3 <= num
+  C06: T3 <= x__global
+  C07: T4 <= str
+  C08: T4 <= msg__global
+  C09: T5 <= bool
+  C10: T5 <= i_was_here__global
+  C11: e__global <= error
+  C12: T6 <= str
+  C13: T6 <= msg__global
+  C14: T7 <= bool
+  C15: T7 <= i_was_there__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, x__global:bot, T2:bot, str:bot, msg__global:bot, T3:bot, T4:bot, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+1: [T1 <= num]
+ T1:num, x__global:bot, T2:bot, str:bot, msg__global:bot, T3:bot, T4:bot, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+2: [T1 <= x__global]
+ T1:num, x__global:num, T2:bot, str:bot, msg__global:bot, T3:bot, T4:bot, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+3: [T2 <= str]
+ T1:num, x__global:num, T2:str, msg__global:bot, T3:bot, T4:bot, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+4: [T2 <= msg__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:bot, T4:bot, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+5: [T3 <= num]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:bot, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+6: [T3 <= x__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:bot, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+7: [T4 <= str]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+8: [T4 <= msg__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bot, bool:bot, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+9: [T5 <= bool]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bool, i_was_here__global:bot, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+10: [T5 <= i_was_here__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bool, i_was_here__global:bool, e__global:bot, error:bot, T6:bot, T7:bot, i_was_there__global:bot
+
+11: [e__global <= error]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bool, i_was_here__global:bool, e__global:error, T6:bot, T7:bot, i_was_there__global:bot
+
+12: [T6 <= str]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bool, i_was_here__global:bool, e__global:error, T6:str, T7:bot, i_was_there__global:bot
+
+13: [T6 <= msg__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bool, i_was_here__global:bool, e__global:error, T6:str, T7:bot, i_was_there__global:bot
+
+14: [T7 <= bool]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bool, i_was_here__global:bool, e__global:error, T6:str, T7:bool, i_was_there__global:bot
+
+15: [T7 <= i_was_there__global]
+ T1:num, x__global:num, T2:str, msg__global:str, T3:num, T4:str, T5:bool, i_was_here__global:bool, e__global:error, T6:str, T7:bool, i_was_there__global:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  e__global            :  error
+  i_was_here__global   :  bool
+  i_was_there__global  :  bool
+  msg__global          :  str
+  x__global            :  num
+

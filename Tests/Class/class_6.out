@@ -1,0 +1,52 @@
+
+Constraints:
+  C1: T1 <= Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> ret__add__Calculator}
+  C2: T2 <= Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}
+  C3: T3 <= ret__add__Calculator
+  C4: x__multiply__Calculator <= num
+  C5: y__multiply__Calculator <= num
+  C6: T4 <= num
+  C7: T4 <= ret__multiply__Calculator
+  C8: Calculator__global <= Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]
+  C9: plus(x__add__Calculator,y__add__Calculator,T3)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> ret__add__Calculator}:bot, x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, T2:bot, Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}:bot, x__multiply__Calculator:bot, y__multiply__Calculator:bot, ret__multiply__Calculator:bot, T3:bot, num:bot, T4:bot, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+1: [T1 <= Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> ret__add__Calculator}]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> ret__add__Calculator}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, T2:bot, Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}:bot, x__multiply__Calculator:bot, y__multiply__Calculator:bot, ret__multiply__Calculator:bot, T3:bot, num:bot, T4:bot, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+2: [T2 <= Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> ret__add__Calculator}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, (T2: Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}), x__multiply__Calculator:bot, y__multiply__Calculator:bot, ret__multiply__Calculator:bot, T3:bot, num:bot, T4:bot, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+3: [T3 <= ret__add__Calculator]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> T3}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, (T2: Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}), x__multiply__Calculator:bot, y__multiply__Calculator:bot, ret__multiply__Calculator:bot, T3:bot, num:bot, T4:bot, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+4: [x__multiply__Calculator <= num]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> T3}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, (T2: Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}), x__multiply__Calculator:num, y__multiply__Calculator:bot, ret__multiply__Calculator:bot, T3:bot, T4:bot, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+5: [y__multiply__Calculator <= num]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> T3}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, (T2: Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}), x__multiply__Calculator:num, y__multiply__Calculator:num, ret__multiply__Calculator:bot, T3:bot, T4:bot, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+6: [T4 <= num]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> T3}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, (T2: Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator}), x__multiply__Calculator:num, y__multiply__Calculator:num, ret__multiply__Calculator:bot, T3:bot, T4:num, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+7: [T4 <= ret__multiply__Calculator]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> T3}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, (T2: Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> T4}), x__multiply__Calculator:num, y__multiply__Calculator:num, ret__multiply__Calculator:num, T3:bot, T4:num, Calculator__global:bot, Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]:bot
+
+8: [Calculator__global <= Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> ret__add__Calculator, multiply: x__multiply__Calculator -> y__multiply__Calculator -> ret__multiply__Calculator]]
+ (T1: Func<add__Calculator>{x__add__Calculator -> y__add__Calculator -> T3}), x__add__Calculator:bot, y__add__Calculator:bot, ret__add__Calculator:bot, (T2: Func<multiply__Calculator>{x__multiply__Calculator -> y__multiply__Calculator -> T4}), x__multiply__Calculator:num, y__multiply__Calculator:num, ret__multiply__Calculator:num, T3:bot, T4:num, (Calculator__global: Class<Calculator>[add: x__add__Calculator -> y__add__Calculator -> T3, multiply: x__multiply__Calculator -> y__multiply__Calculator -> T4])
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Calculator__global         :  Class<Calculator>[add: num|str -> num|str -> num|str, multiply: num -> num -> num]
+  ret__add__Calculator       :  num|str
+  ret__multiply__Calculator  :  num
+  x__add__Calculator         :  num|str
+  x__multiply__Calculator    :  num
+  y__add__Calculator         :  num|str
+  y__multiply__Calculator    :  num
+

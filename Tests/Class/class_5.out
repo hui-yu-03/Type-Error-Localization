@@ -1,0 +1,30 @@
+
+Constraints:
+  C1: T1 <= Func<next__Counter>{void -> ret__next__Counter}
+  C2: T2 <= Obj<Counter>[next: void -> ret__next__Counter]
+  C3: T2 <= ret__next__Counter
+  C4: Counter__global <= Class<Counter>[next: void -> ret__next__Counter]
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Func<next__Counter>{void -> ret__next__Counter}:bot, void:bot, ret__next__Counter:bot, T2:bot, Obj<Counter>[next: void -> ret__next__Counter]:bot, Counter__global:bot, Class<Counter>[next: void -> ret__next__Counter]:bot
+
+1: [T1 <= Func<next__Counter>{void -> ret__next__Counter}]
+ (T1: Func<next__Counter>{void -> ret__next__Counter}), void:bot, ret__next__Counter:bot, T2:bot, Obj<Counter>[next: void -> ret__next__Counter]:bot, Counter__global:bot, Class<Counter>[next: void -> ret__next__Counter]:bot
+
+2: [T2 <= Obj<Counter>[next: void -> ret__next__Counter]]
+ (T1: Func<next__Counter>{void -> ret__next__Counter}), void:bot, ret__next__Counter:bot, (T2: Obj<Counter>[next: void -> ret__next__Counter]), Counter__global:bot, Class<Counter>[next: void -> ret__next__Counter]:bot
+
+3: [T2 <= ret__next__Counter]
+ (T1: Func<next__Counter>{void -> T2}), void:bot, (ret__next__Counter: Obj<Counter>[next: void -> T2]), (T2: Obj<Counter>[next: void -> T2]), Counter__global:bot, Class<Counter>[next: void -> ret__next__Counter]:bot
+
+4: [Counter__global <= Class<Counter>[next: void -> ret__next__Counter]]
+ (T1: Func<next__Counter>{void -> T2}), void:bot, (ret__next__Counter: Obj<Counter>[next: void -> T2]), (T2: Obj<Counter>[next: void -> T2]), (Counter__global: Class<Counter>[next: void -> T2])
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Counter__global     :  Class<Counter>[next: void -> Obj<Counter>[next: void -> T2]]
+  ret__next__Counter  :  Obj<Counter>[next: void -> T2]
+

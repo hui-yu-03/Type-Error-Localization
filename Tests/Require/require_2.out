@@ -1,0 +1,130 @@
+
+Constraints:
+  C01: T1 <= cp__global
+  C02: T2 <= str
+  C03: T2 <= cmd__global
+  C04: T3 <= str
+  C05: T4 <= {}
+  C06: T5 <= bool
+  C07: T6 <= str
+  C08: T7 <= str
+  C09: T8 <= void
+  C10: T9 <= Func<exec_cb>{T5 -> T6 -> T7 -> T8}
+  C11: T10 <= void
+  C12: T11 <= Func<exec>{T3 -> T4 -> T9 -> T10}
+  C13: cp__global <= {exec: T11}
+  C14: T12 <= str
+  C15: cmd__global <= T12
+  C16: T13 <= {}
+  C17: T13 <= {}
+  C18: T4 <= {}
+  C19: T15 <= Array<{}>
+  C20: void <= ret__fun_T14__global
+  C21: fun_T14__global <= Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}
+  C22: T16 <= bool
+  C23: T17 <= str
+  C24: T18 <= str
+  C25: T19 <= void
+  C26: T20 <= Func<exec_cb>{T16 -> T17 -> T18 -> T19}
+  C27: fun_T14__global <= T20
+  C28: T21 <= void
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, cp__global:bot, T2:bot, str:bot, cmd__global:bot, T3:bot, T4:bot, {}:bot, T5:bot, bool:bot, T6:bot, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+1: [T1 <= cp__global]
+ T1:bot, cp__global:bot, T2:bot, str:bot, cmd__global:bot, T3:bot, T4:bot, {}:bot, T5:bot, bool:bot, T6:bot, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+2: [T2 <= str]
+ T1:bot, cp__global:bot, T2:str, cmd__global:bot, T3:bot, T4:bot, {}:bot, T5:bot, bool:bot, T6:bot, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+3: [T2 <= cmd__global]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:bot, T4:bot, {}:bot, T5:bot, bool:bot, T6:bot, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+4: [T3 <= str]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:bot, {}:bot, T5:bot, bool:bot, T6:bot, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+5: [T4 <= {}]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bot, bool:bot, T6:bot, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+6: [T5 <= bool]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:bot, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+7: [T6 <= str]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:bot, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+8: [T7 <= str]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:bot, void:bot, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+9: [T8 <= void]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, T9:bot, Func<exec_cb>{T5 -> T6 -> T7 -> T8}:bot, T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+10: [T9 <= Func<exec_cb>{T5 -> T6 -> T7 -> T8}]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:bot, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+11: [T10 <= void]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, T11:bot, Func<exec>{T3 -> T4 -> T9 -> T10}:bot, {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+12: [T11 <= Func<exec>{T3 -> T4 -> T9 -> T10}]
+ T1:bot, cp__global:bot, T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), {exec: T11}:bot, T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+13: [cp__global <= {exec: T11}]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:bot, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+14: [T12 <= str]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+15: [cmd__global <= T12]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:bot, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+16: [T13 <= {}]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+17: [T13 <= {}]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+18: [T4 <= {}]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, T15:bot, Array<{}>:bot, ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+19: [T15 <= Array<{}>]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:bot, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+20: [void <= ret__fun_T14__global]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, fun_T14__global:bot, Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}:bot, err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+21: [fun_T14__global <= Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}), err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bot, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+22: [T16 <= bool]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}), err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bool, T17:bot, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+23: [T17 <= str]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}), err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bool, T17:str, T18:bot, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+24: [T18 <= str]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}), err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bool, T17:str, T18:str, T19:bot, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+25: [T19 <= void]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}), err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bool, T17:str, T18:str, T19:void, T20:bot, Func<exec_cb>{T16 -> T17 -> T18 -> T19}:bot, T21:bot
+
+26: [T20 <= Func<exec_cb>{T16 -> T17 -> T18 -> T19}]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<fun_T14__global>{err__fun_T14__global -> stdout__fun_T14__global -> ret__fun_T14__global}), err__fun_T14__global:bot, stdout__fun_T14__global:bot, T16:bool, T17:str, T18:str, T19:void, (T20: Func<exec_cb>{T16 -> T17 -> T18 -> T19}), T21:bot
+
+27: [fun_T14__global <= T20]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<exec_cb>{err__fun_T14__global -> stdout__fun_T14__global -> T18 -> ret__fun_T14__global}), err__fun_T14__global:bool, stdout__fun_T14__global:str, T16:bool, T17:str, T18:str, T19:void, (T20: Func<exec_cb>{err__fun_T14__global -> stdout__fun_T14__global -> T18 -> ret__fun_T14__global}), T21:bot
+
+28: [T21 <= void]
+ (T1: {exec: T11}), (cp__global: {exec: T11}), T2:str, cmd__global:str, T3:str, T4:{}, T5:bool, T6:str, T7:str, T8:void, (T9: Func<exec_cb>{T5 -> T6 -> T7 -> T8}), T10:void, (T11: Func<exec>{T3 -> T4 -> T9 -> T10}), T12:str, T13:{}, (T15: Array<{}>), ret__fun_T14__global:void, (fun_T14__global: Func<exec_cb>{err__fun_T14__global -> stdout__fun_T14__global -> T18 -> ret__fun_T14__global}), err__fun_T14__global:bool, stdout__fun_T14__global:str, T16:bool, T17:str, T18:str, T19:void, (T20: Func<exec_cb>{err__fun_T14__global -> stdout__fun_T14__global -> T18 -> ret__fun_T14__global}), T21:void
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  cmd__global              :  str
+  cp__global               :  {exec: Func<exec>{str -> {} -> Func<exec_cb>{bool -> str -> str -> void} -> void}}
+  err__fun_T14__global     :  bool
+  fun_T14__global          :  Func<exec_cb>{bool -> str -> str -> void}
+  ret__fun_T14__global     :  void
+  stdout__fun_T14__global  :  str
+

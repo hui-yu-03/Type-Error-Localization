@@ -1,0 +1,48 @@
+
+Constraints:
+  C1: T1 <= Func<area__Shape>{void -> ret__area__Shape}
+  C2: T2 <= num
+  C3: T2 <= ret__area__Shape
+  C4: Shape__global <= Class<Shape>[area: void -> ret__area__Shape]
+  C5: T3 <= Func<volume__Circle>{void -> ret__volume__Circle}
+  C6: T4 <= num
+  C7: T4 <= ret__volume__Circle
+  C8: Circle__global <= Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Func<area__Shape>{void -> ret__area__Shape}:bot, void:bot, ret__area__Shape:bot, T2:bot, num:bot, Shape__global:bot, Class<Shape>[area: void -> ret__area__Shape]:bot, T3:bot, Func<volume__Circle>{void -> ret__volume__Circle}:bot, ret__volume__Circle:bot, T4:bot, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+1: [T1 <= Func<area__Shape>{void -> ret__area__Shape}]
+ (T1: Func<area__Shape>{void -> ret__area__Shape}), void:bot, ret__area__Shape:bot, T2:bot, num:bot, Shape__global:bot, Class<Shape>[area: void -> ret__area__Shape]:bot, T3:bot, Func<volume__Circle>{void -> ret__volume__Circle}:bot, ret__volume__Circle:bot, T4:bot, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+2: [T2 <= num]
+ (T1: Func<area__Shape>{void -> ret__area__Shape}), void:bot, ret__area__Shape:bot, T2:num, Shape__global:bot, Class<Shape>[area: void -> ret__area__Shape]:bot, T3:bot, Func<volume__Circle>{void -> ret__volume__Circle}:bot, ret__volume__Circle:bot, T4:bot, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+3: [T2 <= ret__area__Shape]
+ (T1: Func<area__Shape>{void -> T2}), void:bot, ret__area__Shape:num, T2:num, Shape__global:bot, Class<Shape>[area: void -> ret__area__Shape]:bot, T3:bot, Func<volume__Circle>{void -> ret__volume__Circle}:bot, ret__volume__Circle:bot, T4:bot, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+4: [Shape__global <= Class<Shape>[area: void -> ret__area__Shape]]
+ (T1: Func<area__Shape>{void -> T2}), void:bot, ret__area__Shape:num, T2:num, (Shape__global: Class<Shape>[area: void -> T2]), T3:bot, Func<volume__Circle>{void -> ret__volume__Circle}:bot, ret__volume__Circle:bot, T4:bot, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+5: [T3 <= Func<volume__Circle>{void -> ret__volume__Circle}]
+ (T1: Func<area__Shape>{void -> T2}), void:bot, ret__area__Shape:num, T2:num, (Shape__global: Class<Shape>[area: void -> T2]), (T3: Func<volume__Circle>{void -> ret__volume__Circle}), ret__volume__Circle:bot, T4:bot, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+6: [T4 <= num]
+ (T1: Func<area__Shape>{void -> T2}), void:bot, ret__area__Shape:num, T2:num, (Shape__global: Class<Shape>[area: void -> T2]), (T3: Func<volume__Circle>{void -> ret__volume__Circle}), ret__volume__Circle:bot, T4:num, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+7: [T4 <= ret__volume__Circle]
+ (T1: Func<area__Shape>{void -> T2}), void:bot, ret__area__Shape:num, T2:num, (Shape__global: Class<Shape>[area: void -> T2]), (T3: Func<volume__Circle>{void -> T4}), ret__volume__Circle:num, T4:num, Circle__global:bot, Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]:bot
+
+8: [Circle__global <= Class<Circle>[area: void -> ret__area__Shape, volume: void -> ret__volume__Circle]]
+ (T1: Func<area__Shape>{void -> T2}), void:bot, ret__area__Shape:num, T2:num, (Shape__global: Class<Shape>[area: void -> T2]), (T3: Func<volume__Circle>{void -> T4}), ret__volume__Circle:num, T4:num, (Circle__global: Class<Circle>[area: void -> T2, volume: void -> T4])
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Circle__global       :  Class<Circle>[area: void -> num, volume: void -> num]
+  Shape__global        :  Class<Shape>[area: void -> num]
+  ret__area__Shape     :  num
+  ret__volume__Circle  :  num
+

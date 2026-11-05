@@ -1,0 +1,61 @@
+
+Constraints:
+  C01: a__global <= {}
+  C02: T1 <= num
+  C03: a__global <= {id: T1}
+  C04: b__global <= {}
+  C05: T2 <= str
+  C06: b__global <= {id: T2}
+  C07: a__global <= {id: T3}
+  C08: T4 <= num
+  C09: T5 <= numId__global
+  C10: T6 <= strId__global
+  C11: b__global <= {id: T6}
+  C12: plus(T3,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ a__global:bot, {}:bot, T1:bot, num:bot, {id: T1}:bot, b__global:bot, T2:bot, str:bot, {id: T2}:bot, {id: T3}:bot, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:bot
+
+1: [a__global <= {}]
+ a__global:{}, T1:bot, num:bot, {id: T1}:bot, b__global:bot, T2:bot, str:bot, {id: T2}:bot, {id: T3}:bot, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:bot
+
+2: [T1 <= num]
+ a__global:{}, T1:num, {id: T1}:bot, b__global:bot, T2:bot, str:bot, {id: T2}:bot, {id: T3}:bot, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:bot
+
+3: [a__global <= {id: T1}]
+ (a__global: {id: T1}), T1:num, b__global:bot, T2:bot, str:bot, {id: T2}:bot, {id: T3}:bot, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:bot
+
+4: [b__global <= {}]
+ (a__global: {id: T1}), T1:num, b__global:{}, T2:bot, str:bot, {id: T2}:bot, {id: T3}:bot, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:bot
+
+5: [T2 <= str]
+ (a__global: {id: T1}), T1:num, b__global:{}, T2:str, {id: T2}:bot, {id: T3}:bot, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:bot
+
+6: [b__global <= {id: T2}]
+ (a__global: {id: T1}), T1:num, (b__global: {id: T2}), T2:str, {id: T3}:bot, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:bot
+
+7: [a__global <= {id: T3}]
+ (a__global: {id: T1}), T1:num, (b__global: {id: T2}), T2:str, T4:bot, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:num
+
+8: [T4 <= num]
+ (a__global: {id: T1}), T1:num, (b__global: {id: T2}), T2:str, T4:num, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:num
+
+9: [T5 <= numId__global]
+ (a__global: {id: T1}), T1:num, (b__global: {id: T2}), T2:str, T4:num, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:num
+
+10: [T6 <= strId__global]
+ (a__global: {id: T1}), T1:num, (b__global: {id: T2}), T2:str, T4:num, T5:bot, numId__global:bot, T6:bot, strId__global:bot, {id: T6}:bot, T3:num
+
+11: [b__global <= {id: T6}]
+ (a__global: {id: T1}), T1:num, (b__global: {id: T6}), T2:str, T4:num, T5:bot, numId__global:bot, T6:str, strId__global:str, T3:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global      :  {id: num}
+  b__global      :  {id: str}
+  numId__global  :  num
+  strId__global  :  str
+

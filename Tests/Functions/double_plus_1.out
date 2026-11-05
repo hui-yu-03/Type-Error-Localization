@@ -1,0 +1,59 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= x__global
+  C03: x__f__global <= num
+  C04: x__f__global <= ret__f__global
+  C05: f__global <= Func<f__global>{x__f__global -> ret__f__global}
+  C06: T2 <= str
+  C07: T2 <= b__global
+  C08: f__global <= Func<f__global>{x__f__global -> ret__f__global}
+  C09: b__global <= x__f__global
+  C10: ret__f__global <= a__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, x__global:bot, x__f__global:bot, ret__f__global:bot, f__global:bot, Func<f__global>{x__f__global -> ret__f__global}:bot, T2:bot, str:bot, b__global:bot, a__global:bot
+
+1: [T1 <= num]
+ T1:num, x__global:bot, x__f__global:bot, ret__f__global:bot, f__global:bot, Func<f__global>{x__f__global -> ret__f__global}:bot, T2:bot, str:bot, b__global:bot, a__global:bot
+
+2: [T1 <= x__global]
+ T1:num, x__global:num, x__f__global:bot, ret__f__global:bot, f__global:bot, Func<f__global>{x__f__global -> ret__f__global}:bot, T2:bot, str:bot, b__global:bot, a__global:bot
+
+3: [x__f__global <= num]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:bot, f__global:bot, Func<f__global>{x__f__global -> ret__f__global}:bot, T2:bot, str:bot, b__global:bot, a__global:bot
+
+4: [x__f__global <= ret__f__global]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:num, f__global:bot, Func<f__global>{x__f__global -> ret__f__global}:bot, T2:bot, str:bot, b__global:bot, a__global:bot
+
+5: [f__global <= Func<f__global>{x__f__global -> ret__f__global}]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:num, (f__global: Func<f__global>{x__f__global -> x__f__global}), T2:bot, str:bot, b__global:bot, a__global:bot
+
+6: [T2 <= str]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:num, (f__global: Func<f__global>{x__f__global -> x__f__global}), T2:str, b__global:bot, a__global:bot
+
+7: [T2 <= b__global]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:num, (f__global: Func<f__global>{x__f__global -> x__f__global}), T2:str, b__global:str, a__global:bot
+
+8: [f__global <= Func<f__global>{x__f__global -> ret__f__global}]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:num, (f__global: Func<f__global>{x__f__global -> x__f__global}), T2:str, b__global:str, a__global:bot
+
+9: [b__global <= x__f__global]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:num, (f__global: Func<f__global>{x__f__global -> x__f__global}), T2:str, b__global:str, a__global:bot
+
+10: [ret__f__global <= a__global]
+ T1:num, x__global:num, x__f__global:num, ret__f__global:num, (f__global: Func<f__global>{x__f__global -> x__f__global}), T2:str, b__global:str, a__global:num
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: str vs num  (union(b__global,x__f__global))
+
+FINAL:
+  a__global       :  num
+  b__global       :  str
+  f__global       :  Func<f__global>{num -> num}
+  ret__f__global  :  num
+  x__f__global    :  num
+  x__global       :  num
+

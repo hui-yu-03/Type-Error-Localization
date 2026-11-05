@@ -1,0 +1,52 @@
+
+Constraints:
+  C01: T1 <= bool
+  C02: T1 <= flag__global
+  C03: T2 <= num
+  C04: T3 <= str
+  C05: T4 <= x__global
+  C06: T5 <= str
+  C07: T6 <= Func<toUpperCase>{() -> T5}
+  C08: T6 <= Func<T8>{() -> T7}
+  C09: T7 <= foo__global
+  C10: union(T2,T3,T4)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, bool:bot, flag__global:bot, T2:bot, num:bot, T3:bot, str:bot, T4:bot, x__global:bot, T5:bot, T6:bot, Func<toUpperCase>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+1: [T1 <= bool]
+ T1:bool, flag__global:bot, T2:bot, num:bot, T3:bot, str:bot, T4:bot, x__global:bot, T5:bot, T6:bot, Func<toUpperCase>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+2: [T1 <= flag__global]
+ T1:bool, flag__global:bool, T2:bot, num:bot, T3:bot, str:bot, T4:bot, x__global:bot, T5:bot, T6:bot, Func<toUpperCase>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+3: [T2 <= num]
+ T1:bool, flag__global:bool, T2:num, T3:bot, str:bot, T4:bot, x__global:bot, T5:bot, T6:bot, Func<toUpperCase>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+4: [T3 <= str]
+ T1:bool, flag__global:bool, T2:num, T3:str, T4:bot, x__global:bot, T5:bot, T6:bot, Func<toUpperCase>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+5: [T4 <= x__global]
+ T1:bool, flag__global:bool, T2:num, T3:str, T4:bot, x__global:bot, T5:bot, T6:bot, Func<toUpperCase>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+6: [T5 <= str]
+ T1:bool, flag__global:bool, T2:num, T3:str, T4:bot, x__global:bot, T5:str, T6:bot, Func<toUpperCase>{() -> T5}:bot, Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+7: [T6 <= Func<toUpperCase>{() -> T5}]
+ T1:bool, flag__global:bool, T2:num, T3:str, T4:bot, x__global:bot, T5:str, (T6: Func<toUpperCase>{() -> T5}), Func<T8>{() -> T7}:bot, T7:bot, foo__global:bot
+
+8: [T6 <= Func<T8>{() -> T7}]
+ T1:bool, flag__global:bool, T2:num, T3:str, T4:bot, x__global:bot, T5:str, (T6: Func<toUpperCase>{() -> T5}), T7:str, foo__global:bot
+
+9: [T7 <= foo__global]
+ T1:bool, flag__global:bool, T2:num, T3:str, T4:bot, x__global:bot, T5:str, (T6: Func<toUpperCase>{() -> T5}), T7:str, foo__global:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  flag__global  :  bool
+  foo__global   :  str
+  x__global     :  num|str
+

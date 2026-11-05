@@ -1,0 +1,51 @@
+
+Constraints:
+  C1: T1 <= str
+  C2: T1 <= T3
+  C3: T4 <= Promise<T2,T3>
+  C4: T4 <= Promise<T5,T6>
+  C5: T6 <= e__catch_cb_T8__global
+  C6: T9 <= num
+  C7: T9 <= ret__catch_cb_T8__global
+  C8: T10 <= Promise<T5,ret__catch_cb_T8__global>
+  C9: T10 <= q__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, T3:bot, T4:bot, Promise<T2,T3>:bot, Promise<T5,T6>:bot, T6:bot, e__catch_cb_T8__global:bot, T9:bot, num:bot, ret__catch_cb_T8__global:bot, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+1: [T1 <= str]
+ T1:str, T3:bot, T4:bot, Promise<T2,T3>:bot, Promise<T5,T6>:bot, T6:bot, e__catch_cb_T8__global:bot, T9:bot, num:bot, ret__catch_cb_T8__global:bot, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+2: [T1 <= T3]
+ T1:str, T3:str, T4:bot, Promise<T2,T3>:bot, Promise<T5,T6>:bot, T6:bot, e__catch_cb_T8__global:bot, T9:bot, num:bot, ret__catch_cb_T8__global:bot, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+3: [T4 <= Promise<T2,T3>]
+ T1:str, T3:str, (T4: Promise<T2, T1>), Promise<T5,T6>:bot, T6:bot, e__catch_cb_T8__global:bot, T9:bot, num:bot, ret__catch_cb_T8__global:bot, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+4: [T4 <= Promise<T5,T6>]
+ T1:str, T3:str, (T4: Promise<T2, T1>), T6:str, e__catch_cb_T8__global:bot, T9:bot, num:bot, ret__catch_cb_T8__global:bot, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+5: [T6 <= e__catch_cb_T8__global]
+ T1:str, T3:str, (T4: Promise<T2, T1>), T6:str, e__catch_cb_T8__global:str, T9:bot, num:bot, ret__catch_cb_T8__global:bot, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+6: [T9 <= num]
+ T1:str, T3:str, (T4: Promise<T2, T1>), T6:str, e__catch_cb_T8__global:str, T9:num, ret__catch_cb_T8__global:bot, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+7: [T9 <= ret__catch_cb_T8__global]
+ T1:str, T3:str, (T4: Promise<T2, T1>), T6:str, e__catch_cb_T8__global:str, T9:num, ret__catch_cb_T8__global:num, T10:bot, Promise<T5,ret__catch_cb_T8__global>:bot, q__global:bot
+
+8: [T10 <= Promise<T5,ret__catch_cb_T8__global>]
+ T1:str, T3:str, (T4: Promise<T2, T1>), T6:str, e__catch_cb_T8__global:str, T9:num, ret__catch_cb_T8__global:num, (T10: Promise<T2, T9>), q__global:bot
+
+9: [T10 <= q__global]
+ T1:str, T3:str, (T4: Promise<T2, T1>), T6:str, e__catch_cb_T8__global:str, T9:num, ret__catch_cb_T8__global:num, (T10: Promise<T2, T9>), (q__global: Promise<T2, T9>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  e__catch_cb_T8__global    :  str
+  q__global                 :  Promise<bot, num>
+  ret__catch_cb_T8__global  :  num
+

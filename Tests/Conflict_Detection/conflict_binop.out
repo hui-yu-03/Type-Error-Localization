@@ -1,0 +1,74 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= a__global
+  C03: T2 <= num
+  C04: T2 <= b__global
+  C05: T3 <= x__global
+  C06: T4 <= str
+  C07: x__global <= {label: T4}
+  C08: T5 <= num
+  C09: T5 <= y__global
+  C10: T6 <= str
+  C11: y__global <= {p: T6}
+  C12: y__global <= {p: T7}
+  C13: T8 <= hui__global
+  C14: plus(a__global,b__global,T3)
+  C15: plus(y__global,T7,T8)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, a__global:bot, T2:bot, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+1: [T1 <= num]
+ T1:num, a__global:bot, T2:bot, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+2: [T1 <= a__global]
+ T1:num, a__global:num, T2:bot, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+3: [T2 <= num]
+ T1:num, a__global:num, T2:num, b__global:bot, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+4: [T2 <= b__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+5: [T3 <= x__global]
+ T1:num, a__global:num, T2:num, b__global:num, T3:bot, x__global:bot, T4:bot, str:bot, {label: T4}:bot, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+6: [T4 <= str]
+ T1:num, a__global:num, T2:num, b__global:num, T3:bot, x__global:bot, T4:str, {label: T4}:bot, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+7: [x__global <= {label: T4}]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:bot, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+8: [T5 <= num]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:num, y__global:bot, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+9: [T5 <= y__global]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:num, y__global:num, T6:bot, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+10: [T6 <= str]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:num, y__global:num, T6:str, {p: T6}:bot, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+11: [y__global <= {p: T6}]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:num, y__global:num, T6:str, {p: T7}:bot, T8:bot, hui__global:bot, T7:bot
+
+12: [y__global <= {p: T7}]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:num, y__global:num, T6:str, T8:bot, hui__global:bot, T7:str
+
+13: [T8 <= hui__global]
+ T1:num, a__global:num, T2:num, b__global:num, (T3: {label: T4}), (x__global: {label: T4}), T4:str, T5:num, y__global:num, T6:str, T8:bot, hui__global:bot, T7:str
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: num vs obj
+   CONFLICT: num vs obj
+   CONFLICT: obj vs num  (T3 <= num)
+
+FINAL:
+  a__global    :  num
+  b__global    :  num
+  hui__global  :  str
+  x__global    :  num
+  y__global    :  num
+

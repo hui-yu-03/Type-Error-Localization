@@ -1,0 +1,75 @@
+
+Constraints:
+  C01: T1 <= bool
+  C02: T1 <= y__global
+  C03: T2 <= num
+  C04: T2 <= x__global
+  C05: x__global <= num
+  C06: x__global <= num
+  C07: T3 <= num
+  C08: T3 <= x__global
+  C09: T4 <= num
+  C10: T4 <= z__global
+  C11: z__global <= num
+  C12: T5 <= num
+  C13: x__global <= T5
+  C14: T5 <= x__global
+  C15: T6 <= bool
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, bool:bot, y__global:bot, T2:bot, num:bot, x__global:bot, T3:bot, T4:bot, z__global:bot, T5:bot, T6:bot
+
+1: [T1 <= bool]
+ T1:bool, y__global:bot, T2:bot, num:bot, x__global:bot, T3:bot, T4:bot, z__global:bot, T5:bot, T6:bot
+
+2: [T1 <= y__global]
+ T1:bool, y__global:bool, T2:bot, num:bot, x__global:bot, T3:bot, T4:bot, z__global:bot, T5:bot, T6:bot
+
+3: [T2 <= num]
+ T1:bool, y__global:bool, T2:num, x__global:bot, T3:bot, T4:bot, z__global:bot, T5:bot, T6:bot
+
+4: [T2 <= x__global]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:bot, T4:bot, z__global:bot, T5:bot, T6:bot
+
+5: [x__global <= num]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:bot, T4:bot, z__global:bot, T5:bot, T6:bot
+
+6: [x__global <= num]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:bot, T4:bot, z__global:bot, T5:bot, T6:bot
+
+7: [T3 <= num]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:bot, z__global:bot, T5:bot, T6:bot
+
+8: [T3 <= x__global]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:bot, z__global:bot, T5:bot, T6:bot
+
+9: [T4 <= num]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:num, z__global:bot, T5:bot, T6:bot
+
+10: [T4 <= z__global]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:num, z__global:num, T5:bot, T6:bot
+
+11: [z__global <= num]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:num, z__global:num, T5:bot, T6:bot
+
+12: [T5 <= num]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:num, z__global:num, T5:num, T6:bot
+
+13: [x__global <= T5]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:num, z__global:num, T5:num, T6:bot
+
+14: [T5 <= x__global]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:num, z__global:num, T5:num, T6:bot
+
+15: [T6 <= bool]
+ T1:bool, y__global:bool, T2:num, x__global:num, T3:num, T4:num, z__global:num, T5:num, T6:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  x__global  :  num
+  y__global  :  bool
+  z__global  :  num
+

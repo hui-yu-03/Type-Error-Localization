@@ -1,0 +1,49 @@
+
+Constraints:
+  C1: void <= ret__constructor__Dog
+  C2: Dog__global <= Class<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]
+  C3: T1 <= str
+  C4: T2 <= num
+  C5: T1 <= name__constructor__Dog
+  C6: T2 <= age__constructor__Dog
+  C7: T3 <= Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]
+  C8: T3 <= d__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ void:bot, ret__constructor__Dog:bot, Dog__global:bot, Class<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, T1:bot, str:bot, T2:bot, num:bot, name__constructor__Dog:bot, age__constructor__Dog:bot, T3:bot, Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, d__global:bot
+
+1: [void <= ret__constructor__Dog]
+ void:bot, ret__constructor__Dog:void, Dog__global:bot, Class<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, T1:bot, str:bot, T2:bot, num:bot, name__constructor__Dog:bot, age__constructor__Dog:bot, T3:bot, Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, d__global:bot
+
+2: [Dog__global <= Class<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]]
+ void:bot, ret__constructor__Dog:void, (Dog__global: Class<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]), T1:bot, str:bot, T2:bot, num:bot, name__constructor__Dog:bot, age__constructor__Dog:bot, T3:bot, Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, d__global:bot
+
+3: [T1 <= str]
+ void:bot, ret__constructor__Dog:void, (Dog__global: Class<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]), T1:str, T2:bot, num:bot, name__constructor__Dog:bot, age__constructor__Dog:bot, T3:bot, Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, d__global:bot
+
+4: [T2 <= num]
+ void:bot, ret__constructor__Dog:void, (Dog__global: Class<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]), T1:str, T2:num, name__constructor__Dog:bot, age__constructor__Dog:bot, T3:bot, Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, d__global:bot
+
+5: [T1 <= name__constructor__Dog]
+ void:bot, ret__constructor__Dog:void, (Dog__global: Class<Dog>[name: T1, age: age__constructor__Dog]), T1:str, T2:num, name__constructor__Dog:str, age__constructor__Dog:bot, T3:bot, Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, d__global:bot
+
+6: [T2 <= age__constructor__Dog]
+ void:bot, ret__constructor__Dog:void, (Dog__global: Class<Dog>[name: T1, age: T2]), T1:str, T2:num, name__constructor__Dog:str, age__constructor__Dog:num, T3:bot, Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]:bot, d__global:bot
+
+7: [T3 <= Obj<Dog>[name: name__constructor__Dog, age: age__constructor__Dog]]
+ void:bot, ret__constructor__Dog:void, (Dog__global: Class<Dog>[name: T1, age: T2]), T1:str, T2:num, name__constructor__Dog:str, age__constructor__Dog:num, (T3: Obj<Dog>[name: T1, age: T2]), d__global:bot
+
+8: [T3 <= d__global]
+ void:bot, ret__constructor__Dog:void, (Dog__global: Class<Dog>[name: T1, age: T2]), T1:str, T2:num, name__constructor__Dog:str, age__constructor__Dog:num, (T3: Obj<Dog>[name: T1, age: T2]), (d__global: Obj<Dog>[name: T1, age: T2])
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Dog__global             :  Class<Dog>[name: str, age: num]
+  age__constructor__Dog   :  num
+  d__global               :  Obj<Dog>[name: str, age: num]
+  name__constructor__Dog  :  str
+  ret__constructor__Dog   :  void
+

@@ -1,0 +1,41 @@
+
+Constraints:
+  C1: ret__f__global <= Promise<async_inner__f__global,T1>
+  C2: p__f__global <= Promise<T2,T3>
+  C3: T2 <= x__f__global
+  C4: T4 <= num
+  C5: T5 <= async_inner__f__global
+  C6: f__global <= Func<f__global>{p__f__global -> ret__f__global}
+  C7: plus(x__f__global,T4,T5)
+
+──────────────────────────────────────────────────────
+Inicio:
+ ret__f__global:bot, Promise<async_inner__f__global,T1>:bot, p__f__global:bot, Promise<T2,T3>:bot, T2:bot, x__f__global:bot, T4:bot, num:bot, T5:bot, async_inner__f__global:bot, f__global:bot, Func<f__global>{p__f__global -> ret__f__global}:bot
+
+1: [ret__f__global <= Promise<async_inner__f__global,T1>]
+ (ret__f__global: Promise<async_inner__f__global, T1>), p__f__global:bot, Promise<T2,T3>:bot, T2:bot, x__f__global:bot, T4:bot, num:bot, T5:bot, async_inner__f__global:bot, f__global:bot, Func<f__global>{p__f__global -> ret__f__global}:bot
+
+2: [p__f__global <= Promise<T2,T3>]
+ (ret__f__global: Promise<async_inner__f__global, T1>), (p__f__global: Promise<T2, T3>), T2:bot, x__f__global:bot, T4:bot, num:bot, T5:bot, async_inner__f__global:bot, f__global:bot, Func<f__global>{p__f__global -> ret__f__global}:bot
+
+3: [T2 <= x__f__global]
+ (ret__f__global: Promise<async_inner__f__global, T1>), (p__f__global: Promise<T2, T3>), T2:bot, x__f__global:bot, T4:bot, num:bot, T5:bot, async_inner__f__global:bot, f__global:bot, Func<f__global>{p__f__global -> ret__f__global}:bot
+
+4: [T4 <= num]
+ (ret__f__global: Promise<async_inner__f__global, T1>), (p__f__global: Promise<T2, T3>), T2:bot, x__f__global:bot, T4:num, T5:bot, async_inner__f__global:bot, f__global:bot, Func<f__global>{p__f__global -> ret__f__global}:bot
+
+5: [T5 <= async_inner__f__global]
+ (ret__f__global: Promise<T5, T1>), (p__f__global: Promise<T2, T3>), T2:bot, x__f__global:bot, T4:num, T5:bot, async_inner__f__global:bot, f__global:bot, Func<f__global>{p__f__global -> ret__f__global}:bot
+
+6: [f__global <= Func<f__global>{p__f__global -> ret__f__global}]
+ (ret__f__global: Promise<T5, T1>), (p__f__global: Promise<T2, T3>), T2:bot, x__f__global:bot, T4:num, T5:bot, async_inner__f__global:bot, (f__global: Func<f__global>{p__f__global -> ret__f__global})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  f__global       :  Func<f__global>{Promise<num|str, bot> -> Promise<num|str, bot>}
+  p__f__global    :  Promise<num|str, bot>
+  ret__f__global  :  Promise<num|str, bot>
+  x__f__global    :  num|str
+

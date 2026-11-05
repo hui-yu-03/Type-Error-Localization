@@ -1,0 +1,48 @@
+
+Constraints:
+  C01: T1 <= str
+  C02: T1 <= message__global
+  C03: T2 <= num
+  C04: T2 <= count__global
+  C05: T3 <= num
+  C06: T4 <= count__global
+  C07: T5 <= str
+  C08: T6 <= message__global
+  C09: plus(count__global,T3,T4)
+  C10: plus(message__global,T5,T6)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, str:bot, message__global:bot, T2:bot, num:bot, count__global:bot, T3:bot, T4:bot, T5:bot, T6:bot
+
+1: [T1 <= str]
+ T1:str, message__global:bot, T2:bot, num:bot, count__global:bot, T3:bot, T4:bot, T5:bot, T6:bot
+
+2: [T1 <= message__global]
+ T1:str, message__global:str, T2:bot, num:bot, count__global:bot, T3:bot, T4:bot, T5:bot, T6:bot
+
+3: [T2 <= num]
+ T1:str, message__global:str, T2:num, count__global:bot, T3:bot, T4:bot, T5:bot, T6:bot
+
+4: [T2 <= count__global]
+ T1:str, message__global:str, T2:num, count__global:num, T3:bot, T4:bot, T5:bot, T6:bot
+
+5: [T3 <= num]
+ T1:str, message__global:str, T2:num, count__global:num, T3:num, T4:bot, T5:bot, T6:bot
+
+6: [T4 <= count__global]
+ T1:str, message__global:str, T2:num, count__global:num, T3:num, T4:num, T5:bot, T6:bot
+
+7: [T5 <= str]
+ T1:str, message__global:str, T2:num, count__global:num, T3:num, T4:num, T5:str, T6:bot
+
+8: [T6 <= message__global]
+ T1:str, message__global:str, T2:num, count__global:num, T3:num, T4:num, T5:str, T6:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  count__global    :  num
+  message__global  :  str
+

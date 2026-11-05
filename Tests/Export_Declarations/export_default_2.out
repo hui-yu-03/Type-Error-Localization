@@ -1,0 +1,25 @@
+
+Constraints:
+  C1: T2 <= ret__anon_T1__global
+  C2: anon_T1__global <= Func<anon_T1__global>{a__anon_T1__global -> b__anon_T1__global -> ret__anon_T1__global}
+  C3: plus(a__anon_T1__global,b__anon_T1__global,T2)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T2:bot, ret__anon_T1__global:bot, anon_T1__global:bot, Func<anon_T1__global>{a__anon_T1__global -> b__anon_T1__global -> ret__anon_T1__global}:bot, a__anon_T1__global:bot, b__anon_T1__global:bot
+
+1: [T2 <= ret__anon_T1__global]
+ T2:bot, ret__anon_T1__global:bot, anon_T1__global:bot, Func<anon_T1__global>{a__anon_T1__global -> b__anon_T1__global -> ret__anon_T1__global}:bot, a__anon_T1__global:bot, b__anon_T1__global:bot
+
+2: [anon_T1__global <= Func<anon_T1__global>{a__anon_T1__global -> b__anon_T1__global -> ret__anon_T1__global}]
+ T2:bot, ret__anon_T1__global:bot, (anon_T1__global: Func<anon_T1__global>{a__anon_T1__global -> b__anon_T1__global -> T2}), a__anon_T1__global:bot, b__anon_T1__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__anon_T1__global    :  num|str
+  anon_T1__global       :  Func<anon_T1__global>{num|str -> num|str -> num|str}
+  b__anon_T1__global    :  num|str
+  ret__anon_T1__global  :  num|str
+

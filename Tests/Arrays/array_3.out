@@ -1,0 +1,53 @@
+
+Constraints:
+  C01: T5 <= str
+  C02: T5 <= T3
+  C03: T4 <= Array<T3>
+  C04: T4 <= T1
+  C05: T8 <= str
+  C06: T8 <= T6
+  C07: T7 <= Array<T6>
+  C08: T7 <= T1
+  C09: T2 <= Array<T1>
+  C10: T2 <= a__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T5:bot, str:bot, T3:bot, T4:bot, Array<T3>:bot, T1:bot, T8:bot, T6:bot, T7:bot, Array<T6>:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+1: [T5 <= str]
+ T5:str, T3:bot, T4:bot, Array<T3>:bot, T1:bot, T8:bot, T6:bot, T7:bot, Array<T6>:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+2: [T5 <= T3]
+ T5:str, T3:str, T4:bot, Array<T3>:bot, T1:bot, T8:bot, T6:bot, T7:bot, Array<T6>:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+3: [T4 <= Array<T3>]
+ T5:str, T3:str, (T4: Array<T5>), T1:bot, T8:bot, T6:bot, T7:bot, Array<T6>:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+4: [T4 <= T1]
+ T5:str, T3:str, (T4: Array<T5>), (T1: Array<T5>), T8:bot, T6:bot, T7:bot, Array<T6>:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+5: [T8 <= str]
+ T5:str, T3:str, (T4: Array<T5>), (T1: Array<T5>), T8:str, T6:bot, T7:bot, Array<T6>:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+6: [T8 <= T6]
+ T5:str, T3:str, (T4: Array<T5>), (T1: Array<T5>), T8:str, T6:str, T7:bot, Array<T6>:bot, T2:bot, Array<T1>:bot, a__global:bot
+
+7: [T7 <= Array<T6>]
+ T5:str, T3:str, (T4: Array<T5>), (T1: Array<T5>), T8:str, T6:str, (T7: Array<T8>), T2:bot, Array<T1>:bot, a__global:bot
+
+8: [T7 <= T1]
+ T5:str, T3:str, (T4: Array<T5>), (T1: Array<T5>), T8:str, T6:str, (T7: Array<T5>), T2:bot, Array<T1>:bot, a__global:bot
+
+9: [T2 <= Array<T1>]
+ T5:str, T3:str, (T4: Array<T5>), (T1: Array<T5>), T8:str, T6:str, (T7: Array<T5>), (T2: Array<T4>), a__global:bot
+
+10: [T2 <= a__global]
+ T5:str, T3:str, (T4: Array<T5>), (T1: Array<T5>), T8:str, T6:str, (T7: Array<T5>), (T2: Array<T4>), (a__global: Array<T4>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global  :  Array<Array<str>>
+

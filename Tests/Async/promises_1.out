@@ -1,0 +1,62 @@
+
+Constraints:
+  C01: T3 <= Promise<T1,T2>
+  C02: res__executor_T4__global <= Resolver<T1>
+  C03: rej__executor_T4__global <= Rejector<T2>
+  C04: T5 <= num
+  C05: T5 <= T1
+  C06: T3 <= p__global
+  C07: p__global <= Promise<T7,T8>
+  C08: T7 <= x__then_cb_T10__global
+  C09: x__then_cb_T10__global <= z__global
+  C10: void <= ret__then_cb_T10__global
+  C11: T11 <= Promise<ret__then_cb_T10__global,T8>
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, Promise<T1,T2>:bot, res__executor_T4__global:bot, Resolver<T1>:bot, rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+1: [T3 <= Promise<T1,T2>]
+ (T3: Promise<T1, T2>), res__executor_T4__global:bot, Resolver<T1>:bot, rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+2: [res__executor_T4__global <= Resolver<T1>]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+3: [rej__executor_T4__global <= Rejector<T2>]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), (rej__executor_T4__global: Rejector<T2>), T5:bot, num:bot, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+4: [T5 <= num]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:bot, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+5: [T5 <= T1]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, p__global:bot, Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+6: [T3 <= p__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), Promise<T7,T8>:bot, T7:bot, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+7: [p__global <= Promise<T7,T8>]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:bot, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+8: [T7 <= x__then_cb_T10__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, z__global:bot, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+9: [x__then_cb_T10__global <= z__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, z__global:num, void:bot, ret__then_cb_T10__global:bot, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+10: [void <= ret__then_cb_T10__global]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, z__global:num, void:bot, ret__then_cb_T10__global:void, T11:bot, Promise<ret__then_cb_T10__global,T8>:bot
+
+11: [T11 <= Promise<ret__then_cb_T10__global,T8>]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, (p__global: Promise<T5, T2>), T7:num, x__then_cb_T10__global:num, z__global:num, void:bot, ret__then_cb_T10__global:void, (T11: Promise<ret__then_cb_T10__global, T2>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  p__global                 :  Promise<num, bot>
+  rej__executor_T4__global  :  Rejector<bot>
+  res__executor_T4__global  :  Resolver<num>
+  ret__then_cb_T10__global  :  void
+  x__then_cb_T10__global    :  num
+  z__global                 :  num
+

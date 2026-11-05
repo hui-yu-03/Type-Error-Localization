@@ -1,0 +1,39 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: n__double__global <= num
+  C3: T1 <= num
+  C4: T2 <= num
+  C5: T2 <= ret__double__global
+  C6: double__global <= Func<double__global>{n__double__global -> ret__double__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, n__double__global:bot, T2:bot, ret__double__global:bot, double__global:bot, Func<double__global>{n__double__global -> ret__double__global}:bot
+
+1: [T1 <= num]
+ T1:num, n__double__global:bot, T2:bot, ret__double__global:bot, double__global:bot, Func<double__global>{n__double__global -> ret__double__global}:bot
+
+2: [n__double__global <= num]
+ T1:num, n__double__global:num, T2:bot, ret__double__global:bot, double__global:bot, Func<double__global>{n__double__global -> ret__double__global}:bot
+
+3: [T1 <= num]
+ T1:num, n__double__global:num, T2:bot, ret__double__global:bot, double__global:bot, Func<double__global>{n__double__global -> ret__double__global}:bot
+
+4: [T2 <= num]
+ T1:num, n__double__global:num, T2:num, ret__double__global:bot, double__global:bot, Func<double__global>{n__double__global -> ret__double__global}:bot
+
+5: [T2 <= ret__double__global]
+ T1:num, n__double__global:num, T2:num, ret__double__global:num, double__global:bot, Func<double__global>{n__double__global -> ret__double__global}:bot
+
+6: [double__global <= Func<double__global>{n__double__global -> ret__double__global}]
+ T1:num, n__double__global:num, T2:num, ret__double__global:num, (double__global: Func<double__global>{n__double__global -> T2})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  double__global       :  Func<double__global>{num -> num}
+  n__double__global    :  num
+  ret__double__global  :  num
+

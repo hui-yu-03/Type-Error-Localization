@@ -1,0 +1,52 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T1 <= x__global
+  C3: T2 <= str
+  C4: T2 <= label__global
+  C5: T3 <= ret__add__global
+  C6: add__global <= Func<add__global>{a__add__global -> b__add__global -> ret__add__global}
+  C7: T4 <= bool
+  C8: T4 <= flag__global
+  C9: plus(a__add__global,b__add__global,T3)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, x__global:bot, T2:bot, str:bot, label__global:bot, T3:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot, T4:bot, bool:bot, flag__global:bot
+
+1: [T1 <= num]
+ T1:num, x__global:bot, T2:bot, str:bot, label__global:bot, T3:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot, T4:bot, bool:bot, flag__global:bot
+
+2: [T1 <= x__global]
+ T1:num, x__global:num, T2:bot, str:bot, label__global:bot, T3:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot, T4:bot, bool:bot, flag__global:bot
+
+3: [T2 <= str]
+ T1:num, x__global:num, T2:str, label__global:bot, T3:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot, T4:bot, bool:bot, flag__global:bot
+
+4: [T2 <= label__global]
+ T1:num, x__global:num, T2:str, label__global:str, T3:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot, T4:bot, bool:bot, flag__global:bot
+
+5: [T3 <= ret__add__global]
+ T1:num, x__global:num, T2:str, label__global:str, T3:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot, T4:bot, bool:bot, flag__global:bot
+
+6: [add__global <= Func<add__global>{a__add__global -> b__add__global -> ret__add__global}]
+ T1:num, x__global:num, T2:str, label__global:str, T3:bot, ret__add__global:bot, (add__global: Func<add__global>{a__add__global -> b__add__global -> T3}), a__add__global:bot, b__add__global:bot, T4:bot, bool:bot, flag__global:bot
+
+7: [T4 <= bool]
+ T1:num, x__global:num, T2:str, label__global:str, T3:bot, ret__add__global:bot, (add__global: Func<add__global>{a__add__global -> b__add__global -> T3}), a__add__global:bot, b__add__global:bot, T4:bool, flag__global:bot
+
+8: [T4 <= flag__global]
+ T1:num, x__global:num, T2:str, label__global:str, T3:bot, ret__add__global:bot, (add__global: Func<add__global>{a__add__global -> b__add__global -> T3}), a__add__global:bot, b__add__global:bot, T4:bool, flag__global:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__add__global    :  num|str
+  add__global       :  Func<add__global>{num|str -> num|str -> num|str}
+  b__add__global    :  num|str
+  flag__global      :  bool
+  label__global     :  str
+  ret__add__global  :  num|str
+  x__global         :  num
+

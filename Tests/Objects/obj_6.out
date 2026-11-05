@@ -1,0 +1,113 @@
+
+Constraints:
+  C01: config__global <= {}
+  C02: T1 <= str
+  C03: config__global <= {host: T1}
+  C04: T2 <= bool
+  C05: config__global <= {secure: T2}
+  C06: void <= ret__setHost__global
+  C07: setHost__global <= Func<setHost__global>{() -> ret__setHost__global}
+  C08: T3 <= num
+  C09: config__global <= {port: T3}
+  C10: T4 <= num
+  C11: config__global <= {timeout: T4}
+  C12: void <= ret__setPort__global
+  C13: setPort__global <= Func<setPort__global>{() -> ret__setPort__global}
+  C14: T5 <= num
+  C15: config__global <= {version: T5}
+  C16: T6 <= str
+  C17: config__global <= {name: T6}
+  C18: void <= ret__setMeta__global
+  C19: setMeta__global <= Func<setMeta__global>{() -> ret__setMeta__global}
+  C20: T7 <= h__global
+  C21: config__global <= {host: T7}
+  C22: T8 <= p__global
+  C23: config__global <= {port: T8}
+
+──────────────────────────────────────────────────────
+Inicio:
+ config__global:bot, {}:bot, T1:bot, str:bot, {host: T1}:bot, T2:bot, bool:bot, {secure: T2}:bot, void:bot, ret__setHost__global:bot, setHost__global:bot, Func<setHost__global>{() -> ret__setHost__global}:bot, T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+1: [config__global <= {}]
+ config__global:{}, T1:bot, str:bot, {host: T1}:bot, T2:bot, bool:bot, {secure: T2}:bot, void:bot, ret__setHost__global:bot, setHost__global:bot, Func<setHost__global>{() -> ret__setHost__global}:bot, T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+2: [T1 <= str]
+ config__global:{}, T1:str, {host: T1}:bot, T2:bot, bool:bot, {secure: T2}:bot, void:bot, ret__setHost__global:bot, setHost__global:bot, Func<setHost__global>{() -> ret__setHost__global}:bot, T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+3: [config__global <= {host: T1}]
+ (config__global: {host: T1}), T1:str, T2:bot, bool:bot, {secure: T2}:bot, void:bot, ret__setHost__global:bot, setHost__global:bot, Func<setHost__global>{() -> ret__setHost__global}:bot, T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+4: [T2 <= bool]
+ (config__global: {host: T1}), T1:str, T2:bool, {secure: T2}:bot, void:bot, ret__setHost__global:bot, setHost__global:bot, Func<setHost__global>{() -> ret__setHost__global}:bot, T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+5: [config__global <= {secure: T2}]
+ (config__global: {host: T1, secure: T2}), T1:str, T2:bool, void:bot, ret__setHost__global:bot, setHost__global:bot, Func<setHost__global>{() -> ret__setHost__global}:bot, T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+6: [void <= ret__setHost__global]
+ (config__global: {host: T1, secure: T2}), T1:str, T2:bool, void:bot, ret__setHost__global:void, setHost__global:bot, Func<setHost__global>{() -> ret__setHost__global}:bot, T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+7: [setHost__global <= Func<setHost__global>{() -> ret__setHost__global}]
+ (config__global: {host: T1, secure: T2}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:bot, num:bot, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+8: [T3 <= num]
+ (config__global: {host: T1, secure: T2}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, {port: T3}:bot, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+9: [config__global <= {port: T3}]
+ (config__global: {host: T1, secure: T2, port: T3}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:bot, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+10: [T4 <= num]
+ (config__global: {host: T1, secure: T2, port: T3}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, {timeout: T4}:bot, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+11: [config__global <= {timeout: T4}]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:bot, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+12: [void <= ret__setPort__global]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, setPort__global:bot, Func<setPort__global>{() -> ret__setPort__global}:bot, T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+13: [setPort__global <= Func<setPort__global>{() -> ret__setPort__global}]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:bot, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+14: [T5 <= num]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, {version: T5}:bot, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+15: [config__global <= {version: T5}]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4, version: T5}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:bot, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+16: [T6 <= str]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4, version: T5}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, {name: T6}:bot, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+17: [config__global <= {name: T6}]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4, version: T5, name: T6}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, ret__setMeta__global:bot, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+18: [void <= ret__setMeta__global]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4, version: T5, name: T6}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, ret__setMeta__global:void, setMeta__global:bot, Func<setMeta__global>{() -> ret__setMeta__global}:bot, T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+19: [setMeta__global <= Func<setMeta__global>{() -> ret__setMeta__global}]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4, version: T5, name: T6}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, ret__setMeta__global:void, (setMeta__global: Func<setMeta__global>{() -> ret__setMeta__global}), T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+20: [T7 <= h__global]
+ (config__global: {host: T1, secure: T2, port: T3, timeout: T4, version: T5, name: T6}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, ret__setMeta__global:void, (setMeta__global: Func<setMeta__global>{() -> ret__setMeta__global}), T7:bot, h__global:bot, {host: T7}:bot, T8:bot, p__global:bot, {port: T8}:bot
+
+21: [config__global <= {host: T7}]
+ (config__global: {host: T7, secure: T2, port: T3, timeout: T4, version: T5, name: T6}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, ret__setMeta__global:void, (setMeta__global: Func<setMeta__global>{() -> ret__setMeta__global}), T7:str, h__global:str, T8:bot, p__global:bot, {port: T8}:bot
+
+22: [T8 <= p__global]
+ (config__global: {host: T7, secure: T2, port: T3, timeout: T4, version: T5, name: T6}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, ret__setMeta__global:void, (setMeta__global: Func<setMeta__global>{() -> ret__setMeta__global}), T7:str, h__global:str, T8:bot, p__global:bot, {port: T8}:bot
+
+23: [config__global <= {port: T8}]
+ (config__global: {host: T7, secure: T2, port: T8, timeout: T4, version: T5, name: T6}), T1:str, T2:bool, void:bot, ret__setHost__global:void, (setHost__global: Func<setHost__global>{() -> ret__setHost__global}), T3:num, T4:num, ret__setPort__global:void, (setPort__global: Func<setPort__global>{() -> ret__setPort__global}), T5:num, T6:str, ret__setMeta__global:void, (setMeta__global: Func<setMeta__global>{() -> ret__setMeta__global}), T7:str, h__global:str, T8:num, p__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  config__global        :  {host: str, secure: bool, port: num, timeout: num, version: num, name: str}
+  h__global             :  str
+  p__global             :  num
+  ret__setHost__global  :  void
+  ret__setMeta__global  :  void
+  ret__setPort__global  :  void
+  setHost__global       :  Func<setHost__global>{() -> void}
+  setMeta__global       :  Func<setMeta__global>{() -> void}
+  setPort__global       :  Func<setPort__global>{() -> void}
+

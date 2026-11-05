@@ -1,0 +1,90 @@
+
+Constraints:
+  C01: T3 <= Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}
+  C02: void <= ret__constructor__Vec2
+  C03: T1 <= num
+  C04: factor__scale__Vec2 <= num
+  C05: T4 <= num
+  C06: T4 <= T1
+  C07: T2 <= num
+  C08: factor__scale__Vec2 <= num
+  C09: T5 <= num
+  C10: T5 <= T2
+  C11: void <= ret__scale__Vec2
+  C12: Vec2__global <= Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]
+  C13: a__makeVec__global <= x__constructor__Vec2
+  C14: b__makeVec__global <= y__constructor__Vec2
+  C15: T6 <= Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]
+  C16: T6 <= ret__makeVec__global
+  C17: makeVec__global <= Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}:bot, factor__scale__Vec2:bot, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:bot, T1:bot, num:bot, T4:bot, T2:bot, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+1: [T3 <= Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:bot, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:bot, T1:bot, num:bot, T4:bot, T2:bot, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+2: [void <= ret__constructor__Vec2]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:bot, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:bot, num:bot, T4:bot, T2:bot, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+3: [T1 <= num]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:bot, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:bot, T2:bot, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+4: [factor__scale__Vec2 <= num]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:bot, T2:bot, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+5: [T4 <= num]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:bot, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+6: [T4 <= T1]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:bot, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+7: [T2 <= num]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+8: [factor__scale__Vec2 <= num]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:bot, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+9: [T5 <= num]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+10: [T5 <= T2]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:bot, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+11: [void <= ret__scale__Vec2]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:void, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, Vec2__global:bot, Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+12: [Vec2__global <= Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:void, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, (Vec2__global: Class<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]), a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+13: [a__makeVec__global <= x__constructor__Vec2]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:void, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, (Vec2__global: Class<Vec2>[x: a__makeVec__global, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]), a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+14: [b__makeVec__global <= y__constructor__Vec2]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:void, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, (Vec2__global: Class<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, T6:bot, Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]:bot, ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+15: [T6 <= Obj<Vec2>[x: x__constructor__Vec2, y: y__constructor__Vec2, scale: factor__scale__Vec2 -> ret__scale__Vec2]]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:void, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, (Vec2__global: Class<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, (T6: Obj<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), ret__makeVec__global:bot, makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+16: [T6 <= ret__makeVec__global]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:void, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, (Vec2__global: Class<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, (T6: Obj<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), (ret__makeVec__global: Obj<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), makeVec__global:bot, Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}:bot
+
+17: [makeVec__global <= Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> ret__makeVec__global}]
+ (T3: Func<scale__Vec2>{factor__scale__Vec2 -> ret__scale__Vec2}), factor__scale__Vec2:num, ret__scale__Vec2:void, void:bot, ret__constructor__Vec2:void, T1:num, T4:num, T2:num, T5:num, (Vec2__global: Class<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), a__makeVec__global:bot, x__constructor__Vec2:bot, b__makeVec__global:bot, y__constructor__Vec2:bot, (T6: Obj<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), (ret__makeVec__global: Obj<Vec2>[x: a__makeVec__global, y: b__makeVec__global, scale: factor__scale__Vec2 -> ret__scale__Vec2]), (makeVec__global: Func<makeVec__global>{a__makeVec__global -> b__makeVec__global -> T6})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  Vec2__global            :  Class<Vec2>[x: bot, y: bot, scale: num -> void]
+  a__makeVec__global      :  bot
+  b__makeVec__global      :  bot
+  factor__scale__Vec2     :  num
+  makeVec__global         :  Func<makeVec__global>{bot -> bot -> Obj<Vec2>[x: bot, y: bot, scale: num -> void]}
+  ret__constructor__Vec2  :  void
+  ret__makeVec__global    :  Obj<Vec2>[x: bot, y: bot, scale: num -> void]
+  ret__scale__Vec2        :  void
+  x__constructor__Vec2    :  bot
+  y__constructor__Vec2    :  bot
+

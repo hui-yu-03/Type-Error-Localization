@@ -1,0 +1,46 @@
+
+Constraints:
+  C1: T3 <= num
+  C2: T3 <= T1
+  C3: T2 <= Array<T1>
+  C4: T2 <= a__global
+  C5: T5 <= num
+  C6: T5 <= num
+  C7: a__global <= Array<T4>
+  C8: T4 <= b__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, num:bot, T1:bot, T2:bot, Array<T1>:bot, a__global:bot, T5:bot, Array<T4>:bot, T4:bot, b__global:bot
+
+1: [T3 <= num]
+ T3:num, T1:bot, T2:bot, Array<T1>:bot, a__global:bot, T5:bot, Array<T4>:bot, T4:bot, b__global:bot
+
+2: [T3 <= T1]
+ T3:num, T1:num, T2:bot, Array<T1>:bot, a__global:bot, T5:bot, Array<T4>:bot, T4:bot, b__global:bot
+
+3: [T2 <= Array<T1>]
+ T3:num, T1:num, (T2: Array<T3>), a__global:bot, T5:bot, Array<T4>:bot, T4:bot, b__global:bot
+
+4: [T2 <= a__global]
+ T3:num, T1:num, (T2: Array<T3>), (a__global: Array<T3>), T5:bot, Array<T4>:bot, T4:bot, b__global:bot
+
+5: [T5 <= num]
+ T3:num, T1:num, (T2: Array<T3>), (a__global: Array<T3>), T5:num, Array<T4>:bot, T4:bot, b__global:bot
+
+6: [T5 <= num]
+ T3:num, T1:num, (T2: Array<T3>), (a__global: Array<T3>), T5:num, Array<T4>:bot, T4:bot, b__global:bot
+
+7: [a__global <= Array<T4>]
+ T3:num, T1:num, (T2: Array<T3>), (a__global: Array<T3>), T5:num, T4:num, b__global:bot
+
+8: [T4 <= b__global]
+ T3:num, T1:num, (T2: Array<T3>), (a__global: Array<T3>), T5:num, T4:num, b__global:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global  :  Array<num>
+  b__global  :  num
+

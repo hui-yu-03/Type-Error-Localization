@@ -1,0 +1,25 @@
+
+Constraints:
+  C1: T1 <= ret__add__global
+  C2: add__global <= Func<add__global>{a__add__global -> b__add__global -> ret__add__global}
+  C3: plus(a__add__global,b__add__global,T1)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot
+
+1: [T1 <= ret__add__global]
+ T1:bot, ret__add__global:bot, add__global:bot, Func<add__global>{a__add__global -> b__add__global -> ret__add__global}:bot, a__add__global:bot, b__add__global:bot
+
+2: [add__global <= Func<add__global>{a__add__global -> b__add__global -> ret__add__global}]
+ T1:bot, ret__add__global:bot, (add__global: Func<add__global>{a__add__global -> b__add__global -> T1}), a__add__global:bot, b__add__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__add__global    :  num|str
+  add__global       :  Func<add__global>{num|str -> num|str -> num|str}
+  b__add__global    :  num|str
+  ret__add__global  :  num|str
+

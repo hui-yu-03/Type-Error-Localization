@@ -1,0 +1,40 @@
+
+Constraints:
+  C1: T1 <= Array<{}>
+  C2: a__multiply__global <= num
+  C3: b__multiply__global <= num
+  C4: T2 <= num
+  C5: T2 <= ret__multiply__global
+  C6: multiply__global <= Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Array<{}>:bot, a__multiply__global:bot, num:bot, b__multiply__global:bot, T2:bot, ret__multiply__global:bot, multiply__global:bot, Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}:bot
+
+1: [T1 <= Array<{}>]
+ (T1: Array<{}>), a__multiply__global:bot, num:bot, b__multiply__global:bot, T2:bot, ret__multiply__global:bot, multiply__global:bot, Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}:bot
+
+2: [a__multiply__global <= num]
+ (T1: Array<{}>), a__multiply__global:num, b__multiply__global:bot, T2:bot, ret__multiply__global:bot, multiply__global:bot, Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}:bot
+
+3: [b__multiply__global <= num]
+ (T1: Array<{}>), a__multiply__global:num, b__multiply__global:num, T2:bot, ret__multiply__global:bot, multiply__global:bot, Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}:bot
+
+4: [T2 <= num]
+ (T1: Array<{}>), a__multiply__global:num, b__multiply__global:num, T2:num, ret__multiply__global:bot, multiply__global:bot, Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}:bot
+
+5: [T2 <= ret__multiply__global]
+ (T1: Array<{}>), a__multiply__global:num, b__multiply__global:num, T2:num, ret__multiply__global:num, multiply__global:bot, Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}:bot
+
+6: [multiply__global <= Func<multiply__global>{a__multiply__global -> b__multiply__global -> ret__multiply__global}]
+ (T1: Array<{}>), a__multiply__global:num, b__multiply__global:num, T2:num, ret__multiply__global:num, (multiply__global: Func<multiply__global>{a__multiply__global -> b__multiply__global -> T2})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__multiply__global    :  num
+  b__multiply__global    :  num
+  multiply__global       :  Func<multiply__global>{num -> num -> num}
+  ret__multiply__global  :  num
+

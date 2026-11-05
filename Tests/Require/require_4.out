@@ -1,0 +1,45 @@
+
+Constraints:
+  C1: T1 <= acorn__global
+  C2: T5 <= Func<parse>{T2 -> T3 -> T4}
+  C3: acorn__global <= {parse: T5}
+  C4: T5 <= Func<T9>{T7 -> T8 -> T6}
+  C5: T10 <= str
+  C6: T10 <= T7
+  C7: T11 <= {}
+  C8: T11 <= T8
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, acorn__global:bot, T5:bot, Func<parse>{T2 -> T3 -> T4}:bot, T2:bot, T3:bot, T4:bot, {parse: T5}:bot, Func<T9>{T7 -> T8 -> T6}:bot, T7:bot, T8:bot, T6:bot, T10:bot, str:bot, T11:bot, {}:bot
+
+1: [T1 <= acorn__global]
+ T1:bot, acorn__global:bot, T5:bot, Func<parse>{T2 -> T3 -> T4}:bot, T2:bot, T3:bot, T4:bot, {parse: T5}:bot, Func<T9>{T7 -> T8 -> T6}:bot, T7:bot, T8:bot, T6:bot, T10:bot, str:bot, T11:bot, {}:bot
+
+2: [T5 <= Func<parse>{T2 -> T3 -> T4}]
+ T1:bot, acorn__global:bot, (T5: Func<parse>{T2 -> T3 -> T4}), T2:bot, T3:bot, T4:bot, {parse: T5}:bot, Func<T9>{T7 -> T8 -> T6}:bot, T7:bot, T8:bot, T6:bot, T10:bot, str:bot, T11:bot, {}:bot
+
+3: [acorn__global <= {parse: T5}]
+ (T1: {parse: T5}), (acorn__global: {parse: T5}), (T5: Func<parse>{T2 -> T3 -> T4}), T2:bot, T3:bot, T4:bot, Func<T9>{T7 -> T8 -> T6}:bot, T7:bot, T8:bot, T6:bot, T10:bot, str:bot, T11:bot, {}:bot
+
+4: [T5 <= Func<T9>{T7 -> T8 -> T6}]
+ (T1: {parse: T5}), (acorn__global: {parse: T5}), (T5: Func<parse>{T2 -> T3 -> T4}), T2:bot, T3:bot, T4:bot, T7:bot, T8:bot, T6:bot, T10:bot, str:bot, T11:bot, {}:bot
+
+5: [T10 <= str]
+ (T1: {parse: T5}), (acorn__global: {parse: T5}), (T5: Func<parse>{T2 -> T3 -> T4}), T2:bot, T3:bot, T4:bot, T7:bot, T8:bot, T6:bot, T10:str, T11:bot, {}:bot
+
+6: [T10 <= T7]
+ (T1: {parse: T5}), (acorn__global: {parse: T5}), (T5: Func<parse>{T2 -> T3 -> T4}), T2:str, T3:bot, T4:bot, T7:str, T8:bot, T6:bot, T10:str, T11:bot, {}:bot
+
+7: [T11 <= {}]
+ (T1: {parse: T5}), (acorn__global: {parse: T5}), (T5: Func<parse>{T2 -> T3 -> T4}), T2:str, T3:bot, T4:bot, T7:str, T8:bot, T6:bot, T10:str, T11:{}
+
+8: [T11 <= T8]
+ (T1: {parse: T5}), (acorn__global: {parse: T5}), (T5: Func<parse>{T2 -> T3 -> T4}), T2:str, T3:{}, T4:bot, T7:str, T8:{}, T6:bot, T10:str, T11:{}
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  acorn__global  :  {parse: Func<parse>{str -> {} -> bot}}
+

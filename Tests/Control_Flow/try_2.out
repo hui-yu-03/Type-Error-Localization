@@ -1,0 +1,80 @@
+
+Constraints:
+  C01: result__global <= {}
+  C02: T1 <= bool
+  C03: T1 <= cleaned__global
+  C04: T2 <= num
+  C05: result__global <= {status: T2}
+  C06: T3 <= str
+  C07: result__global <= {body: T3}
+  C08: err__global <= error
+  C09: T4 <= num
+  C10: result__global <= {status: T4}
+  C11: T5 <= str
+  C12: result__global <= {body: T5}
+  C13: T6 <= bool
+  C14: T6 <= cleaned__global
+  C15: T7 <= bool
+  C16: T7 <= i_was_here__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ result__global:bot, {}:bot, T1:bot, bool:bot, cleaned__global:bot, T2:bot, num:bot, {status: T2}:bot, T3:bot, str:bot, {body: T3}:bot, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+1: [result__global <= {}]
+ result__global:{}, T1:bot, bool:bot, cleaned__global:bot, T2:bot, num:bot, {status: T2}:bot, T3:bot, str:bot, {body: T3}:bot, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+2: [T1 <= bool]
+ result__global:{}, T1:bool, cleaned__global:bot, T2:bot, num:bot, {status: T2}:bot, T3:bot, str:bot, {body: T3}:bot, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+3: [T1 <= cleaned__global]
+ result__global:{}, T1:bool, cleaned__global:bool, T2:bot, num:bot, {status: T2}:bot, T3:bot, str:bot, {body: T3}:bot, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+4: [T2 <= num]
+ result__global:{}, T1:bool, cleaned__global:bool, T2:num, {status: T2}:bot, T3:bot, str:bot, {body: T3}:bot, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+5: [result__global <= {status: T2}]
+ (result__global: {status: T2}), T1:bool, cleaned__global:bool, T2:num, T3:bot, str:bot, {body: T3}:bot, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+6: [T3 <= str]
+ (result__global: {status: T2}), T1:bool, cleaned__global:bool, T2:num, T3:str, {body: T3}:bot, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+7: [result__global <= {body: T3}]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:bot, error:bot, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+8: [err__global <= error]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:bot, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+9: [T4 <= num]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, {status: T4}:bot, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+10: [result__global <= {status: T4}]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, T5:bot, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+11: [T5 <= str]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, T5:str, {body: T5}:bot, T6:bot, T7:bot, i_was_here__global:bot
+
+12: [result__global <= {body: T5}]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, T5:str, T6:bot, T7:bot, i_was_here__global:bot
+
+13: [T6 <= bool]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, T5:str, T6:bool, T7:bot, i_was_here__global:bot
+
+14: [T6 <= cleaned__global]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, T5:str, T6:bool, T7:bot, i_was_here__global:bot
+
+15: [T7 <= bool]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, T5:str, T6:bool, T7:bool, i_was_here__global:bot
+
+16: [T7 <= i_was_here__global]
+ (result__global: {status: T2, body: T3}), T1:bool, cleaned__global:bool, T2:num, T3:str, err__global:error, T4:num, T5:str, T6:bool, T7:bool, i_was_here__global:bool
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  cleaned__global     :  bool
+  err__global         :  error
+  i_was_here__global  :  bool
+  result__global      :  {status: num, body: str}
+

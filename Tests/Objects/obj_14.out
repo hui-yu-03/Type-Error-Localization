@@ -1,0 +1,47 @@
+
+Constraints:
+  C1: T2 <= num
+  C2: T1 <= {a: T2}
+  C3: T3 <= num
+  C4: T1 <= {b: T3}
+  C5: T1 <= map__global
+  C6: T4 <= str
+  C7: T4 <= key__global
+  C8: T5 <= val__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T2:bot, num:bot, T1:bot, {a: T2}:bot, T3:bot, {b: T3}:bot, map__global:bot, T4:bot, str:bot, key__global:bot, T5:bot, val__global:bot
+
+1: [T2 <= num]
+ T2:num, T1:bot, {a: T2}:bot, T3:bot, {b: T3}:bot, map__global:bot, T4:bot, str:bot, key__global:bot, T5:bot, val__global:bot
+
+2: [T1 <= {a: T2}]
+ T2:num, (T1: {a: T2}), T3:bot, {b: T3}:bot, map__global:bot, T4:bot, str:bot, key__global:bot, T5:bot, val__global:bot
+
+3: [T3 <= num]
+ T2:num, (T1: {a: T2}), T3:num, {b: T3}:bot, map__global:bot, T4:bot, str:bot, key__global:bot, T5:bot, val__global:bot
+
+4: [T1 <= {b: T3}]
+ T2:num, (T1: {a: T2, b: T3}), T3:num, map__global:bot, T4:bot, str:bot, key__global:bot, T5:bot, val__global:bot
+
+5: [T1 <= map__global]
+ T2:num, (T1: {a: T2, b: T3}), T3:num, (map__global: {a: T2, b: T3}), T4:bot, str:bot, key__global:bot, T5:bot, val__global:bot
+
+6: [T4 <= str]
+ T2:num, (T1: {a: T2, b: T3}), T3:num, (map__global: {a: T2, b: T3}), T4:str, key__global:bot, T5:bot, val__global:bot
+
+7: [T4 <= key__global]
+ T2:num, (T1: {a: T2, b: T3}), T3:num, (map__global: {a: T2, b: T3}), T4:str, key__global:str, T5:bot, val__global:bot
+
+8: [T5 <= val__global]
+ T2:num, (T1: {a: T2, b: T3}), T3:num, (map__global: {a: T2, b: T3}), T4:str, key__global:str, T5:bot, val__global:bot
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  key__global  :  str
+  map__global  :  {a: num, b: num}
+  val__global  :  num
+

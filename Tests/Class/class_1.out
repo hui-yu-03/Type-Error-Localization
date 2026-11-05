@@ -1,0 +1,64 @@
+
+Constraints:
+  C01: T1 <= Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> ret__bar__Foo}
+  C02: T2 <= ret__bar__Foo
+  C03: Foo__global <= Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]
+  C04: T3 <= Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]
+  C05: T3 <= o__global
+  C06: T4 <= num
+  C07: T4 <= x__bar__Foo
+  C08: T5 <= num
+  C09: T5 <= y__bar__Foo
+  C10: o__global <= {bar: T1}
+  C11: ret__bar__Foo <= z__global
+  C12: plus(x__bar__Foo,y__bar__Foo,T2)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> ret__bar__Foo}:bot, x__bar__Foo:bot, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, Foo__global:bot, Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]:bot, T3:bot, Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]:bot, o__global:bot, T4:bot, num:bot, T5:bot, {bar: T1}:bot, z__global:bot
+
+1: [T1 <= Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> ret__bar__Foo}]
+ (T1: Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> ret__bar__Foo}), x__bar__Foo:bot, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, Foo__global:bot, Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]:bot, T3:bot, Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]:bot, o__global:bot, T4:bot, num:bot, T5:bot, {bar: T1}:bot, z__global:bot
+
+2: [T2 <= ret__bar__Foo]
+ (T1: Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> T2}), x__bar__Foo:bot, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, Foo__global:bot, Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]:bot, T3:bot, Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]:bot, o__global:bot, T4:bot, num:bot, T5:bot, {bar: T1}:bot, z__global:bot
+
+3: [Foo__global <= Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]]
+ (T1: Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> T2}), x__bar__Foo:bot, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), T3:bot, Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]:bot, o__global:bot, T4:bot, num:bot, T5:bot, {bar: T1}:bot, z__global:bot
+
+4: [T3 <= Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> ret__bar__Foo]]
+ (T1: Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> T2}), x__bar__Foo:bot, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), (T3: Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), o__global:bot, T4:bot, num:bot, T5:bot, {bar: T1}:bot, z__global:bot
+
+5: [T3 <= o__global]
+ (T1: Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> T2}), x__bar__Foo:bot, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), (T3: Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), (o__global: Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), T4:bot, num:bot, T5:bot, {bar: T1}:bot, z__global:bot
+
+6: [T4 <= num]
+ (T1: Func<bar__Foo>{x__bar__Foo -> y__bar__Foo -> T2}), x__bar__Foo:bot, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), (T3: Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), (o__global: Obj<Foo>[bar: x__bar__Foo -> y__bar__Foo -> T2]), T4:num, T5:bot, {bar: T1}:bot, z__global:bot
+
+7: [T4 <= x__bar__Foo]
+ (T1: Func<bar__Foo>{T4 -> y__bar__Foo -> T2}), x__bar__Foo:num, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: T4 -> y__bar__Foo -> T2]), (T3: Obj<Foo>[bar: T4 -> y__bar__Foo -> T2]), (o__global: Obj<Foo>[bar: T4 -> y__bar__Foo -> T2]), T4:num, T5:bot, {bar: T1}:bot, z__global:bot
+
+8: [T5 <= num]
+ (T1: Func<bar__Foo>{T4 -> y__bar__Foo -> T2}), x__bar__Foo:num, y__bar__Foo:bot, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: T4 -> y__bar__Foo -> T2]), (T3: Obj<Foo>[bar: T4 -> y__bar__Foo -> T2]), (o__global: Obj<Foo>[bar: T4 -> y__bar__Foo -> T2]), T4:num, T5:num, {bar: T1}:bot, z__global:bot
+
+9: [T5 <= y__bar__Foo]
+ (T1: Func<bar__Foo>{T4 -> T5 -> T2}), x__bar__Foo:num, y__bar__Foo:num, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: T4 -> T5 -> T2]), (T3: Obj<Foo>[bar: T4 -> T5 -> T2]), (o__global: Obj<Foo>[bar: T4 -> T5 -> T2]), T4:num, T5:num, {bar: T1}:bot, z__global:bot
+
+10: [o__global <= {bar: T1}]
+ (T1: Func<bar__Foo>{T4 -> T5 -> T2}), x__bar__Foo:num, y__bar__Foo:num, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: T4 -> T5 -> T2]), (T3: Obj<Foo>[bar: T4 -> T5 -> T2]), (o__global: Obj<Foo>[bar: T4 -> T5 -> T2]), T4:num, T5:num, z__global:bot
+
+11: [ret__bar__Foo <= z__global]
+ (T1: Func<bar__Foo>{T4 -> T5 -> T2}), x__bar__Foo:num, y__bar__Foo:num, ret__bar__Foo:bot, T2:bot, (Foo__global: Class<Foo>[bar: T4 -> T5 -> T2]), (T3: Obj<Foo>[bar: T4 -> T5 -> T2]), (o__global: Obj<Foo>[bar: T4 -> T5 -> T2]), T4:num, T5:num, z__global:bot
+
+──────────────────────────────────────────────────────
+⚠  ERROS DE TIPO:
+   CONFLICT: arity mismatch on method bar (3 vs 1)
+
+FINAL:
+  Foo__global    :  Class<Foo>[bar: num -> num -> num]
+  o__global      :  Obj<Foo>[bar: num -> num -> num]
+  ret__bar__Foo  :  num
+  x__bar__Foo    :  num
+  y__bar__Foo    :  num
+  z__global      :  num
+

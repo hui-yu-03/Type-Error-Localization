@@ -1,0 +1,74 @@
+
+Constraints:
+  C01: T3 <= Promise<T1,T2>
+  C02: res__executor_T4__global <= Resolver<T1>
+  C03: rej__executor_T4__global <= Rejector<T2>
+  C04: T5 <= num
+  C05: T5 <= T1
+  C06: T7 <= str
+  C07: T7 <= T2
+  C08: T3 <= p__global
+  C09: p__global <= Promise<T9,T10>
+  C10: T10 <= e__catch_cb_T12__global
+  C11: T13 <= num
+  C12: T13 <= ret__catch_cb_T12__global
+  C13: T14 <= Promise<T9,ret__catch_cb_T12__global>
+  C14: T14 <= q__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T3:bot, Promise<T1,T2>:bot, res__executor_T4__global:bot, Resolver<T1>:bot, rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, T7:bot, str:bot, T2:bot, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+1: [T3 <= Promise<T1,T2>]
+ (T3: Promise<T1, T2>), res__executor_T4__global:bot, Resolver<T1>:bot, rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, T7:bot, str:bot, T2:bot, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+2: [res__executor_T4__global <= Resolver<T1>]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), rej__executor_T4__global:bot, Rejector<T2>:bot, T5:bot, num:bot, T1:bot, T7:bot, str:bot, T2:bot, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+3: [rej__executor_T4__global <= Rejector<T2>]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), (rej__executor_T4__global: Rejector<T2>), T5:bot, num:bot, T1:bot, T7:bot, str:bot, T2:bot, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+4: [T5 <= num]
+ (T3: Promise<T1, T2>), (res__executor_T4__global: Resolver<T1>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:bot, T7:bot, str:bot, T2:bot, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+5: [T5 <= T1]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, T7:bot, str:bot, T2:bot, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+6: [T7 <= str]
+ (T3: Promise<T5, T2>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T2>), T5:num, T1:num, T7:str, T2:bot, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+7: [T7 <= T2]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, p__global:bot, Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+8: [T3 <= p__global]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, (p__global: Promise<T5, T7>), Promise<T9,T10>:bot, T10:bot, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+9: [p__global <= Promise<T9,T10>]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, (p__global: Promise<T5, T7>), T10:str, e__catch_cb_T12__global:bot, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+10: [T10 <= e__catch_cb_T12__global]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, (p__global: Promise<T5, T7>), T10:str, e__catch_cb_T12__global:str, T13:bot, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+11: [T13 <= num]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, (p__global: Promise<T5, T7>), T10:str, e__catch_cb_T12__global:str, T13:num, ret__catch_cb_T12__global:bot, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+12: [T13 <= ret__catch_cb_T12__global]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, (p__global: Promise<T5, T7>), T10:str, e__catch_cb_T12__global:str, T13:num, ret__catch_cb_T12__global:num, T14:bot, Promise<T9,ret__catch_cb_T12__global>:bot, q__global:bot
+
+13: [T14 <= Promise<T9,ret__catch_cb_T12__global>]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, (p__global: Promise<T5, T7>), T10:str, e__catch_cb_T12__global:str, T13:num, ret__catch_cb_T12__global:num, (T14: Promise<T5, T13>), q__global:bot
+
+14: [T14 <= q__global]
+ (T3: Promise<T5, T7>), (res__executor_T4__global: Resolver<T5>), (rej__executor_T4__global: Rejector<T7>), T5:num, T1:num, T7:str, T2:str, (p__global: Promise<T5, T7>), T10:str, e__catch_cb_T12__global:str, T13:num, ret__catch_cb_T12__global:num, (T14: Promise<T5, T13>), (q__global: Promise<T5, T13>)
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  e__catch_cb_T12__global    :  str
+  p__global                  :  Promise<num, str>
+  q__global                  :  Promise<num, num>
+  rej__executor_T4__global   :  Rejector<str>
+  res__executor_T4__global   :  Resolver<num>
+  ret__catch_cb_T12__global  :  num
+

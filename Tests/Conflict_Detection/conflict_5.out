@@ -1,0 +1,30 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T1 <= count__global
+  C3: T2 <= num
+  C4: T3 <= count__global
+  C5: plus(count__global,T2,T3)
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, count__global:bot, T2:bot, T3:bot
+
+1: [T1 <= num]
+ T1:num, count__global:bot, T2:bot, T3:bot
+
+2: [T1 <= count__global]
+ T1:num, count__global:num, T2:bot, T3:bot
+
+3: [T2 <= num]
+ T1:num, count__global:num, T2:num, T3:bot
+
+4: [T3 <= count__global]
+ T1:num, count__global:num, T2:num, T3:num
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  count__global  :  num
+

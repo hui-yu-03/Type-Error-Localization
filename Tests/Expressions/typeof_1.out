@@ -1,0 +1,75 @@
+
+Constraints:
+  C01: T1 <= num
+  C02: T1 <= a__global
+  C03: T2 <= str
+  C04: T2 <= t__global
+  C05: T3 <= str
+  C06: T3 <= u__global
+  C07: T4 <= str
+  C08: T5 <= str
+  C09: T4 <= T5
+  C10: T5 <= T4
+  C11: T6 <= bool
+  C12: cb__check__global <= Func<cb__global>{() -> ret__cb__global}
+  C13: void <= ret__check__global
+  C14: check__global <= Func<check__global>{cb__check__global -> ret__check__global}
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, a__global:bot, T2:bot, str:bot, t__global:bot, T3:bot, u__global:bot, T4:bot, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+1: [T1 <= num]
+ T1:num, a__global:bot, T2:bot, str:bot, t__global:bot, T3:bot, u__global:bot, T4:bot, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+2: [T1 <= a__global]
+ T1:num, a__global:num, T2:bot, str:bot, t__global:bot, T3:bot, u__global:bot, T4:bot, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+3: [T2 <= str]
+ T1:num, a__global:num, T2:str, t__global:bot, T3:bot, u__global:bot, T4:bot, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+4: [T2 <= t__global]
+ T1:num, a__global:num, T2:str, t__global:str, T3:bot, u__global:bot, T4:bot, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+5: [T3 <= str]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:bot, T4:bot, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+6: [T3 <= u__global]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:bot, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+7: [T4 <= str]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:bot, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+8: [T5 <= str]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:str, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+9: [T4 <= T5]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:str, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+10: [T5 <= T4]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:str, T6:bot, bool:bot, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+11: [T6 <= bool]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:str, T6:bool, cb__check__global:bot, Func<cb__global>{() -> ret__cb__global}:bot, ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+12: [cb__check__global <= Func<cb__global>{() -> ret__cb__global}]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:str, T6:bool, (cb__check__global: Func<cb__global>{() -> ret__cb__global}), ret__cb__global:bot, void:bot, ret__check__global:bot, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+13: [void <= ret__check__global]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:str, T6:bool, (cb__check__global: Func<cb__global>{() -> ret__cb__global}), ret__cb__global:bot, void:bot, ret__check__global:void, check__global:bot, Func<check__global>{cb__check__global -> ret__check__global}:bot
+
+14: [check__global <= Func<check__global>{cb__check__global -> ret__check__global}]
+ T1:num, a__global:num, T2:str, t__global:str, T3:str, u__global:str, T4:str, T5:str, T6:bool, (cb__check__global: Func<cb__global>{() -> ret__cb__global}), ret__cb__global:bot, void:bot, ret__check__global:void, (check__global: Func<check__global>{cb__check__global -> ret__check__global})
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  a__global           :  num
+  cb__check__global   :  Func<cb__global>{() -> bot}
+  check__global       :  Func<check__global>{Func<cb__global>{() -> bot} -> void}
+  ret__cb__global     :  bot
+  ret__check__global  :  void
+  t__global           :  str
+  u__global           :  str
+

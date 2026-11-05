@@ -1,0 +1,42 @@
+
+Constraints:
+  C1: T1 <= num
+  C2: T2 <= num
+  C3: T3 <= num
+  C4: T3 <= x__global
+  C5: T4 <= bool
+  C6: T5 <= str
+  C7: T5 <= y__global
+
+──────────────────────────────────────────────────────
+Inicio:
+ T1:bot, num:bot, T2:bot, T3:bot, x__global:bot, T4:bot, bool:bot, T5:bot, str:bot, y__global:bot
+
+1: [T1 <= num]
+ T1:num, T2:bot, T3:bot, x__global:bot, T4:bot, bool:bot, T5:bot, str:bot, y__global:bot
+
+2: [T2 <= num]
+ T1:num, T2:num, T3:bot, x__global:bot, T4:bot, bool:bot, T5:bot, str:bot, y__global:bot
+
+3: [T3 <= num]
+ T1:num, T2:num, T3:num, x__global:bot, T4:bot, bool:bot, T5:bot, str:bot, y__global:bot
+
+4: [T3 <= x__global]
+ T1:num, T2:num, T3:num, x__global:num, T4:bot, bool:bot, T5:bot, str:bot, y__global:bot
+
+5: [T4 <= bool]
+ T1:num, T2:num, T3:num, x__global:num, T4:bool, T5:bot, str:bot, y__global:bot
+
+6: [T5 <= str]
+ T1:num, T2:num, T3:num, x__global:num, T4:bool, T5:str, y__global:bot
+
+7: [T5 <= y__global]
+ T1:num, T2:num, T3:num, x__global:num, T4:bool, T5:str, y__global:str
+
+──────────────────────────────────────────────────────
+✓  Sem conflitos.
+
+FINAL:
+  x__global  :  num
+  y__global  :  str
+
