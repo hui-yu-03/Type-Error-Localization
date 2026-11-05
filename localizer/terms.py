@@ -262,3 +262,24 @@ def show(t: Term) -> str:
         mem = ", ".join(f"{n}: {' -> '.join(show(x) for x in sig)}" for n, sig in t.members)
         return f"{t.kind}<{t.name}>[{mem}]"
     raise TypeError(t)
+
+
+def term_vars(t: Term) -> set[str]:
+    """Names of the type variables occurring in a term."""
+    if isinstance(t, Var):
+        return {t.name}
+    if isinstance(t, Base):
+        return set()
+    if isinstance(t, Obj):
+        return set().union(*(term_vars(v) for _, v in t.fields)) if t.fields else set()
+    if isinstance(t, Arr):
+        return term_vars(t.elem)
+    if isinstance(t, Prom):
+        return term_vars(t.resolve) | term_vars(t.reject)
+    if isinstance(t, (Resolver, Rejector)):
+        return term_vars(t.inner)
+    if isinstance(t, Func):
+        return set().union(*(term_vars(p) for p in (*t.params, t.ret)))
+    if isinstance(t, Klass):
+        return set().union(set(), *(term_vars(x) for _, sig in t.members for x in sig))
+    raise TypeError(t)

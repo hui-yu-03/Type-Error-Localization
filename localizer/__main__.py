@@ -15,7 +15,7 @@ import z3
 
 from . import baseline, rank
 from .constraints import load_program, run_infer, program_from_json, run_solver_js
-from .encode import describe_types, encode
+from .encode import GROUPINGS, describe_types, encode
 from .mcs import ALGORITHMS, HardConflict
 from pathlib import Path
 
@@ -30,13 +30,17 @@ def main(argv=None) -> int:
     ap.add_argument("--candidates", type=int, default=10, help="number of correction subsets to enumerate")
     ap.add_argument("--closed-fields", action="store_true", help="reading an undefined field of an object literal is an error")
     ap.add_argument("--plus", choices=("strict", "lenient"), default="strict", help="typing rule for +")
+    ap.add_argument("--group-by", choices=GROUPINGS, default="line",
+                    help="unit of blame: source line (default), statement, or AST node")
+    ap.add_argument("--reinfer", action="store_true",
+                    help="also check candidate lines by re-running inference without them")
     ap.add_argument("--timeout", type=float, default=60.0, help="seconds")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     args = ap.parse_args(argv)
 
     data = run_infer(args.file)
     program = program_from_json(data, Path(args.file).read_text(), args.file)
-    enc = encode(program, plus=args.plus, closed_fields=args.closed_fields)
+    enc = encode(program, plus=args.plus, closed_fields=args.closed_fields, group_by=args.group_by)
     result = {"file": args.file, "lines": len(enc.lines), "constraints": len(program.constraints)}
 
     s = enc.solver(timeout_ms=int(args.timeout * 1000))
@@ -58,7 +62,9 @@ def main(argv=None) -> int:
 
     result["well_typed"] = False
     try:
-        ranking = rank.rank(enc, args.strategy, args.algorithm, min_count=args.candidates, timeout=args.timeout)
+        ranking = rank.rank(enc, args.strategy, args.algorithm, min_count=args.candidates, timeout=args.timeout,
+                            reinfer_path=args.file if args.reinfer else None,
+                            reinfer_options={"plus": args.plus, "closed_fields": args.closed_fields})
     except HardConflict:
         print(f"{args.file}: the library signatures alone are contradictory", file=sys.stderr)
         return 2
@@ -66,7 +72,7 @@ def main(argv=None) -> int:
     result.update(
         strategy=args.strategy,
         algorithm=args.algorithm,
-        candidates=[{"lines": list(c.lines), "size": c.size} for c in ranking.candidates],
+        candidates=[{"groups": [list(enc.span[g]) for g in c.lines], "size": c.size} for c in ranking.candidates],
         suspicious_lines=ranking.lines[: args.top],
         first_conflict_solver_js=baseline.solver_js_lines(js)[:1],
     )
@@ -75,14 +81,27 @@ def main(argv=None) -> int:
         return 1
 
     print(f"{args.file}: type error.")
+    def where(g) -> str:
+        if args.group_by == "node":
+            return f"{g[0]}:{g[1] + 1}"
+        a, b = enc.span[g]
+        return f"{a}" if a == b else f"{a}-{b}"
+
+    def code(g) -> str:
+        text = program.line_text(enc.line_of(g))
+        if args.group_by == "node" and g[2] == g[0]:
+            text = text[g[1] : g[3]]  # the expression itself
+        return text.strip()[:58]
+
     print(f"\nSuspicious lines ({args.strategy}, {args.algorithm}):")
     ranks = rank.line_ranks(ranking.candidates)
-    for L in ranking.lines[: args.top]:
-        cand = next(i for i, c in enumerate(ranking.candidates, 1) if L in c.lines)
-        print(f"  {ranks[L]:>2}. line {L:<4} {program.line_text(L).strip()[:60]:<60}  (candidate #{cand})")
-    print("\nCorrection subsets (dropping the constraints of these lines makes the rest typable):")
+    for g in ranking.groups[: args.top]:
+        cand = next(i for i, c in enumerate(ranking.candidates, 1) if g in c.lines)
+        print(f"  {ranks[g]:>2}. line {where(g):<6} {code(g):<58}  (candidate #{cand})")
+    unit = {"line": "line", "statement": "statement", "node": "expression"}[args.group_by]
+    print(f"\nCorrection subsets (dropping the constraints of these {unit}s makes the rest typable):")
     for i, c in enumerate(ranking.candidates[: max(args.top, 3)], 1):
-        print(f"  #{i:<2} {{{', '.join(map(str, c.lines))}}}  ({c.card} line(s), {c.size} constraint(s))")
+        print(f"  #{i:<2} {{{', '.join(where(g) for g in c.lines)}}}  ({c.card} {unit}(s), {c.size} constraint(s))")
     if not ranking.complete:
         print("  (enumeration cut short)")
     fc = result["first_conflict_solver_js"]

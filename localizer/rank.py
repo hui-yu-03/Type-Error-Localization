@@ -34,9 +34,9 @@ STRATEGIES = ("card", "card-late", "card-size", "size", "pareto")
 
 @dataclass(frozen=True)
 class Candidate:
-    lines: tuple  # sorted line numbers
+    lines: tuple  # group keys (line numbers when grouping by line), in source order
     card: int
-    size: int  # number of constraints in these lines
+    size: int  # number of constraints in these groups
 
 
 @dataclass
@@ -46,29 +46,50 @@ class Ranking:
     complete: bool = True  # False if the enumeration was cut short
     time: float = 0.0
     stats: dict = field(default_factory=dict)
+    span: dict = field(default_factory=dict)  # group key -> (first line, last line)
+
+    @property
+    def groups(self) -> list:
+        """The groups of the candidates, flattened in ranking order."""
+        out: list = []
+        for c in self.candidates:
+            for g in c.lines:
+                if g not in out:
+                    out.append(g)
+        return out
 
     @property
     def lines(self) -> list[int]:
+        """Suspicious source lines, in ranking order (first line of each group)."""
         out: list[int] = []
-        for c in self.candidates:
-            for L in c.lines:
-                if L not in out:
-                    out.append(L)
+        for g in self.groups:
+            L = self.span[g][0] if g in self.span else g
+            if L not in out:
+                out.append(L)
         return out
 
+    def covers(self, g, line: int) -> bool:
+        a, b = self.span.get(g, (g, g))
+        return a <= line <= b
+
     def rank_of(self, line: int) -> Optional[int]:
-        return line_ranks(self.candidates).get(line)
+        """Rank of the first group that covers `line` (pessimistic within a candidate)."""
+        return line_ranks(self.candidates, lambda g: self.covers(g, line))
 
 
-def line_ranks(candidates: list[Candidate]) -> dict[int, int]:
-    seen: set[int] = set()
-    ranks: dict[int, int] = {}
+def line_ranks(candidates: list[Candidate], hit=None):
+    """Without `hit`: {group: rank}.  With a predicate `hit`: the rank of the
+    first group satisfying it (or None)."""
+    seen: set = set()
+    ranks: dict = {}
     for c in candidates:
-        new = [L for L in c.lines if L not in seen]
+        new = [g for g in c.lines if g not in seen]
         seen.update(new)
-        for L in new:
-            ranks[L] = len(seen)
-    return ranks
+        for g in new:
+            ranks[g] = len(seen)
+        if hit is not None and any(hit(g) for g in c.lines):
+            return len(seen)
+    return None if hit is not None else ranks
 
 
 def size_weights(enc: Encoding) -> dict[int, int]:
@@ -120,17 +141,18 @@ def enumerate_pool(
     return Pool(found, complete, exhausted, time.perf_counter() - t0, en.stats)
 
 
-def to_candidate(enc: Encoding, lines) -> Candidate:
-    lines = tuple(sorted(lines))
-    return Candidate(lines, len(lines), sum(enc.group_sizes.get(L, 0) for L in lines))
+def to_candidate(enc: Encoding, groups) -> Candidate:
+    groups = tuple(sorted(groups, key=lambda g: enc.order[g]))
+    return Candidate(groups, len(groups), sum(enc.group_sizes.get(g, 0) for g in groups))
 
 
 def order(cands: list[Candidate], key: Callable) -> list[Candidate]:
     return sorted(cands, key=key)
 
 
-def pareto_layers(cands: list[Candidate]) -> list[list[Candidate]]:
+def pareto_layers(cands: list[Candidate], pos=None) -> list[list[Candidate]]:
     """Non-dominated sorting w.r.t. (card, size), both minimized."""
+    pos = pos or (lambda c: c.lines)
     rest = list(dict.fromkeys(cands))
     layers = []
     while rest:
@@ -142,40 +164,59 @@ def pareto_layers(cands: list[Candidate]) -> list[list[Candidate]]:
                 for d in rest
             )
         ]
-        layers.append(sorted(front, key=lambda c: (c.card, c.size, c.lines)))
+        layers.append(sorted(front, key=lambda c: (c.card, c.size, pos(c))))
         rest = [c for c in rest if c not in front]
     return layers
 
 
-def rank_from_pools(enc: Encoding, card_pool: Pool, size_pool: Optional[Pool] = None) -> dict[str, Ranking]:
-    """All strategies from (at most) two enumerations."""
+def rank_from_pools(enc: Encoding, card_pool: Pool, size_pool: Optional[Pool] = None,
+                    extra_singletons=()) -> dict[str, Ranking]:
+    """All strategies from (at most) two enumerations.  extra_singletons are
+    groups found to be single-group corrections by re-inference (reinfer.py)."""
     out: dict[str, Ranking] = {}
+    pos = lambda c: tuple(enc.order[g] for g in c.lines)  # noqa: E731  source order
+    late = lambda c: tuple(-enc.order[g] for g in reversed(c.lines))  # noqa: E731
     card = [to_candidate(enc, m.lines) for m in card_pool.mcses]
+    have = {c.lines for c in card}
+    card += [to_candidate(enc, [g]) for g in extra_singletons if g in enc.order and (g,) not in have]
     keys = {
-        "card": lambda c: (c.card, c.lines),
-        "card-late": lambda c: (c.card, tuple(-L for L in reversed(c.lines))),
-        "card-size": lambda c: (c.card, c.size, c.lines),
+        "card": lambda c: (c.card, pos(c)),
+        "card-late": lambda c: (c.card, late(c)),
+        "card-size": lambda c: (c.card, c.size, pos(c)),
     }
     for name, key in keys.items():
-        out[name] = Ranking(name, order(card, key), card_pool.complete, card_pool.time)
+        out[name] = Ranking(name, order(card, key), card_pool.complete, card_pool.time, span=enc.span)
     if size_pool is not None:
         size = [to_candidate(enc, m.lines) for m in size_pool.mcses]
         out["size"] = Ranking(
-            "size", order(size, lambda c: (c.size, c.card, c.lines)), size_pool.complete, size_pool.time
+            "size", order(size, lambda c: (c.size, c.card, pos(c))), size_pool.complete, size_pool.time,
+            span=enc.span,
         )
         # Every Pareto-optimal correction subset is an MCS (both criteria grow
         # with the set), so the front is found among the enumerated MCSs; the
         # union of the two pools contains the optimum of each criterion.
         union = list(dict.fromkeys(card + size))
-        layers = pareto_layers(union)
+        layers = pareto_layers(union, pos)
         out["pareto"] = Ranking(
             "pareto",
             [c for layer in layers for c in layer],
             card_pool.complete and size_pool.complete,
             card_pool.time + size_pool.time,
             {"front": [c.lines for c in layers[0]] if layers else []},
+            span=enc.span,
         )
     return out
+
+
+def reinference_singletons(enc: Encoding, pool: Pool, path, **kw) -> list:
+    """Lines that re-inference shows to be single-line corrections (line grouping)."""
+    from .reinfer import reinference_corrections
+
+    if enc.group_by != "line":
+        return []
+    lines = {g for m in pool.mcses for g in m.lines}
+    singletons = {next(iter(m.lines)) for m in pool.mcses if len(m.lines) == 1}
+    return reinference_corrections(path, enc, lines, skip=singletons, **kw)
 
 
 def rank(
@@ -185,17 +226,24 @@ def rank(
     min_count: int = 10,
     hard_cap: int = 30,
     timeout: Optional[float] = None,
+    reinfer_path=None,
+    reinfer_options: Optional[dict] = None,
 ) -> Ranking:
     card_pool = enumerate_pool(enc, None, algorithm, min_count, hard_cap, timeout)
     size_pool = None
     if strategy in ("size", "pareto"):
         size_pool = enumerate_pool(enc, size_weights(enc), algorithm, min_count, hard_cap, timeout)
-    return rank_from_pools(enc, card_pool, size_pool)[strategy]
+    extra = reinference_singletons(enc, card_pool, reinfer_path, **(reinfer_options or {})) if reinfer_path else []
+    r = rank_from_pools(enc, card_pool, size_pool, extra)[strategy]
+    r.stats["reinference"] = extra
+    return r
 
 
-def random_tiebreak(cands: list[Candidate], target: int, k_values=(1, 3), trials: int = 500, seed: int = 0) -> dict:
-    """Top-k probabilities and expected rank of `target` when the candidates of
-    equal cardinality are shown in a uniformly random order."""
+def random_tiebreak(cands: list[Candidate], target: int, k_values=(1, 3), trials: int = 500, seed: int = 0,
+                    covers=None) -> dict:
+    """Top-k probabilities and expected rank of the line `target` when the
+    candidates of equal cardinality are shown in a uniformly random order."""
+    covers = covers or (lambda g, line: g == line)
     rng = random.Random(seed)
     tiers: dict[int, list[Candidate]] = {}
     for c in cands:
@@ -209,7 +257,7 @@ def random_tiebreak(cands: list[Candidate], target: int, k_values=(1, 3), trials
             t = tiers[card][:]
             rng.shuffle(t)
             seq.extend(t)
-        r = line_ranks(seq).get(target)
+        r = line_ranks(seq, lambda g: covers(g, target))
         if r is not None:
             found += 1
             total_rank += r

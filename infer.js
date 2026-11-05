@@ -22,8 +22,13 @@ const fresh = () => `T${++_cnt}`;
 const nodeStack = []; // AST nodes currently being inferred, innermost last
 let libraryDepth = 0; // > 0 while a library signature is being instantiated
 
+const isStatement = (node) => /Statement$|Declaration$/.test(node.type);
+
 function currentOrigin(extra) {
   const node = nodeStack[nodeStack.length - 1];
+  let stmt = null;
+  for (let i = nodeStack.length - 1; i >= 0 && !stmt; i--)
+    if (isStatement(nodeStack[i])) stmt = nodeStack[i];
   const origin =
     libraryDepth > 0
       ? { source: "library" }
@@ -35,9 +40,25 @@ function currentOrigin(extra) {
             endLine: node.loc.end.line,
             endCol: node.loc.end.column,
             node: node.type,
+            ...(stmt && {
+              stmtLine: stmt.loc.start.line,
+              stmtCol: stmt.loc.start.column,
+              stmtEndLine: stmt.loc.end.line,
+            }),
           }
         : { source: "none" };
   return extra ? { ...origin, ...extra } : origin;
+}
+
+// Where a node is reported: a method call or a member access is located at the
+// method/property name, so that every link of a chain split over several lines
+// (p\n  .then(f)\n  .catch(g)) has its own line.
+function anchorOf(node) {
+  const member =
+    node.type === "CallExpression" ? node.callee : node.type === "MemberExpression" ? node : null;
+  if (member?.type === "MemberExpression" && !member.computed && member.property.loc)
+    return { type: node.type, loc: { start: member.property.loc.start, end: node.loc.end } };
+  return node;
 }
 
 // Run fn with node as the innermost node (Program/BlockStatement are skipped so
@@ -45,12 +66,27 @@ function currentOrigin(extra) {
 function withNode(node, fn) {
   const push =
     node && node.loc && node.type !== "Program" && node.type !== "BlockStatement";
-  if (push) nodeStack.push(node);
+  if (push) nodeStack.push(anchorOf(node));
   try {
     return fn();
   } finally {
     if (push) nodeStack.pop();
   }
+}
+
+// --ignore-lines: lines whose contributions (constraints and type hints) are
+// left out, to re-run inference as if they said nothing.  Library signatures
+// are still instantiated: they are cached and shared with other lines.
+let ignoredLines = new Set();
+
+function isIgnored() {
+  if (libraryDepth > 0 || ignoredLines.size === 0) return false;
+  const node = nodeStack[nodeStack.length - 1];
+  return node ? ignoredLines.has(node.loc.start.line) : false;
+}
+
+function setHint(tv, hint) {
+  if (!isIgnored()) typeHints.set(tv, hint);
 }
 
 function asLibrary(fn) {
@@ -75,6 +111,7 @@ const methodSummaryMap = new Map();
 const _isPlainTV = (t) => /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(t) && t !== "void";
 // meta (optional): extra origin info, e.g. { access: "read", field: "x" }
 function addCons(a, b, meta) {
+  if (isIgnored()) return;
   constraints.push(`${a} <= ${b}`);
   constraintOrigins.push(currentOrigin(meta));
   if (b === "str" || b === "num" || b === "bool" || b === "regexp" || b === "error") {
@@ -102,6 +139,7 @@ function addCons(a, b, meta) {
 const plusConstraints = [];
 const plusOrigins = [];
 const addPlus = (a, b, r) => {
+  if (isIgnored()) return;
   plusConstraints.push(`plus(${a},${b},${r})`);
   plusOrigins.push(currentOrigin());
 };
@@ -110,6 +148,7 @@ const addPlus = (a, b, r) => {
 const unionConstraints = [];
 const unionOrigins = [];
 function addUnion(a, b, r) {
+  if (isIgnored()) return;
   unionConstraints.push(`union(${a},${b},${r})`);
   unionOrigins.push(currentOrigin());
   // Propagate type hints eagerly so method dispatch works on the result TV.
@@ -133,6 +172,7 @@ function addUnion(a, b, r) {
 const logicalUnionConstraints = [];
 const logicalUnionOrigins = [];
 function addLogicalUnion(a, b, r) {
+  if (isIgnored()) return;
   logicalUnionConstraints.push(`logical_union(${a},${b},${r})`);
   logicalUnionOrigins.push(currentOrigin());
   const ha = typeHints.get(a);
@@ -151,6 +191,7 @@ function addLogicalUnion(a, b, r) {
 const indexConstraints = [];
 const indexOrigins = [];
 const addIndex = (obj, idx, result, meta) => {
+  if (isIgnored()) return;
   indexConstraints.push(`index(${obj},${idx},${result})`);
   indexOrigins.push(currentOrigin(meta));
 };
@@ -159,6 +200,7 @@ const addIndex = (obj, idx, result, meta) => {
 const tplConstraints = [];
 const tplOrigins = [];
 const addTpl = (expr) => {
+  if (isIgnored()) return;
   tplConstraints.push(`tpl(${expr})`);
   tplOrigins.push(currentOrigin());
 };
@@ -416,14 +458,14 @@ function untypedPropertyRead(Xobj, prop) {
   // String-exclusive method → the receiver is a string.
   if (STRING_EXCLUSIVE_METHODS.has(prop)) {
     addCons(Xobj, "str");
-    typeHints.set(Xobj, "str");
+    setHint(Xobj, "str");
     return accessTypeMethod(Xobj, prop) ?? fresh();
   }
   // Array-exclusive method → the receiver is an array.
   if (ARRAY_EXCLUSIVE_METHODS.has(prop)) {
     const elemTV = fresh();
     addCons(Xobj, `Array<${elemTV}>`);
-    typeHints.set(Xobj, { kind: "arr", elem: elemTV });
+    setHint(Xobj, { kind: "arr", elem: elemTV });
     return _accessArrayMethod(prop, elemTV, `${Xobj}::${prop}`) ?? fresh();
   }
   // "length" is universal (present on both str and Array) — return num
@@ -800,7 +842,7 @@ function inferFuncNode(funcNode, fnName, fnScope, env, xTarget, thisTV = null) {
 
   if (xTarget) {
     addCons(xTarget, funcType(qualName, paramTVs, retTV));
-    typeHints.set(xTarget, "func");
+    setHint(xTarget, "func");
   }
 
   return;
@@ -2187,15 +2229,17 @@ function inferStmtNode(node, env, scope) {
       if (guard) {
         const origTV = envGet(env, guard.ident, scope);
         const shadowTV = fresh();
-        typeHints.set(shadowTV, guard.jsType);
+        setHint(shadowTV, guard.jsType);
         env.set(guard.ident, shadowTV);
         inferStmt(node.consequent, env, scope);
         env.set(guard.ident, origTV);
-        if (!typeofGuardMap.has(origTV)) {
-          typeofGuardMap.set(origTV, new Set());
-          typeofGuardOrigins.set(origTV, currentOrigin());
+        if (!isIgnored()) {
+          if (!typeofGuardMap.has(origTV)) {
+            typeofGuardMap.set(origTV, new Set());
+            typeofGuardOrigins.set(origTV, currentOrigin());
+          }
+          typeofGuardMap.get(origTV).add(guard.jsType);
         }
-        typeofGuardMap.get(origTV).add(guard.jsType);
       } else {
         inferStmt(node.consequent, env, scope);
       }
@@ -2398,7 +2442,7 @@ function inferStmtNode(node, env, scope) {
       });
 
       addCons(fnTV, funcType(qualName, paramTVs, retTV));
-      typeHints.set(fnTV, "func");
+      setHint(fnTV, "func");
       break;
     }
 
@@ -2540,7 +2584,7 @@ function inferExprStmtNode(node, env, scope) {
             if (!hasReturn) addCons("void", retTV);
             const mfv = mkTV(methodName, scope);
             addCons(mfv, funcType(qualName, paramTVs, retTV));
-            typeHints.set(mfv, "func");
+            setHint(mfv, "func");
             return;
           }
         }
@@ -2635,11 +2679,17 @@ function inferExprStmtNode(node, env, scope) {
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────────
-// Usage: node infer.js [--json] <source-file.js>
-//   --json  print the constraints as JSON, each tagged with its source origin
+// Usage: node infer.js [--json] [--ignore-lines L1,L2,...] <source-file.js>
+//   --json          print the constraints as JSON, each tagged with its source origin
+//   --ignore-lines  infer the program as if these lines contributed nothing
 const cliArgs = process.argv.slice(2);
 const jsonOutput = cliArgs.includes("--json");
-const filePath = cliArgs.find((a) => !a.startsWith("--"));
+const ignoreIdx = cliArgs.indexOf("--ignore-lines");
+if (ignoreIdx >= 0)
+  ignoredLines = new Set(String(cliArgs[ignoreIdx + 1]).split(",").map(Number));
+const filePath = cliArgs.find(
+  (a, i) => !a.startsWith("--") && !(ignoreIdx >= 0 && i === ignoreIdx + 1),
+);
 
 if (!filePath) {
   console.error("Usage: node infer.js [--json] <source-file.js>");

@@ -64,25 +64,36 @@ def run_parallel(fn, tasks: list, jobs: int, label: str) -> list:
 
 
 # -- single-mistake corpora --------------------------------------------------------
+# setting -> (closed_fields, group_by, reinfer)
+SETTINGS = {
+    "open": (False, "line", True),
+    "closed": (True, "line", False),
+    "statement": (False, "statement", False),
+    "node": (False, "node", False),
+}
+
+
 def _single(task: dict) -> dict:
     row = {k: v for k, v in task.items() if k != "source"}
+    closed, group_by, reinfer = SETTINGS[task["setting"]]
     try:
-        row.update(ev.evaluate_single(task["source"], task["lines"], closed_fields=task["setting"] == "closed"))
+        row.update(ev.evaluate_single(task["source"], task["lines"], closed_fields=closed,
+                                      group_by=group_by, reinfer=reinfer))
     except Exception as e:  # keep going; the failure is recorded
         row.update(error=repr(e)[:200])
     return row
 
 
 def _clean_settings(source: str) -> list[str]:
-    """Settings ("open", "closed") under which a base program is well typed
-    (and solver.js reports no conflict)."""
+    """Settings under which a base program is well typed (and solver.js
+    reports no conflict)."""
     data = ev.infer_source(source)
     program = ev.program_from_json(data, source)
     if ev.run_solver_js(data)["conflicts"]:
         return []
     out = []
-    for setting in ("open", "closed"):
-        if ev.encode(program, closed_fields=setting == "closed").check() == ev.z3.sat:
+    for setting, (closed, _, _) in SETTINGS.items():
+        if ev.encode(program, closed_fields=closed).check() == ev.z3.sat:
             out.append(setting)
     return out
 

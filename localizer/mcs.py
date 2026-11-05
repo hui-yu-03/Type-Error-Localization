@@ -308,7 +308,7 @@ class IHS(Enumerator):
             for c in todo:
                 for L in c:
                     score[L] = score.get(L, 0) + 1
-            best = max(score, key=lambda L: (score[L] / self.weights[L], -L))
+            best = max(score, key=lambda L: (score[L] / self.weights[L], -self.enc.order[L]))
             chosen.add(best)
             todo = [c for c in todo if best not in c]
         if any(b <= chosen for b in blocked):

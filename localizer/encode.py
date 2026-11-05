@@ -86,17 +86,58 @@ class Theory:
         return getattr(self.T, "is_" + kind)(x)
 
 
+GROUPINGS = ("line", "statement", "node")
+
+
+def group_key(c: Constraint, group_by: str):
+    """The group (unit of blame) of a soft constraint."""
+    if group_by == "line":
+        return c.line
+    if group_by == "statement" and c.stmt_line is not None:
+        return (c.stmt_line, c.stmt_col)
+    if group_by == "node":
+        return (c.line, c.col, c.end_line, c.end_col)
+    return (c.line, -1)
+
+
+def group_span(c: Constraint, group_by: str) -> tuple[int, int]:
+    """(first line, last line) covered by the group of c."""
+    if group_by == "line":
+        return (c.line, c.line)
+    if group_by == "statement" and c.stmt_line is not None:
+        return (c.stmt_line, c.stmt_end_line or c.stmt_line)
+    if group_by == "node":
+        return (c.line, c.end_line or c.line)
+    return (c.line, c.line)
+
+
 @dataclass
 class Encoding:
-    """The encoded program: hard formulas plus one guarded group per line."""
+    """The encoded program: hard formulas plus one guarded group per unit of
+    blame (by default a source line; see GROUPINGS).
+
+    Groups are identified by keys: the line number when grouping by line,
+    (line, column, ...) tuples otherwise.  `order` gives the position of each
+    group in source order and `span` the lines it covers.
+    """
 
     program: Program
     hard: list[z3.BoolRef]
-    groups: "OrderedDict[int, z3.BoolRef]"  # line -> conjunction of its constraints
-    selectors: "OrderedDict[int, z3.BoolRef]"  # line -> selector literal
+    groups: "OrderedDict"  # key -> conjunction of the group's constraints
+    selectors: "OrderedDict"  # key -> selector literal
     per_constraint: list[tuple[Constraint, z3.BoolRef]]  # every constraint, in order
     encoder: "Encoder"
-    group_sizes: dict[int, int] = field(default_factory=dict)  # line -> #constraints
+    group_sizes: dict = field(default_factory=dict)  # key -> number of constraints
+    group_by: str = "line"
+    order: dict = field(default_factory=dict)  # key -> position in source order
+    span: dict = field(default_factory=dict)  # key -> (first line, last line)
+
+    def line_of(self, key) -> int:
+        return self.span[key][0]
+
+    def covers(self, key, line: int) -> bool:
+        a, b = self.span[key]
+        return a <= line <= b
 
     def solver(self, timeout_ms: Optional[int] = None, **params) -> z3.Solver:
         s = z3.Solver()
@@ -323,19 +364,34 @@ class Encoder:
         return out
 
 
-def encode(program: Program, plus: str = "strict", closed_fields: bool = False) -> Encoding:
+def encode(program: Program, plus: str = "strict", closed_fields: bool = False, group_by: str = "line") -> Encoding:
+    if group_by not in GROUPINGS:
+        raise ValueError(group_by)
     enc = Encoder(plus=plus, closed_fields=closed_fields)
-    lines = sorted({c.line for c in program.constraints if not c.hard})
-    selectors = OrderedDict((line, z3.Bool(f"line!{line}")) for line in lines)
+    key_of = {c.id: group_key(c, group_by) for c in program.constraints if not c.hard}
+    span: dict = {}
+    for c in program.constraints:
+        if not c.hard:
+            a, b = group_span(c, group_by)
+            k = key_of[c.id]
+            lo, hi = span.get(k, (a, b))
+            span[k] = (min(lo, a), max(hi, b))
+    keys = sorted(span, key=lambda k: (k, 0) if isinstance(k, int) else (k[0], k))
+    order = {k: i for i, k in enumerate(keys)}
+    selectors = OrderedDict((k, z3.Bool(f"group!{order[k]}")) for k in keys)
+    line_selector = {}  # closed fields: a definition's line -> its group selector
+    for c in program.constraints:
+        if not c.hard:
+            line_selector.setdefault(c.line, selectors[key_of[c.id]])
     extra: dict[int, list[z3.BoolRef]] = {}
     if closed_fields:
-        guard = lambda line: z3.BoolVal(True) if line is None else selectors[line]  # noqa: E731
+        guard = lambda line: z3.BoolVal(True) if line is None else line_selector[line]  # noqa: E731
         for cid, f in enc.closed_field_formulas(program, guard):
             extra.setdefault(cid, []).append(f)
     hard: list[z3.BoolRef] = []
-    parts: dict[int, list[z3.BoolRef]] = {line: [] for line in lines}
+    parts: dict = {k: [] for k in keys}
     per_constraint = []
-    sizes: dict[int, int] = {}
+    sizes: dict = {}
     for c in program.constraints:
         f = enc.constraint(c)
         if c.id in extra:
@@ -344,10 +400,11 @@ def encode(program: Program, plus: str = "strict", closed_fields: bool = False) 
         if c.hard:
             hard.append(f)
         else:
-            parts[c.line].append(f)
-            sizes[c.line] = sizes.get(c.line, 0) + 1
-    groups = OrderedDict((line, z3.And(parts[line])) for line in lines)
-    return Encoding(program, hard, groups, selectors, per_constraint, enc, sizes)
+            k = key_of[c.id]
+            parts[k].append(f)
+            sizes[k] = sizes.get(k, 0) + 1
+    groups = OrderedDict((k, z3.And(parts[k])) for k in keys)
+    return Encoding(program, hard, groups, selectors, per_constraint, enc, sizes, group_by, order, span)
 
 
 # -- models -------------------------------------------------------------------

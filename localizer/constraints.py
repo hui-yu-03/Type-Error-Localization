@@ -41,6 +41,12 @@ class Constraint:
     node: Optional[str] = None  # AST node type that generated the constraint
     access: Optional[str] = None  # field constraints: read | write | literal
     field: Optional[str] = None
+    col: Optional[int] = None  # position of that node (0-based column)
+    end_line: Optional[int] = None
+    end_col: Optional[int] = None
+    stmt_line: Optional[int] = None  # innermost statement containing the node
+    stmt_col: Optional[int] = None
+    stmt_end_line: Optional[int] = None
 
     @property
     def hard(self) -> bool:
@@ -96,6 +102,12 @@ def parse_constraint(raw: dict) -> Constraint:
         node=raw.get("node"),
         access=raw.get("access"),
         field=raw.get("field"),
+        col=raw.get("col"),
+        end_line=raw.get("endLine"),
+        end_col=raw.get("endCol"),
+        stmt_line=raw.get("stmtLine"),
+        stmt_col=raw.get("stmtCol"),
+        stmt_end_line=raw.get("stmtEndLine"),
     )
 
 
@@ -115,9 +127,11 @@ def program_from_json(data: dict, source_text: str, path: str = "<input>") -> Pr
     )
 
 
-def run_infer(path: str | Path, timeout: float = 60) -> dict:
+def run_infer(path: str | Path, timeout: float = 60, ignore_lines=None) -> dict:
+    """Constraints of a program; with ignore_lines, as if those lines said nothing."""
+    extra = ["--ignore-lines", ",".join(map(str, sorted(ignore_lines)))] if ignore_lines else []
     out = subprocess.run(
-        ["node", str(INFER_JS), "--json", str(path)],
+        ["node", str(INFER_JS), "--json", *extra, str(path)],
         capture_output=True,
         text=True,
         timeout=timeout,

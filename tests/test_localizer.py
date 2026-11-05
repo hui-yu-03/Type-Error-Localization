@@ -175,3 +175,41 @@ def run_infer_source(source: str) -> dict:
         p = Path(d) / "input.js"
         p.write_text(source)
         return run_infer(p)
+
+
+# -- granularity and re-inference ----------------------------------------------------
+def test_method_chain_links_have_their_own_line():
+    src = "const p = Promise.resolve(1);\nconst q = p\n  .then(x => x + 1)\n  .thne(y => y);\n"
+    enc = encode(load_source(src))
+    smallest = sorted(m.sorted() for m in mcs.make("oll", enc).enumerate() if m.cost == 1)
+    # the two links of the chain (the misspelled .thne, and the .then whose
+    # promise it is applied to), no longer line 2 where the chain starts
+    assert smallest == [[3], [4]]
+
+
+def test_group_by_statement_and_node():
+    src = 'const a = 1; const b = a + "x"; const c = b * 2;\n'
+    program = load_source(src)
+    assert encode(program, group_by="line").lines == [1]
+    stmts = encode(program, group_by="statement")
+    assert len(stmts.lines) == 3 and all(stmts.span[g] == (1, 1) for g in stmts.lines)
+    nodes = encode(program, group_by="node")
+    found = [m.lines for m in mcs.make("oll", nodes).enumerate()]
+    assert len(found) >= 2 and all(len(m) == 1 for m in found)
+
+
+HINT_CASE = 'const s = 0;\nconst t = s.toUpperCase();\nconst z = s === "x";\n'
+
+
+def test_reinference_finds_the_line_behind_a_wrong_type_hint(tmp_path):
+    """After `const s = 0`, s.toUpperCase() is inferred as a field of an
+    object, so dropping line 1's constraints alone is not enough; inferring
+    the program again without line 1 is."""
+    path = tmp_path / "hint.js"
+    path.write_text(HINT_CASE)
+    enc = encode(load_program(path))
+    plain = rank.rank(enc, "card")
+    assert plain.candidates[0].card == 2
+    with_reinference = rank.rank(enc, "card", reinfer_path=path)
+    assert with_reinference.stats["reinference"] == [1]
+    assert with_reinference.candidates[0].lines == (1,)

@@ -68,11 +68,23 @@ def _rank_in(lines: list[int], targets: list[int]) -> Optional[int]:
     return min(pos) if pos else None
 
 
-def evaluate_single(source: str, targets: list[int], closed_fields: bool = False, timeout: float = 30.0) -> dict:
+def _record_rankings(row: dict, rankings: dict, enc, targets: list[int], suffix: str = "") -> None:
+    for name, r in rankings.items():
+        ranks = [r.rank_of(t) for t in targets]
+        ranks = [x for x in ranks if x is not None]
+        row[f"rank_{name}{suffix}"] = min(ranks) if ranks else None
+        row[f"first_{name}{suffix}"] = [enc.line_of(g) for g in r.candidates[0].lines] if r.candidates else []
+
+
+def evaluate_single(source: str, targets: list[int], closed_fields: bool = False, timeout: float = 30.0,
+                    group_by: str = "line", reinfer: bool = False) -> dict:
+    """One mistake at a known line.  With reinfer, the rankings are also
+    computed with the re-inference candidates (columns rank_<strategy>+reinfer)."""
     t0 = time.perf_counter()
     data = infer_source(source)
     program = program_from_json(data, source)
-    enc = encode(program, closed_fields=closed_fields)
+    enc = encode(program, closed_fields=closed_fields, group_by=group_by)
+    on_target = lambda g: any(enc.covers(g, t) for t in targets)  # noqa: E731
     row: dict = {"lines": len(enc.lines), "constraints": len(program.constraints)}
     status = enc.check(timeout_ms=int(timeout * 1000))
     row["smt_status"] = str(status)
@@ -83,10 +95,10 @@ def evaluate_single(source: str, targets: list[int], closed_fields: bool = False
         row["detected"] = False
         return row
     row["detected"] = True
-    row["target_has_constraints"] = any(t in enc.groups for t in targets)
+    row["target_has_constraints"] = any(on_target(g) for g in enc.groups)
     # Q1: is the mistake line alone a correction subset?
     s = enc.solver(timeout_ms=int(timeout * 1000))
-    keep = [enc.selectors[L] for L in enc.lines if L not in targets]
+    keep = [enc.selectors[g] for g in enc.lines if not on_target(g)]
     row["target_is_correction"] = s.check(*keep) == z3.sat
 
     b1 = baseline.first_conflicts(enc, k=5, timeout_ms=int(timeout * 1000))
@@ -97,19 +109,25 @@ def evaluate_single(source: str, targets: list[int], closed_fields: bool = False
     size_pool = rank.enumerate_pool(enc, rank.size_weights(enc), "oll", min_count=10, hard_cap=40, timeout=timeout)
     rankings = rank.rank_from_pools(enc, card_pool, size_pool)
     row["pool_complete"] = card_pool.complete and size_pool.complete
-    for name, r in rankings.items():
-        ranks = [r.rank_of(t) for t in targets]
-        ranks = [x for x in ranks if x is not None]
-        row[f"rank_{name}"] = min(ranks) if ranks else None
-        row[f"first_{name}"] = list(r.candidates[0].lines) if r.candidates else []
+    _record_rankings(row, rankings, enc, targets)
+    if reinfer and group_by == "line":
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "program.js"
+            path.write_text(source)
+            t1 = time.perf_counter()
+            extra = rank.reinference_singletons(enc, card_pool, path, closed_fields=closed_fields)
+            row["time_reinfer"] = time.perf_counter() - t1
+        row["reinfer_lines"] = extra
+        row["target_is_reinfer_correction"] = row["target_is_correction"] or any(t in extra for t in targets)
+        _record_rankings(row, rank.rank_from_pools(enc, card_pool, size_pool, extra), enc, targets, "+reinfer")
     if card_pool.mcses:
         min_cost = card_pool.mcses[0].cost
         tier = [m for m in card_pool.mcses if m.cost == min_cost]
         row["min_mcs_size"] = min_cost
         row["n_min_mcs"] = len(tier)
-        row["target_in_min_mcs"] = any(t in m.lines for m in tier for t in targets)
+        row["target_in_min_mcs"] = any(on_target(g) for m in tier for g in m.lines)
         cands = [rank.to_candidate(enc, m.lines) for m in card_pool.mcses]
-        tb = rank.random_tiebreak(cands, targets[0])
+        tb = rank.random_tiebreak(cands, targets[0], covers=enc.covers)
         row["random_top1"], row["random_top3"] = tb["top1"], tb["top3"]
     row["time"] = time.perf_counter() - t0
     return row
@@ -149,7 +167,7 @@ def evaluate_multi(source: str, targets: list[int], base_source: Optional[str] =
     pool = rank.enumerate_pool(enc, None, "oll", min_count=5, hard_cap=20, timeout=timeout)
     rankings = rank.rank_from_pools(enc, pool)
     b1 = baseline.first_conflicts(enc, k=max(len(T), 1), timeout_ms=int(timeout * 1000))
-    first = set(rankings["card"].candidates[0].lines) if rankings["card"].candidates else set()
+    first = {enc.line_of(g) for g in rankings["card"].candidates[0].lines} if rankings["card"].candidates else set()
     row["first_mcs_size"] = len(first)
     row["first_mcs_precision"] = len(first & T) / len(first) if first else 0.0
     row["first_mcs_recall"] = len(first & T) / len(T)
