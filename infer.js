@@ -150,9 +150,9 @@ function addLogicalUnion(a, b, r) {
 // deferred index constraints: index(Xobj, Xidx, Xresult)
 const indexConstraints = [];
 const indexOrigins = [];
-const addIndex = (obj, idx, result) => {
+const addIndex = (obj, idx, result, meta) => {
   indexConstraints.push(`index(${obj},${idx},${result})`);
-  indexOrigins.push(currentOrigin());
+  indexOrigins.push(currentOrigin(meta));
 };
 
 // deferred template constraints: tpl(Xexpr)
@@ -394,6 +394,50 @@ const ARRAY_EXCLUSIVE_METHODS = new Set([
   "reverse",
 ]);
 
+// Methods that exist on both strings and arrays: on a receiver of unknown type
+// they say nothing about the receiver (and must not make it an object).
+const SHARED_STR_ARRAY_METHODS = new Set([
+  "slice",
+  "indexOf",
+  "lastIndexOf",
+  "includes",
+  "concat",
+  "at",
+]);
+
+// Array methods whose result type depends on the callback: every use gets its
+// own instance, so that a.map(f) and a.map(g) may have different results.
+const POLYMORPHIC_ARRAY_METHODS = new Set(["map", "flatMap", "reduce"]);
+
+// Reading `prop` from a receiver whose type is not known yet (no type hint).
+// Returns the TV of the result, or null if the read is an ordinary field read.
+function untypedPropertyRead(Xobj, prop) {
+  if (typeHints.has(Xobj)) return null;
+  // String-exclusive method → the receiver is a string.
+  if (STRING_EXCLUSIVE_METHODS.has(prop)) {
+    addCons(Xobj, "str");
+    typeHints.set(Xobj, "str");
+    return accessTypeMethod(Xobj, prop) ?? fresh();
+  }
+  // Array-exclusive method → the receiver is an array.
+  if (ARRAY_EXCLUSIVE_METHODS.has(prop)) {
+    const elemTV = fresh();
+    addCons(Xobj, `Array<${elemTV}>`);
+    typeHints.set(Xobj, { kind: "arr", elem: elemTV });
+    return _accessArrayMethod(prop, elemTV, `${Xobj}::${prop}`) ?? fresh();
+  }
+  // "length" is universal (present on both str and Array) — return num
+  // without adding a structural constraint that would force the receiver
+  // to be an object and block str|Array<T> union inference later.
+  if (prop === "length") {
+    const Xlen = fresh();
+    addCons(Xlen, "num");
+    return Xlen;
+  }
+  if (SHARED_STR_ARRAY_METHODS.has(prop)) return fresh();
+  return null;
+}
+
 function _accessArrayMethod(propName, elemTV, cacheKey) {
   return asLibrary(() => accessArrayMethodImpl(propName, elemTV, cacheKey));
 }
@@ -562,7 +606,8 @@ function accessArrayMethodImpl(propName, elemTV, cacheKey) {
     default:
       return null;
   }
-  typeMethodCache.set(cacheKey, methodTV);
+  if (!POLYMORPHIC_ARRAY_METHODS.has(propName))
+    typeMethodCache.set(cacheKey, methodTV);
   return methodTV;
 }
 
@@ -1570,34 +1615,8 @@ function inferExprNode(node, env, scope) {
         if (propTV !== null) return propTV;
         const typeTV = accessTypeMethod(Xobj, node.property.name);
         if (typeTV !== null) return typeTV;
-        // String-exclusive method on an untyped TV → constrain receiver as str.
-        if (
-          !typeHints.has(Xobj) &&
-          STRING_EXCLUSIVE_METHODS.has(node.property.name)
-        ) {
-          addCons(Xobj, "str");
-          typeHints.set(Xobj, "str");
-          return accessTypeMethod(Xobj, node.property.name);
-        }
-        // Array-exclusive method on an untyped TV → constrain receiver as array.
-        if (
-          !typeHints.has(Xobj) &&
-          ARRAY_EXCLUSIVE_METHODS.has(node.property.name)
-        ) {
-          const elemTV = fresh();
-          addCons(Xobj, `Array<${elemTV}>`);
-          typeHints.set(Xobj, { kind: "arr", elem: elemTV });
-          const cacheKey = `${Xobj}::${node.property.name}`;
-          return _accessArrayMethod(node.property.name, elemTV, cacheKey);
-        }
-        // "length" is universal (present on both str and Array) — return num
-        // without adding a structural constraint that would force the receiver
-        // to be an object and block str|Array<T> union inference later.
-        if (!typeHints.has(Xobj) && node.property.name === "length") {
-          const Xlen = fresh();
-          addCons(Xlen, "num");
-          return Xlen;
-        }
+        const untypedTV = untypedPropertyRead(Xobj, node.property.name);
+        if (untypedTV !== null) return untypedTV;
         const X3 = fresh();
         if (typeHints.get(Xobj) !== "func") {
           addCons(Xobj, `{${node.property.name}: ${X3}}`, {
@@ -1615,29 +1634,8 @@ function inferExprNode(node, env, scope) {
         if (propTV !== null) return propTV;
         const typeTV = accessTypeMethod(Xobj, node.property.value);
         if (typeTV !== null) return typeTV;
-        if (
-          !typeHints.has(Xobj) &&
-          STRING_EXCLUSIVE_METHODS.has(node.property.value)
-        ) {
-          addCons(Xobj, "str");
-          typeHints.set(Xobj, "str");
-          return accessTypeMethod(Xobj, node.property.value);
-        }
-        if (
-          !typeHints.has(Xobj) &&
-          ARRAY_EXCLUSIVE_METHODS.has(node.property.value)
-        ) {
-          const elemTV = fresh();
-          addCons(Xobj, `Array<${elemTV}>`);
-          typeHints.set(Xobj, { kind: "arr", elem: elemTV });
-          const cacheKey = `${Xobj}::${node.property.value}`;
-          return _accessArrayMethod(node.property.value, elemTV, cacheKey);
-        }
-        if (!typeHints.has(Xobj) && node.property.value === "length") {
-          const Xlen = fresh();
-          addCons(Xlen, "num");
-          return Xlen;
-        }
+        const untypedTV = untypedPropertyRead(Xobj, node.property.value);
+        if (untypedTV !== null) return untypedTV;
         const X3 = fresh();
         if (node.property.value !== "") {
           addCons(Xobj, `{${node.property.value}: ${X3}}`, {
@@ -1657,7 +1655,7 @@ function inferExprNode(node, env, scope) {
         const X3 = fresh();
         const Xidx = inferExpr(node.property, env, scope);
         addCons(Xidx, "num");
-        addCons(Xobj, `Array<${X3}>`);
+        addCons(Xobj, `Array<${X3}>`, { access: "index" });
         return X3;
       } else {
         // arr[i] or obj[key] with variable/expression key — defer to solver
@@ -2092,6 +2090,11 @@ function handleRHS(name, rhs, env, scope) {
     const typeTV = accessTypeMethod(X1, prop);
     if (typeTV !== null) {
       addCons(typeTV, xTarget);
+      return;
+    }
+    const untypedTV = untypedPropertyRead(X1, prop);
+    if (untypedTV !== null) {
+      addCons(untypedTV, xTarget);
       return;
     }
     const X3 = fresh();
@@ -2605,13 +2608,14 @@ function inferExprStmtNode(node, env, scope) {
         }
         return;
       }
-      // Computed write: obj[key] = rhs — infer rhs and constrain obj as an object.
+      // Computed write: obj[key] = rhs or arr[i] = rhs — the same index
+      // constraint as a computed read (an array with a numeric index, or an
+      // object with a string key).
       if (lhs.type === "MemberExpression" && lhs.computed) {
         const Xrhs = inferExpr(rhs, env, scope);
         const Xobj = inferExpr(lhs.object, env, scope);
         const Xidx = inferExpr(lhs.property, env, scope);
-        addCons(Xobj, "{}", { access: "computed-write" });
-        addIndex(Xobj, Xidx, Xrhs);
+        addIndex(Xobj, Xidx, Xrhs, { access: "computed-write" });
         return;
       }
       inferExpr(rhs, env, scope);

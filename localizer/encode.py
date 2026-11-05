@@ -223,7 +223,18 @@ class Encoder:
         out: list = []
         if c.kind == "sub":
             lhs, rhs = c.args
-            if isinstance(lhs, Var):
+            if c.access == "index" and isinstance(lhs, Var) and isinstance(rhs, Arr):
+                # x[0] with a numeric literal: x is an array, or a string
+                # (whose characters are strings)
+                x = self.var(lhs.name)
+                elem = self.term(rhs.elem, out)
+                out.append(
+                    z3.Or(
+                        z3.And(th.is_kind("Arr", x), th.fn("elem")(x) == elem),
+                        z3.And(x == th.base["str"], elem == th.base["str"]),
+                    )
+                )
+            elif isinstance(lhs, Var):
                 self.pattern(self.var(lhs.name), rhs, out)
             elif isinstance(rhs, Var):  # e.g. void <= ret__f
                 self.pattern(self.var(rhs.name), lhs, out)
@@ -288,14 +299,15 @@ class Encoder:
         any_field: list[tuple[Optional[int], z3.ExprRef]] = []  # obj[key] = v defines any field
         literal_objs: list[tuple[int, z3.ExprRef]] = []
         for c in program.constraints:
+            if c.kind == "index" and c.access == "computed-write":
+                any_field.append((c.line, self.var(c.args[0].name)))
+                continue
             if c.kind != "sub" or not isinstance(c.args[1], Obj) or not isinstance(c.args[0], Var):
                 continue
             x = self.var(c.args[0].name)
             if c.access in ("write", "literal") or c.source == "library":
                 for f, _ in c.args[1].fields:
                     defs.setdefault(f, []).append((c.line, x))
-            if c.access == "computed-write":
-                any_field.append((c.line, x))
             if c.access == "literal":
                 literal_objs.append((c.id, x))
         out = []

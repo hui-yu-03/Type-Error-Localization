@@ -420,12 +420,13 @@ summaries["Math"] = {
   trunc: { params: ["num"], ret: "num" },
 };
 
+// console.* accept values of any type
 summaries["console"] = {
-  log: { params: ["{}"], ret: "void" },
-  error: { params: ["{}"], ret: "void" },
-  warn: { params: ["{}"], ret: "void" },
-  info: { params: ["{}"], ret: "void" },
-  debug: { params: ["{}"], ret: "void" },
+  log: { params: [{ kind: "any" }], ret: "void" },
+  error: { params: [{ kind: "any" }], ret: "void" },
+  warn: { params: [{ kind: "any" }], ret: "void" },
+  info: { params: [{ kind: "any" }], ret: "void" },
+  debug: { params: [{ kind: "any" }], ret: "void" },
 };
 
 summaries["process"] = {
@@ -503,10 +504,11 @@ summaries.__globals__ = [
 
 // Globals that are callable functions themselves (not objects with methods).
 // String(x) → str, Number(x) → num, Boolean(x) → bool.
+// String(x), Number(x), Boolean(x) convert a value of any type (no params listed)
 summaries.__globalCallables__ = {
-  String: { params: ["{}"], ret: "str" },
-  Number: { params: ["{}"], ret: "num" },
-  Boolean: { params: ["{}"], ret: "bool" },
+  String: { params: [], ret: "str" },
+  Number: { params: [], ret: "num" },
+  Boolean: { params: [], ret: "bool" },
   eval: { params: ["str"], ret: "bot" },
 };
 

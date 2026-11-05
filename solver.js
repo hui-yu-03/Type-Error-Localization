@@ -324,8 +324,8 @@ class State {
     } else if (this.isObj.get(rx)) {
       this.reportError(`CONFLICT: obj vs ${type}  (${ctx})`);
     } else if (this.isArr.get(rx)) {
-      if (isBaseType(type)) {
-        // Array + base type → str|Array<T>, num|Array<T>, etc.
+      if (type === "str") {
+        // a string is indexable like an array (s[0], s.length): str|Array<T>
         this.baseType.set(rx, type);
         this.baseAndArr.set(rx, true);
       } else {
@@ -353,6 +353,14 @@ class State {
       this.reportError(`CONFLICT: Array vs obj`);
       return;
     }
+    if (this.isPromiseType.get(rx)) {
+      this.reportError(`CONFLICT: Promise vs obj`);
+      return;
+    }
+    if (this.isFuncType.get(rx)) {
+      this.reportError(`CONFLICT: Func vs obj`);
+      return;
+    }
     if (this.classKind.has(rx)) {
       this.reportError(
         `CONFLICT: ${this.classKind.get(rx)}<${this.className.get(rx)}> vs obj`,
@@ -366,8 +374,8 @@ class State {
   _initArr(rx, elemTV) {
     const bt = this.baseType.get(rx);
     if (bt) {
-      if (isBaseType(bt)) {
-        // base type + Array → str|Array<T>, num|Array<T>, etc.
+      if (bt === "str") {
+        // a string is indexable like an array (s[0], s.length): str|Array<T>
         this.isArr.set(rx, true);
         if (this.arrElem.has(rx)) this.union(this.arrElem.get(rx), elemTV);
         else this.arrElem.set(rx, elemTV);
@@ -379,6 +387,14 @@ class State {
     }
     if (this.isObj.get(rx)) {
       this.reportError(`CONFLICT: obj vs Array`);
+      return;
+    }
+    if (this.isPromiseType.get(rx)) {
+      this.reportError(`CONFLICT: Promise vs Array`);
+      return;
+    }
+    if (this.isFuncType.get(rx)) {
+      this.reportError(`CONFLICT: Func vs Array`);
       return;
     }
     if (this.classKind.has(rx)) {
@@ -406,6 +422,10 @@ class State {
     }
     if (this.isArr.get(rx)) {
       this.reportError(`CONFLICT: Array vs Func`);
+      return;
+    }
+    if (this.isPromiseType.get(rx)) {
+      this.reportError(`CONFLICT: Promise vs Func`);
       return;
     }
     if (this.isFuncType.get(rx)) {
@@ -783,98 +803,213 @@ function parseTplConstraint(line) {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-const STRUCTURAL = new Set(["obj", "arr", "func", "promise"]);
+// ── Deferred constraints ──────────────────────────────────────────────────────
+// plus (+), union (?:), logical_union (&&, ||), index (o[i]) and tpl (`${x}`)
+// are resolved after the main pass.  The precise rules below are applied
+// repeatedly until nothing changes, so that the result does not depend on the
+// order of the constraints; one-sided inferences are applied only when no
+// precise rule applies any more, and defaults only at the very end.
 
-function resolvePlus(st, plusParsed) {
-  const done = new Set();
-
-  // Sets the result type of a + expression. process() records any conflict,
-  // then we force-set the base type if it wasn't stored (structural conflict):
-  // xr's type comes from its operands, not from downstream usage of xr.
-  const setResult = (xr, type) => {
-    st.process(xr, type);
-    const rep = st.find(xr);
-    if (!st.baseType.has(rep)) st.baseType.set(rep, type);
-  };
-
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (let i = 0; i < plusParsed.length; i++) {
-      if (done.has(i)) continue;
-      const { x1, x2, xr } = plusParsed[i];
-      st.currentOrigin = plusParsed[i].origin ?? null;
-      const k1 = st.kindOf(st.find(x1));
-      const k2 = st.kindOf(st.find(x2));
-      if (k1 === "str" || k2 === "str") {
-        setResult(xr, "str");
-        if (k1 === "str" && !k2) st.process(x2, "str");
-        if (k2 === "str" && !k1) st.process(x1, "str");
-        done.add(i);
-        changed = true;
-      } else if (k1 === "num" && k2 === "num") {
-        setResult(xr, "num");
-        done.add(i);
-        changed = true;
-      } else if (k1 === "num" && STRUCTURAL.has(k2)) {
-        // obj/arr/func used in numeric context → conflict
-        st.process(x2, "num");
-        setResult(xr, "num");
-        done.add(i);
-        changed = true;
-      } else if (k2 === "num" && STRUCTURAL.has(k1)) {
-        st.process(x1, "num");
-        setResult(xr, "num");
-        done.add(i);
-        changed = true;
-      }
-    }
-  }
-  // Operands still unresolved — any operand of + must be str or num
-  for (let i = 0; i < plusParsed.length; i++) {
-    if (done.has(i)) continue;
-    const { x1, x2, xr } = plusParsed[i];
-    st.currentOrigin = plusParsed[i].origin ?? null;
-    if (!st.kindOf(st.find(x1))) st.process(x1, "num|str");
-    if (!st.kindOf(st.find(x2))) st.process(x2, "num|str");
-    setResult(xr, "num|str");
-    done.add(i);
-  }
+// The kinds a TV may have: base type names ("num", "str", ... — several for a
+// union such as num|str), a structural kind ("obj", "arr", "func", ...), or null.
+function kindsOf(st, x) {
+  const k = st.kindOf(st.find(x));
+  return k ? k.split("|") : null;
 }
 
-function resolveUnion(st, unionParsed) {
-  const setResult = (xr, type) => {
-    st.process(xr, type);
-    const rep = st.find(xr);
-    if (!st.baseType.has(rep) && isBaseType(type)) st.baseType.set(rep, type);
-  };
+// A kind as a type literal that process() understands (null: none exists).
+function kindLiteral(kind) {
+  if (isBaseType(kind)) return kind;
+  if (kind === "obj") return "{}";
+  return null; // arr/func/promise need component TVs: leave unconstrained
+}
 
-  for (const { x1, x2, xr, origin } of unionParsed) {
+// xr's type comes from the operands, not from the downstream uses of xr:
+// after a conflict the base type is still recorded for display.
+function setResult(st, xr, type) {
+  st.process(xr, type);
+  const rep = st.find(xr);
+  if (!st.baseType.has(rep) && isBaseType(type)) st.baseType.set(rep, type);
+}
+
+// + is numeric addition (num + num -> num) or concatenation (a string on
+// either side -> str); anything else is a type error (as in TypeScript).
+function plusCombinations(s1, s2) {
+  const ok1 = new Set(), ok2 = new Set(), res = new Set();
+  for (const a of s1)
+    for (const b of s2) {
+      if (a === "num" && b === "num") res.add("num");
+      else if (a === "str" || b === "str") res.add("str");
+      else continue;
+      ok1.add(a);
+      ok2.add(b);
+    }
+  return { ok1, ok2, res };
+}
+
+function narrowBase(st, x, kinds, ok) {
+  if (kinds.every(isBaseType) && ok.size < kinds.length && ok.size > 0)
+    st.process(x, [...ok].sort().join("|"));
+}
+
+function precisePlus(st, list, done) {
+  let changed = false;
+  list.forEach(({ x1, x2, xr, origin }, i) => {
+    if (done.has(i)) return;
     st.currentOrigin = origin ?? null;
-    const k1 = st.kindOf(st.find(x1));
-    const k2 = st.kindOf(st.find(x2));
-    if (!k1 && !k2) continue; // both unresolved → xr stays bot
-    if (!k1) {
-      setResult(xr, k2);
-      continue;
-    } // only one branch known
-    if (!k2) {
-      setResult(xr, k1);
-      continue;
+    const s1 = kindsOf(st, x1), s2 = kindsOf(st, x2);
+    const isStr = (s) => s && s.length === 1 && s[0] === "str";
+    if (isStr(s1) || isStr(s2)) {
+      setResult(st, xr, "str"); // a string concatenated with anything
+    } else if (s1 && s2) {
+      const { ok1, ok2, res } = plusCombinations(s1, s2);
+      const isNum = (s) => s.length === 1 && s[0] === "num";
+      if (res.size === 0 && (isNum(s1) || isNum(s2))) {
+        // a number with something that is neither a number nor a string:
+        // numeric addition is meant, so the other operand must be a number
+        st.process(isNum(s1) ? x2 : x1, "num");
+        setResult(st, xr, "num");
+      } else if (res.size === 0) {
+        st.reportError(`CONFLICT: ${s1.join("|")} + ${s2.join("|")}  (plus(${x1},${x2},${xr}))`);
+      } else {
+        narrowBase(st, x1, s1, ok1);
+        narrowBase(st, x2, s2, ok2);
+        setResult(st, xr, [...res].sort().join("|"));
+      }
+    } else {
+      // one side known: if it can be neither a number nor a string, the
+      // other side must be a string (concatenation)
+      const known = s1 ?? s2;
+      if (!known || known.includes("num") || known.includes("str")) return;
+      st.process(s1 ? x2 : x1, "str");
+      setResult(st, xr, "str");
     }
-    if (k1 === k2) {
-      setResult(xr, k1);
-      continue;
-    } // branches agree
-    // Different types: produce a union if both are base types
-    if (isBaseType(k1) && isBaseType(k2)) {
-      const components = [
-        ...new Set([...k1.split("|"), ...k2.split("|")]),
-      ].sort();
-      setResult(xr, components.join("|"));
+    done.add(i);
+    changed = true;
+  });
+  return changed;
+}
+
+function joinKinds(k1, k2) {
+  if (k1.join("|") === k2.join("|")) return k1.join("|");
+  if ([...k1, ...k2].every(isBaseType)) return [...new Set([...k1, ...k2])].sort().join("|");
+  return null; // different structural kinds: no single literal
+}
+
+// c ? a : b and a && b, a || b: the result is one of the operands.
+function preciseChoice(st, list, done) {
+  let changed = false;
+  list.forEach(({ x1, x2, xr, origin }, i) => {
+    if (done.has(i)) return;
+    const k1 = kindsOf(st, x1), k2 = kindsOf(st, x2);
+    if (!k1 || !k2) return;
+    st.currentOrigin = origin ?? null;
+    const j = joinKinds(k1, k2);
+    const lit = j && (isBaseType(j) ? j : kindLiteral(j));
+    if (lit) setResult(st, xr, lit);
+    done.add(i);
+    changed = true;
+  });
+  return changed;
+}
+
+function preciseIndex(st, list, done) {
+  let changed = false;
+  list.forEach(({ xobj, xidx, xresult, origin }, i) => {
+    if (done.has(i)) return;
+    const robj = st.find(xobj);
+    const kinds = kindsOf(st, xobj);
+    if (!kinds) return;
+    st.currentOrigin = origin ?? null;
+    if (st.isArr.get(robj)) {
+      // Array[i]: index must be num, result is the element type
+      st.process(xidx, "num");
+      const elemTV = st.arrElem.get(robj);
+      if (elemTV) st.union(xresult, elemTV);
+    } else if (st.isObj.get(robj)) {
+      // obj[key]: key must be str; if all fields share one type, propagate it
+      st.process(xidx, "str");
+      const shape = st.objShape.get(robj) ?? new Map();
+      const fieldKinds = [...shape.values()]
+        .map((fv) => st.kindOf(st.find(fv)))
+        .filter(Boolean);
+      const unique = [...new Set(fieldKinds)];
+      const lit = unique.length === 1 ? kindLiteral(unique[0]) : null;
+      if (lit) st.process(xresult, lit);
+    } else if (kinds.includes("str")) {
+      // s[i]: a character
+      st.process(xidx, "num");
+      st.process(xresult, "str");
+    } else {
+      st.reportError(`CONFLICT: cannot index ${kinds.join("|")}  (index(${xobj},${xidx},${xresult}))`);
     }
-    // Structural types on different branches → xr stays bot
-  }
+    done.add(i);
+    changed = true;
+  });
+  return changed;
+}
+
+// One-sided rules, used only when no precise rule applies.
+function weakRules(st, d, done) {
+  let changed = false;
+  d.unionParsed.forEach(({ x1, x2, xr, origin }, i) => {
+    if (done.union.has(i)) return;
+    const k1 = kindsOf(st, x1), k2 = kindsOf(st, x2);
+    const k = k1 ?? k2;
+    if (!k || (k1 && k2)) return;
+    st.currentOrigin = origin ?? null;
+    const lit = kindLiteral(k.join("|")) ?? (k.every(isBaseType) ? k.join("|") : null);
+    if (lit) setResult(st, xr, lit); // only one branch known
+    done.union.add(i);
+    changed = true;
+  });
+  d.logicalUnionParsed.forEach(({ x1, xr, origin }, i) => {
+    if (done.logical.has(i) || kindsOf(st, x1)) return;
+    // Backward: when x1 is truthy the result is x1, so an unknown x1 must be
+    // compatible with the type of the result (e.g. delimiter || '.' -> str|regexp)
+    const kr = st.kindOf(st.find(xr));
+    if (!kr || !isBaseType(kr)) return;
+    st.currentOrigin = origin ?? null;
+    setResult(st, x1, kr);
+    changed = true;
+  });
+  d.indexParsed.forEach(({ xobj, xidx, origin }, i) => {
+    if (done.index.has(i) || kindsOf(st, xobj)) return;
+    // Unknown type indexed by a string key -> an object
+    const ki = kindsOf(st, xidx);
+    if (!ki || ki.join("|") !== "str") return;
+    st.currentOrigin = origin ?? null;
+    st.process(xobj, "{}");
+    changed = true;
+  });
+  return changed;
+}
+
+function resolveDeferred(st, d) {
+  const done = { plus: new Set(), union: new Set(), logical: new Set(), index: new Set() };
+  const precise = () => {
+    let any = false;
+    for (;;) {
+      const c =
+        precisePlus(st, d.plusParsed, done.plus) |
+        preciseChoice(st, d.unionParsed, done.union) |
+        preciseChoice(st, d.logicalUnionParsed, done.logical) |
+        preciseIndex(st, d.indexParsed, done.index);
+      if (!c) return any;
+      any = true;
+    }
+  };
+  do precise();
+  while (weakRules(st, d, done));
+  // Operands of + still unknown: a number or a string
+  d.plusParsed.forEach(({ x1, x2, origin }, i) => {
+    if (done.plus.has(i)) return;
+    st.currentOrigin = origin ?? null;
+    if (!kindsOf(st, x1)) st.process(x1, "num|str");
+    if (!kindsOf(st, x2)) st.process(x2, "num|str");
+  });
+  precise();
+  resolveTpl(st, d.tplParsed);
 }
 
 function resolveTpl(st, tplParsed) {
@@ -891,65 +1026,6 @@ function resolveTpl(st, tplParsed) {
       st.baseType.set(r, components.join("|"));
     }
     // already str / already includes str / structural type → leave as-is
-  }
-}
-
-function resolveLogicalUnion(st, logicalUnionParsed) {
-  const setResult = (xr, type) => {
-    st.process(xr, type);
-    const rep = st.find(xr);
-    if (!st.baseType.has(rep)) st.baseType.set(rep, type);
-  };
-  for (const { x1, x2, xr, origin } of logicalUnionParsed) {
-    st.currentOrigin = origin ?? null;
-    const k1 = st.kindOf(st.find(x1));
-    const k2 = st.kindOf(st.find(x2));
-    if (!k1 || !k2) {
-      // Backward: if xr already has a base type (from downstream usage) and x1
-      // is unknown, infer x1's type from xr — when x1 is truthy, result = x1,
-      // so x1 must be compatible with xr's type (e.g. delimiter || '.' → str|regexp)
-      if (!k1) {
-        const kr = st.kindOf(st.find(xr));
-        if (kr && isBaseType(kr)) setResult(x1, kr);
-      }
-      continue;
-    }
-    if (k1 === k2) { setResult(xr, k1); continue; }
-    if (isBaseType(k1) && isBaseType(k2)) {
-      const components = [...new Set([...k1.split("|"), ...k2.split("|")])].sort();
-      setResult(xr, components.join("|"));
-    }
-  }
-}
-
-function resolveIndex(st, indexParsed) {
-  for (const { xobj, xidx, xresult, origin } of indexParsed) {
-    st.currentOrigin = origin ?? null;
-    const robj = st.find(xobj);
-    if (st.isArr.get(robj)) {
-      // Array[i]: index must be num, result is the element type
-      st.process(xidx, "num");
-      const elemTV = st.arrElem.get(robj);
-      if (elemTV) st.union(xresult, elemTV);
-    } else if (st.isObj.get(robj)) {
-      // obj[key]: key must be str; if all fields share one type, propagate it
-      st.process(xidx, "str");
-      const shape = st.objShape.get(robj) ?? new Map();
-      const kinds = [...shape.values()]
-        .map((fv) => st.kindOf(st.find(fv)))
-        .filter(Boolean);
-      const unique = [...new Set(kinds)];
-      if (unique.length === 1) st.process(xresult, unique[0]);
-    } else {
-      // Unknown type being indexed by a str key → must be an object at minimum.
-      const ridx = st.find(xidx);
-      if (
-        st.baseType.get(ridx) === "str" ||
-        st.baseType.get(st.find(xidx)) === "str"
-      ) {
-        st.process(robj, "{}");
-      }
-    }
   }
 }
 
@@ -1078,11 +1154,7 @@ function solve(input, quiet = false, json = false) {
       st.currentOrigin = c.origin ?? null;
       st.process(c.lhs, c.rhs);
     }
-    resolvePlus(st, plusParsed);
-    resolveUnion(st, unionParsed);
-    resolveLogicalUnion(st, logicalUnionParsed);
-    resolveIndex(st, indexParsed);
-    resolveTpl(st, tplParsed);
+    resolveDeferred(st, { plusParsed, unionParsed, logicalUnionParsed, indexParsed, tplParsed });
     printJsonResult(st);
     return;
   }
@@ -1112,18 +1184,10 @@ function solve(input, quiet = false, json = false) {
       console.log(" " + st.displayState());
     }
 
-    resolvePlus(st, plusParsed);
-    resolveUnion(st, unionParsed);
-    resolveLogicalUnion(st, logicalUnionParsed);
-    resolveIndex(st, indexParsed);
-    resolveTpl(st, tplParsed);
+    resolveDeferred(st, { plusParsed, unionParsed, logicalUnionParsed, indexParsed, tplParsed });
   } else {
     for (const { lhs, rhs } of parsed) st.process(lhs, rhs);
-    resolvePlus(st, plusParsed);
-    resolveUnion(st, unionParsed);
-    resolveLogicalUnion(st, logicalUnionParsed);
-    resolveIndex(st, indexParsed);
-    resolveTpl(st, tplParsed);
+    resolveDeferred(st, { plusParsed, unionParsed, logicalUnionParsed, indexParsed, tplParsed });
   }
 
   console.log("\n" + SEP);

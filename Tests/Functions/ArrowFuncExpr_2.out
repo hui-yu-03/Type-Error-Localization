@@ -27,9 +27,9 @@ Inicio:
 ✓  Sem conflitos.
 
 FINAL:
-  greet__global            :  Func<greet__global>{str -> str -> str}
-  greeting__greet__global  :  str
+  greet__global            :  Func<greet__global>{bot -> bot -> str}
+  greeting__greet__global  :  bot
   message__greet__global   :  str
-  name__greet__global      :  str
+  name__greet__global      :  bot
   ret__greet__global       :  str
 
