@@ -10,6 +10,14 @@
 //               value is a promise that should have been awaited:
 //               `const w = p;` becomes `const w = await p;`
 //
+// and three small fixes that real bug-fixing commits make (FixJS):
+//
+//   precedence     `!a === b` (always false: ! binds first) becomes `!(a === b)`
+//   add-length     a comparison `n < xs` becomes `n < xs.length`
+//   rename-member  a member that the program never defines and that is no
+//                  built-in member, `user.nmae`, becomes the closest defined or
+//                  built-in name (edit distance 1, or 2 for longer names)
+//
 //   node localizer/repair.js <file.js> <line,line,...>
 //
 // Only code related to the given (suspicious) lines is considered: functions
@@ -20,6 +28,29 @@
 
 const acorn = require("acorn");
 const fs = require("fs");
+const summaries = require("../summaries");
+
+// Damerau-Levenshtein distance (with adjacent transpositions), bounded
+function distance(a, b, bound) {
+  if (Math.abs(a.length - b.length) > bound) return bound + 1;
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+  return d[a.length][b.length];
+}
+
+function builtinMembers() {
+  const names = new Set(["length", "then", "catch", "finally", "call", "apply", "bind", "prototype"]);
+  for (const table of ["__typeMethods__", "__typeProps__"])
+    for (const members of Object.values(summaries[table] ?? {})) Object.keys(members).forEach((k) => names.add(k));
+  Object.keys(summaries.__objectProtoMethods__ ?? {}).forEach((k) => names.add(k));
+  return names;
+}
 
 function parse(src) {
   for (const sourceType of ["script", "module"]) {
@@ -77,12 +108,46 @@ function main() {
   const calledOn = new Map(); // line -> names of functions called on it
   const repairs = [];
   const seen = new Set();
-  const add = (kind, line, description, at, text) => {
-    const source = src.slice(0, at) + text + src.slice(at);
+  const replace = (kind, line, description, start, end, text) => {
+    const source = src.slice(0, start) + text + src.slice(end);
     if (seen.has(source)) return;
     seen.add(source);
     repairs.push({ kind, line, description, source });
   };
+  const add = (kind, line, description, at, text) => replace(kind, line, description, at, at, text);
+  const code = (n) => src.slice(n.start, n.end);
+
+  // members the program defines (object literal keys, x.m = ..., class members)
+  const defined = new Set();
+  walk(ast, (n) => {
+    if ((n.type === "Property" || n.type === "MethodDefinition" || n.type === "PropertyDefinition") && n.key)
+      defined.add(n.key.type === "Identifier" ? n.key.name : String(n.key.value));
+    if (n.type === "AssignmentExpression" && n.left.type === "MemberExpression" && !n.left.computed)
+      defined.add(n.left.property.name);
+  });
+  const known = new Set([...defined, ...builtinMembers()]);
+  walk(ast, (n) => {
+    if (!n.loc || !lines.has(n.loc.start.line)) return;
+    const L = n.loc.start.line;
+    if (n.type === "BinaryExpression" && ["===", "!==", "==", "!="].includes(n.operator) &&
+        n.left.type === "UnaryExpression" && n.left.operator === "!") {
+      const text = `!(${code(n.left.argument)} ${n.operator} ${code(n.right)})`;
+      replace("precedence", L, `${text}  (! binds before ${n.operator})`, n.start, n.end, text);
+    }
+    if (n.type === "BinaryExpression" && ["<", ">", "<=", ">="].includes(n.operator)) {
+      for (const side of [n.left, n.right])
+        if (side.type === "Identifier" || side.type === "MemberExpression")
+          add("add-length", L, `${code(side)}.length`, side.end, ".length");
+    }
+    if (n.type === "MemberExpression" && !n.computed && n.property.type === "Identifier" && !known.has(n.property.name)) {
+      const name = n.property.name;
+      const bound = name.length > 5 ? 2 : 1;
+      const close = [...known].filter((k) => distance(name, k, bound) <= bound)
+        .sort((a, b) => distance(name, a, bound) - distance(name, b, bound) || a.localeCompare(b)).slice(0, 2);
+      for (const k of close)
+        replace("rename-member", L, `${code(n.object)}.${k}  (instead of .${name})`, n.property.start, n.property.end, k);
+    }
+  });
 
   walk(ast, (n, fns) => {
     if (n.type === "FunctionDeclaration" && n.id) fnByName.set(n.id.name, n);

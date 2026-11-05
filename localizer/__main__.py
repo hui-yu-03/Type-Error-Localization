@@ -98,7 +98,7 @@ def main(argv=None) -> int:
 
     print(f"{args.file}: type error.")
     if ranking.hints:
-        print("\nLikely missing code (this edit makes the program well typed):")
+        print("\nLikely fix (this edit makes the program well typed):")
         for h in ranking.hints:
             print(f"  line {h.line:<4} {h.description}")
 

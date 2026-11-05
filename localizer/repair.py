@@ -30,7 +30,7 @@ REPAIR_JS = REPO_ROOT / "localizer" / "repair.js"
 
 @dataclass(frozen=True)
 class Hint:
-    kind: str  # add-return | add-await
+    kind: str  # add-return | add-await | precedence | add-length | rename-member
     line: int  # where the code is missing
     description: str
 

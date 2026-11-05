@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import re
 import sys
 from math import comb
 from pathlib import Path
@@ -48,6 +49,54 @@ def similarity(buggy: str, fixed: str) -> float:
     return difflib.SequenceMatcher(None, a, b, autojunk=False).ratio()
 
 
+_TOKEN = re.compile(r"""\s+|//[^\n]*|/\*.*?\*/
+    |(?P<tok>"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`
+    |\d+\.?\d*(?:[eE][+-]?\d+)?|\.\d+|[A-Za-z_$][\w$]*
+    |===|!==|==|!=|<=|>=|&&|\|\||\+\+|--|=>|\.\.\.|.)""", re.X | re.S)
+
+
+def _tokens(text: str) -> list[tuple[str, int, int]]:
+    return [(m.group("tok"), m.start(), m.end()) for m in _TOKEN.finditer(text) if m.group("tok")]
+
+
+def changed_spans(buggy: str, fixed: str) -> list[tuple[int, int]]:
+    """Character spans of the buggy version's tokens that the fix changes
+    (for a pure insertion, the tokens on both sides of it)."""
+    a, b = _tokens(buggy), _tokens(fixed)
+    out = []
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, [t for t, _, _ in a], [t for t, _, _ in b],
+                                                       autojunk=False).get_opcodes():
+        if tag in ("replace", "delete"):
+            out += [(s, e) for _, s, e in a[i1:i2]]
+        elif tag == "insert":
+            out += [(s, e) for _, s, e in a[max(i1 - 1, 0):i1 + 1]]
+    return out
+
+
+def node_level(buggy: str, fixed: str, program, timeout: float = 60) -> dict:
+    """Expressions as the unit of blame: the rank of the first ranked AST node
+    that overlaps a token the fix changed, and the same for a random order."""
+    starts = [0]
+    for line in buggy.split("\n"):
+        starts.append(starts[-1] + len(line) + 1)
+
+    def offset(line: int, col: int) -> int:
+        return starts[min(max(line, 1), len(starts) - 1) - 1] + col
+
+    spans = changed_spans(buggy, fixed)
+    enc = ev.encode(program, group_by="node")
+    groups = list(enc.selectors)
+    hit = {g for g in groups if g[2] is not None and g[3] is not None and
+           any(offset(g[0], g[1]) < e and s < offset(g[2], g[3]) for s, e in spans)}
+    pool = rank.enumerate_pool(enc, None, "oll", min_count=10, hard_cap=40, timeout=timeout)
+    ranking = rank.rank_from_pools(enc, pool)["card-late"]
+    n, t = len(groups), len(hit)
+    return {"rank: MCS card, latest first (node)": rank.line_ranks(ranking.candidates, hit=lambda g: g in hit),
+            "blamable_nodes": n, "changed_nodes": t,
+            "random_node_top1": t / n if n else 0.0,
+            "random_node_top3": (1 - comb(n - t, 3) / comb(n, 3)) if n >= 3 else float(t > 0)}
+
+
 def mistake_lines(buggy: str, fixed: str) -> list[int]:
     """Lines of the buggy version changed by the fix (1-based); changes of
     whitespace only (indentation, line endings) do not count."""
@@ -67,7 +116,7 @@ def _rank_in(lines: list[int], targets: list[int]):
     return min(pos) if pos else None
 
 
-def evaluate_pair(name: str, buggy: str, fixed: str) -> dict:
+def evaluate_pair(name: str, buggy: str, fixed: str, nodes: bool = True) -> dict:
     targets = mistake_lines(buggy, fixed)
     row = {"name": name, "mistake_lines": targets, "lines": buggy.count("\n") + 1,
            "similarity": round(similarity(buggy, fixed), 3)}
@@ -117,12 +166,17 @@ def evaluate_pair(name: str, buggy: str, fixed: str) -> dict:
     ranks["MCS learned"] = best(plain["learned"])
     ranks["full pipeline"] = best(full)
     row.update({f"rank: {m}": ranks[m] for m in METHODS})
+    if nodes:
+        try:
+            row.update(node_level(buggy, fixed, program))
+        except Exception as e:  # noqa: BLE001 - node groups need complete positions
+            row["node_error"] = str(e)[:200]
     row["hints"] = [[h.kind, h.line] for h in full.hints]
     return row
 
 
 def report(rows: list[dict], name: str) -> str:
-    seen = [r for r in rows if r.get("buggy_ill_typed")]
+    seen = [r for r in rows if r.get("buggy_ill_typed") and "error" not in r]
     both = [r for r in seen if r.get("fixed_well_typed")]
     lines = [f"# Real buggy programs: {name}\n", f"{len(rows)} pairs; the buggy version is ill-typed in {len(seen)}, "
              f"and the fixed version well typed in {len(both)} of those (type errors the type system sees).\n"]
@@ -142,14 +196,24 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("dir", type=Path)
     ap.add_argument("--out", default="realworld")
+    ap.add_argument("--relaxed", action="store_true", help="the relaxed type system of `localizer --relaxed`")
     args = ap.parse_args()
+    if args.relaxed:
+        from localizer.constraints import set_relaxed
+
+        set_relaxed(True)
     rows = []
     for buggy in sorted(args.dir.glob("*.buggy.js")):
         fixed = buggy.with_name(buggy.name.replace(".buggy.js", ".fixed.js"))
         if not fixed.exists():
             print(f"skipping {buggy.name}: no fixed version", file=sys.stderr)
             continue
-        rows.append(evaluate_pair(buggy.name[: -len(".buggy.js")], buggy.read_text(), fixed.read_text()))
+        name = buggy.name[: -len(".buggy.js")]
+        try:
+            rows.append(evaluate_pair(name, buggy.read_text(), fixed.read_text()))
+        except Exception as e:  # noqa: BLE001 - one pair the inferencer or encoding cannot handle
+            print(f"skipping {name}: {str(e)[:120]}", file=sys.stderr)
+            rows.append({"name": name, "error": str(e)[:200]})
     from run_experiments import RESULTS, write_csv
 
     write_csv(RESULTS / f"{args.out}.csv", rows)

@@ -240,7 +240,11 @@ const protoMethodEnvs = new Map();
 const moduleTV = new Map();
 
 // environment
-const mkTV = (name, scope) => `${name}__${scope}`; //env = { "x" => "x__global" }
+// Names become parts of type variables, so characters that the constraint
+// syntax uses (", ", "{", ...) are replaced: a method may be called
+// "ObjectExpression, ObjectPattern" (an ESLint selector).
+const safeName = (name) => String(name).replace(/[^A-Za-z0-9_$.]/g, "_");
+const mkTV = (name, scope) => `${safeName(name)}__${scope}`; //env = { "x" => "x__global" }
 
 // Γ(x)
 function envGet(env, name, scope) {
@@ -545,18 +549,40 @@ const POLYMORPHIC_ARRAY_METHODS = new Set(["map", "flatMap", "reduce"]);
 // never defines it and it is no built-in member (it belongs to a library:
 // jQuery's .html, Backbone's .get); a built-in method that is only read, not
 // called (this.match[0]), says nothing about the receiver either.
+// A name within a small edit distance of a known member (xs.lenght, user.nmae)
+// is more likely a typo than a library member, so it stays checked.
 let builtinMembers = null;
 function relaxedAnyMember(name, called) {
   if (definedMembers.has(name)) return false;
   if (STRING_EXCLUSIVE_METHODS.has(name) || ARRAY_EXCLUSIVE_METHODS.has(name)) return !called;
   if (!builtinMembers) {
     builtinMembers = new Set(["length", "then", "catch", "finally", "call", "apply", "bind", "prototype",
-      ...SHARED_STR_ARRAY_METHODS, ...POLYMORPHIC_ARRAY_METHODS]);
+      ...SHARED_STR_ARRAY_METHODS, ...POLYMORPHIC_ARRAY_METHODS, ...STRING_EXCLUSIVE_METHODS, ...ARRAY_EXCLUSIVE_METHODS]);
     for (const table of ["__typeMethods__", "__typeProps__"])
       for (const members of Object.values(summaries[table] ?? {})) Object.keys(members).forEach((k) => builtinMembers.add(k));
     Object.keys(summaries.__objectProtoMethods__ ?? {}).forEach((k) => builtinMembers.add(k));
   }
-  return !builtinMembers.has(name);
+  if (builtinMembers.has(name)) return false;
+  const bound = name.length > 5 ? 2 : 1;
+  for (const known of [...builtinMembers, ...definedMembers]) if (editDistance(name, known, bound) <= bound) return false;
+  return true;
+}
+
+// Damerau-Levenshtein distance with adjacent transpositions (bound + 1 when larger)
+function editDistance(a, b, bound) {
+  if (Math.abs(a.length - b.length) > bound) return bound + 1;
+  let prev2 = null;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (prev2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) cur[j] = Math.min(cur[j], prev2[j - 2] + 1);
+    }
+    prev2 = prev;
+    prev = cur;
+  }
+  return prev[b.length];
 }
 
 // Reading `prop` from a receiver whose type is not known yet (no type hint).
@@ -894,7 +920,7 @@ function findMethodScope(scope) {
 // for FunctionExpression, ArrowFunctionExpression,
 // and the FunctionExpression-as-property case inside ObjectExpression.
 function inferFuncNode(funcNode, fnName, fnScope, env, xTarget, thisTV = null) {
-  const qualName = `${fnName}__${fnScope}`;
+  const qualName = `${safeName(fnName)}__${fnScope}`;
 
   if (funcNode.async) {
     asyncScopes.add(qualName);
@@ -1247,7 +1273,7 @@ function setupProtoClasses(protoGroups, statements, env, scope) {
     // Declare params/ret TVs and scan this.x writes for each method
     const methodDefs = [];
     for (const { methodName, funcNode } of methodList) {
-      const qualName = `${methodName}__${ctorName}`;
+      const qualName = `${safeName(methodName)}__${ctorName}`;
       const fnEnv = new Map(env);
       const paramNames = [],
         paramTVs = [];
@@ -1409,7 +1435,7 @@ function inferClassNode(node, className, env) {
       continue;
     }
 
-    const qualName = `${methodName}__${className}`;
+    const qualName = `${safeName(methodName)}__${className}`;
     const fnEnv = new Map(env);
     const paramNames = [],
       paramTVs = [];
@@ -2567,7 +2593,7 @@ function inferStmtNode(node, env, scope) {
     case "FunctionDeclaration": {
       // e.g. function id(params) {body}
       const fnName = node.id?.name ?? `anon_${fresh()}`;
-      const qualName = `${fnName}__${scope}`;
+      const qualName = `${safeName(fnName)}__${scope}`;
 
       if (node.async) {
         asyncScopes.add(qualName);
@@ -2733,7 +2759,7 @@ function inferExprStmtNode(node, env, scope) {
         ) {
           const ctorName = lhs.object.object.name;
           const methodName = lhs.property.name;
-          const qualName = `${methodName}__${ctorName}`;
+          const qualName = `${safeName(methodName)}__${ctorName}`;
           if (protoMethodEnvs.has(qualName)) {
             const fnEnv = protoMethodEnvs.get(qualName);
             const { params: paramTVs, ret: retTV } = functionTypes.get(qualName);
@@ -2851,15 +2877,17 @@ function inferExprStmtNode(node, env, scope) {
 //   --ignore-lines  infer the program as if these lines contributed nothing
 const cliArgs = process.argv.slice(2);
 const jsonOutput = cliArgs.includes("--json");
-// --relaxed: all rules below; --relaxed=r1,r2: only those
+// --relaxed: the default rules below; --relaxed=r1,r2: exactly those
 //   globals  names the program never declares are any ($, document, ...)
 //   returns  `return;`, `return null/false` and falling off the end are fine next to `return value`
-//   compare  == and switch: an error only between two different primitive types
 //   members  library members of receivers of unknown type are any (.html, .get)
+// and two rules that are not on by default (they cost more injected mistakes
+// than they save false alarms on real code, bench/relaxed_check.py --ablation):
+//   compare  == and switch: an error only between two different primitive types
 //   arrays   an array literal of literals of different kinds holds a union
-const RELAX_RULES = ["globals", "returns", "compare", "members", "arrays"];
+const RELAX_DEFAULT = ["globals", "returns", "members"];
 const relaxedArg = cliArgs.find((a) => a === "--relaxed" || a.startsWith("--relaxed="));
-const relaxedRules = new Set(!relaxedArg ? [] : relaxedArg.includes("=") ? relaxedArg.slice(10).split(",") : RELAX_RULES);
+const relaxedRules = new Set(!relaxedArg ? [] : relaxedArg.includes("=") ? relaxedArg.slice(10).split(",") : RELAX_DEFAULT);
 const relaxedMode = relaxedRules.size > 0;
 const relax = (rule) => relaxedRules.has(rule);
 const ignoreIdx = cliArgs.indexOf("--ignore-lines");

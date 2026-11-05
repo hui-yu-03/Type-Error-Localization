@@ -163,18 +163,20 @@ class _InferWorker:
 WORKER_JS = Path(__file__).resolve().parent / "infer_worker.js"
 _worker: Optional[_InferWorker] = None
 USE_WORKER = os.environ.get("LOCALIZER_INFER_WORKER", "1") != "0"
-# rules of `infer.js --relaxed` and of the relaxed encoding (encode.RELAX_RULES)
+# rules of `infer.js --relaxed` and of the relaxed encoding (encode.RELAX_RULES);
+# "compare" and "arrays" are not in the default set (bench/relaxed_check.py --ablation)
 INFER_RELAX_RULES = ("globals", "returns", "compare", "members", "arrays")
 ALL_RELAX_RULES = INFER_RELAX_RULES + ("fields", "length", "errors", "keys")
-RELAXED: frozenset = frozenset(ALL_RELAX_RULES if os.environ.get("LOCALIZER_RELAXED", "0") == "1" else ())
+DEFAULT_RELAX_RULES = ("globals", "returns", "members", "fields", "length", "errors", "keys")
+RELAXED: frozenset = frozenset(DEFAULT_RELAX_RULES if os.environ.get("LOCALIZER_RELAXED", "0") == "1" else ())
 
 
 def set_relaxed(on=True) -> None:
     """Type real JavaScript more permissively for the rest of this process:
-    True for all rules, False for none, or a collection of rule names
+    True for the default rules, False for none, or a collection of rule names
     (ALL_RELAX_RULES; see infer.js and encode.Encoder)."""
     global RELAXED
-    RELAXED = frozenset(ALL_RELAX_RULES if on is True else (on or ()))
+    RELAXED = frozenset(DEFAULT_RELAX_RULES if on is True else (on or ()))
     unknown = RELAXED - set(ALL_RELAX_RULES)
     if unknown:
         raise ValueError(f"unknown relaxation rules: {sorted(unknown)}")
@@ -197,7 +199,7 @@ def _infer_once(args: list[str], timeout: float) -> tuple[int, str, str]:
 def run_infer(path: str | Path, timeout: float = 60, ignore_lines=None, relaxed=None) -> dict:
     """Constraints of a program; with ignore_lines, as if those lines said nothing."""
     extra = ["--ignore-lines", ",".join(map(str, sorted(ignore_lines)))] if ignore_lines else []
-    rules = RELAXED if relaxed is None else frozenset(ALL_RELAX_RULES if relaxed is True else (relaxed or ()))
+    rules = RELAXED if relaxed is None else frozenset(DEFAULT_RELAX_RULES if relaxed is True else (relaxed or ()))
     infer_rules = sorted(rules & set(INFER_RELAX_RULES))
     if infer_rules:
         extra.append("--relaxed=" + ",".join(infer_rules))

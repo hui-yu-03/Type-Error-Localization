@@ -184,8 +184,57 @@ def main() -> None:
               "| feature | weight |", "|---|---|"]
     for f, v in sorted(zip(FEATURES, w), key=lambda p: -abs(p[1])):
         lines.append(f"| {f} | {v:+.2f} |")
+    lines += real_fixes(data)
     (RESULTS / "learned.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
+
+
+def load_fixjs(name: str = "fixjs") -> list[dict]:
+    """The localized FixJS pairs (same function, bench/fixjs.py) with their tiers;
+    a candidate is right if it contains a line the fix changed.  Grouped by commit."""
+    path = RESULTS / f"{name}.jsonl"
+    if not path.exists():
+        return []
+    sys.path.insert(0, str(ROOT / "bench"))
+    import fixjs
+
+    rows = []
+    for line in path.open():
+        r = json.loads(line)
+        if r.get("buggy_ill_typed") and r.get("fixed_well_typed") and r.get("similarity", 0) >= fixjs.SAME \
+                and r.get("tiers") and any(c["y"] for t in r["tiers"] for c in t):
+            commit = r["name"].split("/", 1)[-1].split("_", 1)[0]
+            rows.append({"corpus": name, "base": commit, "op": "real", "tiers": r["tiers"]})
+    return rows
+
+
+def real_fixes(mutant_data: dict) -> list[str]:
+    """The same rules on real bug fixes: does a model learned on mutants transfer,
+    and how good is one learned on real fixes (cross-validated by commit)?"""
+    out = []
+    for name in ("fixjs", "fixjs_relaxed"):
+        rows = load_fixjs(name)
+        if len(rows) < 20:
+            continue
+        mutants = [r for rs in mutant_data.values() for r in rs]
+        w_mut = train(mutants)
+        pairs = cross_validated(rows)
+        cv1 = sum(1 for r, w in pairs if (k := rank_of_target(r["tiers"], learned_key(w))) and k <= 1) / len(pairs)
+        cv3 = sum(1 for r, w in pairs if (k := rank_of_target(r["tiers"], learned_key(w))) and k <= 3) / len(pairs)
+        w_real = train(rows)
+        out += [f"\n## Real bug fixes: {name} ({len(rows)} pairs whose candidates contain a changed line)\n",
+                "| rule | top-1 / top-3 (%) |", "|---|---|"]
+        for rule, key in RULES.items():
+            out.append(f"| {rule} | {pct(topk(rows, key, 1))} / {pct(topk(rows, key, 3))} |")
+        out.append(f"| random | {pct(random_topk(rows, 1))} / {pct(random_topk(rows, 3))} |")
+        out.append(f"| learned on the mutants | {pct(topk(rows, learned_key(w_mut), 1))} / "
+                   f"{pct(topk(rows, learned_key(w_mut), 3))} |")
+        out.append(f"| learned on real fixes (5-fold CV by commit) | **{pct(cv1)}** / {pct(cv3)} |")
+        out.append(f"| learned on real fixes, applied to the mutants | "
+                   f"{pct(topk(mutants, learned_key(w_real), 1))} / {pct(topk(mutants, learned_key(w_real), 3))} |")
+        out += ["", "Largest weights of the model learned on real fixes: " + ", ".join(
+            f"{f} {v:+.2f}" for f, v in sorted(zip(FEATURES, w_real), key=lambda p: -abs(p[1]))[:6]) + "."]
+    return out
 
 
 if __name__ == "__main__":

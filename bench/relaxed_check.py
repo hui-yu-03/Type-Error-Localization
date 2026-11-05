@@ -28,7 +28,8 @@ sys.path.insert(0, str(ROOT))
 
 import evaluate as ev  # noqa: E402
 from run_experiments import RESULTS, _sample_mutants  # noqa: E402
-from localizer.constraints import ALL_RELAX_RULES, INFER_RELAX_RULES, program_from_json, run_infer  # noqa: E402
+from localizer.constraints import (ALL_RELAX_RULES, DEFAULT_RELAX_RULES, INFER_RELAX_RULES,  # noqa: E402
+                                   program_from_json, run_infer)
 from localizer.encode import encode  # noqa: E402
 
 
@@ -37,7 +38,7 @@ def ill_typed(source: str, relaxed: bool) -> bool:
         p = Path(d) / "program.js"
         p.write_text(source)
         data = run_infer(p, relaxed=relaxed)
-    rules = (set(ALL_RELAX_RULES) if relaxed is True else set(relaxed or ())) - set(INFER_RELAX_RULES)
+    rules = (set(DEFAULT_RELAX_RULES) if relaxed is True else set(relaxed or ())) - set(INFER_RELAX_RULES)
     return str(encode(program_from_json(data, source), relaxed=rules).check(timeout_ms=30000)) == "unsat"
 
 
@@ -70,8 +71,10 @@ def ablation(data: Path, jobs: int, n_pairs: int, per_op: int, seed: int = 1) ->
 
     import fixjs
 
-    configs = {"strict (no rule)": set(), "all rules": set(ALL_RELAX_RULES)}
-    configs.update({f"all but {r}": set(ALL_RELAX_RULES) - {r} for r in ALL_RELAX_RULES})
+    default = set(DEFAULT_RELAX_RULES)
+    configs = {"strict (no rule)": set(), "default rules": default}
+    configs.update({f"default without {r}": default - {r} for r in DEFAULT_RELAX_RULES})
+    configs.update({f"default with {r}": default | {r} for r in sorted(set(ALL_RELAX_RULES) - default)})
     tests = sorted(glob.glob(str(ROOT / "Tests" / "**" / "*.js"), recursive=True))
     generated = sorted(glob.glob(str(ROOT / "bench" / "corpus" / "generated" / "*.js")))
     mutants = corpus("test suite", tests, per_op) + corpus("generated", generated, per_op)
@@ -84,7 +87,7 @@ def ablation(data: Path, jobs: int, n_pairs: int, per_op: int, seed: int = 1) ->
         for name, kind, bad in pool.map(_check_config, tasks, chunksize=16):
             counts[(name, kind)] += bad
     n_test = sum(1 for m in mutants if m["corpus"] == "test suite")
-    out = ["## Each rule left out in turn\n",
+    out = ["## Each rule left out or added in turn\n",
            f"False alarms: versions after the fix of {len(fixed):,} random FixJS pairs that are still ill-typed. "
            f"Mistakes found: of the {n_test} test-suite and {len(mutants) - n_test} generated mutants.\n",
            "| rules | false alarms on real code | mistakes found: test suite | generated |", "|---|---|---|---|"]

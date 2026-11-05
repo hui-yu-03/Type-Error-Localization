@@ -35,7 +35,7 @@ def _program(source: str, relaxed=False):
 
 
 def _ill_typed(source: str, relaxed=False) -> bool:
-    rules = set(C.ALL_RELAX_RULES) if relaxed is True else set(relaxed or ())
+    rules = set(C.DEFAULT_RELAX_RULES) if relaxed is True else set(relaxed or ())
     return encode(_program(source, rules), relaxed=rules - set(C.INFER_RELAX_RULES)).check() == z3.unsat
 
 
@@ -76,7 +76,15 @@ def test_relaxed_still_finds_the_examples(name):
 def test_relaxed_comparison_of_two_primitive_types_is_an_error():
     # the precedence bug of a real FixJS commit: !x === "object" compares a boolean with a string
     assert _ill_typed('function f(r) { if (!typeof r === "object") return 1; return 2; }', relaxed=True)
-    assert not _ill_typed('function f(r) { if (true === r) return r.responses; return 0; }', relaxed=True)
+    with_compare = set(C.DEFAULT_RELAX_RULES) | {"compare"}
+    assert _ill_typed('function f(r) { if (!typeof r === "object") return 1; return 2; }', relaxed=with_compare)
+    assert not _ill_typed('function f(r) { if (true === r) return r.responses; return 0; }', relaxed=with_compare)
+
+
+def test_relaxed_members_keep_typos_checked():
+    src = "function f(xs) { const n = xs.lenght; return xs.map(x => x + 1); }\n"
+    assert _ill_typed(src, relaxed=True)  # lenght is a typo of length: checked
+    assert not _ill_typed("function f(el) { el.addClass('x'); return el.map(x => x + 1); }\n", relaxed=True)
 
 
 def test_relaxed_rules_are_switchable():
