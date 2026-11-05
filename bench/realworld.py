@@ -79,7 +79,8 @@ def evaluate_pair(name: str, buggy: str, fixed: str) -> dict:
         extra = rank.reinference_singletons(enc, pool, path)
         plain = rank.rank_from_pools(enc, pool)
         full = rank.rank_from_pools(enc, pool, None, extra)["card-late"]
-        full.hints = find_hints(path, rank.top_lines(enc, full.candidates))
+        cost = pool.mcses[0].cost if pool.mcses else 1
+        full.hints = find_hints(path, rank.top_lines(enc, full.candidates), cost=max(cost, 1))
     best = lambda r: min((x for x in (r.rank_of(t) for t in targets) if x is not None), default=None)  # noqa: E731
     ranks["MCS card, latest first"] = best(plain["card-late"])
     ranks["MCS learned"] = best(plain["learned"])

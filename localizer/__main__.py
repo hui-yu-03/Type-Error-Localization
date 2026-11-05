@@ -88,6 +88,7 @@ def main(argv=None) -> int:
         print("\nLikely missing code (this edit makes the program well typed):")
         for h in ranking.hints:
             print(f"  line {h.line:<4} {h.description}")
+
     def where(g) -> str:
         if args.group_by == "node":
             return f"{g[0]}:{g[1] + 1}"
@@ -101,10 +102,21 @@ def main(argv=None) -> int:
         return text.strip()[:58]
 
     print(f"\nSuspicious lines ({args.strategy}, {args.algorithm}):")
+    hint_lines = ranking.hint_lines
+    shown = 0
+    for i, L in enumerate(hint_lines, 1):
+        if shown < args.top:
+            print(f"  {i:>2}. line {L:<6} {program.line_text(L).strip()[:58]:<58}  (missing code)")
+            shown += 1
     ranks = rank.line_ranks(ranking.candidates)
-    for g in ranking.groups[: args.top]:
+    for g in ranking.groups:
+        if shown >= args.top:
+            break
+        if enc.line_of(g) in hint_lines:
+            continue
         cand = next(i for i, c in enumerate(ranking.candidates, 1) if g in c.lines)
-        print(f"  {ranks[g] + len(ranking.hint_lines):>2}. line {where(g):<6} {code(g):<58}  (candidate #{cand})")
+        print(f"  {ranks[g] + len(hint_lines):>2}. line {where(g):<6} {code(g):<58}  (candidate #{cand})")
+        shown += 1
     unit = {"line": "line", "statement": "statement", "node": "expression"}[args.group_by]
     print(f"\nCorrection subsets (dropping the constraints of these {unit}s makes the rest typable):")
     for i, c in enumerate(ranking.candidates[: max(args.top, 3)], 1):

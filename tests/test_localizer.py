@@ -263,3 +263,15 @@ def test_simplification_and_slicing_keep_the_mcses(seed):
     sliced, stats = slice_to_conflicts(simplified)
     assert smallest(plain) == smallest(simplified) == smallest(sliced)
     assert stats["components"] >= 4
+
+
+def test_hint_with_another_mistake_present(tmp_path):
+    """With two mistakes no single edit makes the program well typed; a hint is
+    accepted when it removes one conflict (the smallest MCS gets smaller)."""
+    path = tmp_path / "two.js"
+    path.write_text(
+        "const p = Promise.resolve(41);\nasync function next(k) {\n  const w = p;\n  return w * k;\n}\n"
+        'const q = next(2);\nconst n = "3";\nconst m = n * 2;\n'
+    )
+    r = rank.rank(encode(load_program(path)), "card-late", path=path, hints=True)
+    assert [(h.kind, h.line) for h in r.hints] == [("add-await", 3)]

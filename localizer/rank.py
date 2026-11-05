@@ -301,7 +301,8 @@ def rank(
     if path and hints:
         from .repair import find_hints
 
-        r.hints = find_hints(path, top_lines(enc, r.candidates), **options)
+        cost = card_pool.mcses[0].cost if card_pool.mcses else 1
+        r.hints = find_hints(path, top_lines(enc, r.candidates), cost=max(cost, 1), **options)
     return r
 
 

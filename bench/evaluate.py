@@ -202,7 +202,10 @@ def evaluate_multi(source: str, targets: list[int], base_source: Optional[str] =
         path.write_text(source)
         extra = rank.reinference_singletons(enc, pool, path)
         full = rank.rank_from_pools(enc, pool, None, extra)["card-late"]
-        full.hints = find_hints(path, rank.top_lines(enc, full.candidates, k=max(6, 2 * len(T))))
+        cost = pool.mcses[0].cost if pool.mcses else 1
+        full.hints = find_hints(path, rank.top_lines(enc, full.candidates, k=max(6, 2 * len(T))), cost=max(cost, 1))
+    row["hints"] = [[h.kind, h.line] for h in full.hints]
+    row["hint_precision"] = (sum(1 for h in full.hints if h.line in T) / len(full.hints)) if full.hints else None
     rankings["full"] = full
     for name in ("card", "card-late", "learned", "full"):
         lines = rankings[name].lines

@@ -25,6 +25,8 @@ METHODS = [
     ("rank_card-size", "MCS card, then size"),
     ("rank_size", "MCS size-weighted"),
     ("rank_pareto", "MCS Pareto (card, size)"),
+    ("rank_card-late+hints", "latest first + hints"),
+    ("rank_card-late+reinfer+hints", "latest first + re-inference + hints"),
 ]
 
 # reference palette (light): categorical slots 1-3, ordinal blue pair, chrome
@@ -117,13 +119,15 @@ def q1_table(rows: list[dict]) -> str:
             f"**{op}**" if op == "all" else op,
             str(len(rs)),
             pct(frac(rs, lambda r: r.get("target_is_correction"))),
+            pct(frac(rs, lambda r: r.get("target_is_reinfer_correction"))),
             pct(frac(rs, lambda r: r.get("target_in_min_mcs"))),
             pct(frac(rs, lambda r: r.get("n_min_mcs") == 1)),
             f"{statistics.mean(ties):.1f}" if ties else "–",
             f"{statistics.mean([r['min_mcs_size'] for r in rs if r.get('min_mcs_size') is not None]):.2f}",
         ])
     return table(
-        ["mistake", "ill-typed", "mistake line alone is a correction subset (%)", "mistake line in a smallest MCS (%)",
+        ["mistake", "ill-typed", "mistake line alone is a correction subset (%)",
+         "... with re-inference (%)", "mistake line in a smallest MCS (%)",
          "smallest MCS unique (%)", "smallest MCSs (mean #)", "size of smallest MCS (mean)"],
         body,
     )
@@ -144,6 +148,20 @@ def topk_table(rows: list[dict], setting: str = "open") -> str:
     ]
     body.append(counts)
     return table(header, body)
+
+
+def granularity_table(rows: list[dict]) -> str:
+    body = []
+    for setting, label in (("open", "line"), ("statement", "statement"), ("node", "AST node")):
+        det = [r for r in rows if r["setting"] == setting and r.get("detected")]
+        if not det:
+            continue
+        body.append([label, str(len(det)),
+                     f"{pct(topk(det, 'rank_card-late', 1))} / {pct(topk(det, 'rank_card-late', 3))}",
+                     pct(frac(det, lambda r: r.get("n_min_mcs") == 1)),
+                     f"{statistics.mean([r['n_min_mcs'] for r in det if r.get('n_min_mcs') is not None]):.1f}"])
+    return table(["unit of blame", "ill-typed", "latest first: top-1 / top-3 (%)", "smallest MCS unique (%)",
+                  "smallest MCSs (mean #)"], body)
 
 
 def closed_table(rows: list[dict]) -> str:
@@ -185,29 +203,51 @@ def multi_table(rows: list[dict]) -> str:
 
 
 # -- scaling -------------------------------------------------------------------------
-def scaling_table(rows: list[dict]) -> str:
-    algs = [a for a in ("oll", "ihs", "z3", "oll-nomin", "ihs-nomin") if any(r["algorithm"] == a for r in rows)]
+def scaling_table(rows: list[dict], kind: str = "program") -> str:
+    """Median time to the first smallest MCS (encoding + slicing + solving),
+    before -> after the performance changes, per algorithm."""
+    rows = [r for r in rows if r["kind"] == kind]
+    names = {"oll": "OLL", "ihs": "IHS", "z3": "Z3 maxres"}
     body = []
     for size in sorted({r["size"] for r in rows}):
         for k in sorted({r["k"] for r in rows}):
             rs = [r for r in rows if r["size"] == size and r["k"] == k]
             if not rs:
                 continue
-            cons = statistics.median([r["constraints"] for r in rs if r["algorithm"] == "oll"] or [0])
-            costs = [r["cost"] for r in rs if r["algorithm"] == "oll" and r.get("cost") is not None]
-            cells = [str(size), str(k), f"{cons:.0f}", f"{statistics.mean(costs):.1f}" if costs else "–"]
-            for a in algs:
-                ar = [r for r in rs if r["algorithm"] == a]
-                if not ar:
-                    cells.append("")
-                    continue
-                t = statistics.median([r["time"] for r in ar])
-                to = sum(1 for r in ar if r["status"] == "timeout")
-                calls = statistics.median([r["sat_calls"] for r in ar])
-                cells.append(f"{t:.1f} s ({calls:.0f})" + (f" {to}×TO" if to else ""))
+            cons = statistics.median([r["constraints"] for r in rs])
+            after = [r for r in rs if r["config"] == "after" and r["algorithm"] == "oll"]
+            cells = [f"{size:,}", f"{cons:,.0f}", str(k),
+                     f"{statistics.mean([r['cost'] for r in after if r.get('cost') is not None] or [0]):.1f}",
+                     f"{statistics.median([r['groups_solved'] for r in after]):,.0f}" if after else "–"]
+            for a in ("oll", "ihs", "z3"):
+                t = {}
+                for c in ("before", "after"):
+                    cr = [r for r in rs if r["algorithm"] == a and r["config"] == c]
+                    to = sum(1 for r in cr if r["status"] == "timeout")
+                    t[c] = (f"{statistics.median([r['time'] for r in cr]):.1f}" + (f" ({to}×TO)" if to else "")) if cr else "–"
+                cells.append(f"{t['before']} → {t['after']}")
             body.append(cells)
-    names = {"oll": "OLL", "ihs": "IHS", "z3": "Z3 maxres", "oll-nomin": "OLL, no core min.", "ihs-nomin": "IHS, no core min."}
-    return table(["lines", "mistakes", "constraints", "smallest MCS (mean)"] + [f"{names[a]}: median time (SAT calls)" for a in algs], body)
+    return table(["lines", "constraints", "mistakes", "smallest MCS (mean)", "lines left after slicing"]
+                 + [f"{n}: s, before → after" for n in names.values()], body)
+
+
+def ablation_table(rows: list[dict]) -> str:
+    """OLL: each performance change alone."""
+    rows = [r for r in rows if r["kind"] == "program" and r["algorithm"] == "oll"]
+    configs = ["before", "no-core-min", "simplify", "slicing", "after"]
+    body = []
+    for size in sorted({r["size"] for r in rows if r["config"] == "slicing"}):
+        for k in sorted({r["k"] for r in rows}):
+            rs = [r for r in rows if r["size"] == size and r["k"] == k]
+            if not any(r["config"] == "slicing" for r in rs):
+                continue
+            cells = [f"{size:,}", str(k)]
+            for c in configs:
+                cr = [r for r in rs if r["config"] == c]
+                cells.append(f"{statistics.median([r['time'] for r in cr]):.1f} s ({statistics.median([r['sat_calls'] for r in cr]):.0f})" if cr else "–")
+            body.append(cells)
+    return table(["lines", "mistakes", "before", "no core minimization", "eliminate local variables", "slicing",
+                  "all (now)"], body)
 
 
 # -- plots ---------------------------------------------------------------------------
@@ -335,14 +375,19 @@ def main() -> None:
         parts.append("### Which mutants are type errors\n\n" + detection_table(rows) + "\n")
         parts.append("### Q1: does a smallest correction subset contain the mistake?\n\n" + q1_table(rows) + "\n")
         parts.append("### Q2: rank of the mistake line, top-1 / top-3 (%)\n\n" + topk_table(rows) + "\n")
+        parts.append("### Unit of blame\n\n" + granularity_table(rows) + "\n")
         parts.append("### Closed-world fields\n\n" + closed_table(rows) + "\n")
     multi = [r for r in load("multi") if not r.get("error")]
     if multi:
         parts.append("## Several mistakes (generated programs, 200 lines)\n\n" + multi_table(multi) + "\n")
     scaling = [r for r in load("scaling") if not r.get("error")]
     if scaling:
-        parts.append("## Q3: scaling\n\n" + scaling_table(scaling) + "\n")
-        plot_scaling([r for r in scaling if r["algorithm"] in ("oll", "ihs", "z3")])
+        parts.append("## Q3: scaling (time to the first smallest MCS, median, seconds)\n\n"
+                     + scaling_table(scaling, "program") + "\n")
+        parts.append("### Each performance change alone (OLL; in parentheses: SAT calls)\n\n"
+                     + ablation_table(scaling) + "\n")
+        parts.append("### Programs of 8 independent modules\n\n" + scaling_table(scaling, "modular") + "\n")
+        plot_scaling([r for r in scaling if r["kind"] == "program" and r["config"] == "after"])
     plot_topk(corpora)
     (RESULTS / "summary.md").write_text("\n".join(parts))
     print((RESULTS / "summary.md").read_text())
