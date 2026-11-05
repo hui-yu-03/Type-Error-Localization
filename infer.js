@@ -244,8 +244,98 @@ const mkTV = (name, scope) => `${name}__${scope}`; //env = { "x" => "x__global" 
 
 // Γ(x)
 function envGet(env, name, scope) {
-  if (!env.has(name)) env.set(name, mkTV(name, scope));
+  if (!env.has(name)) {
+    // --relaxed: a name that the program never declares or assigns is a global
+    // of another file or the browser ($, document, require'd modules): any type
+    if (relax("globals") && name !== "this" && !declaredNames.has(name)) return fresh();
+    env.set(name, mkTV(name, scope));
+  }
   return env.get(name);
+}
+
+// ── --relaxed: what real JavaScript allows that the strict type system rejects ──
+// Collected by one walk over the AST before inference:
+//   declaredNames    every name the program declares or assigns anywhere
+//   absorbedReturns  `return;` statements of functions that also return a value
+//                    (they return undefined, which belongs to every type)
+//   definedMembers   every property name the program defines (object literal
+//                    keys, x.m = ..., class members)
+const declaredNames = new Set();
+const absorbedReturns = new WeakSet();
+const definedMembers = new Set();
+const calleeNodes = new WeakSet(); // member expressions that are called: x.m(...)
+const valueReturningBodies = new WeakSet(); // bodies of functions with some `return value`
+// falling off the end of a function that returns a value elsewhere returns
+// undefined, which belongs to every type
+const undefinedAbsorbed = (body) => relax("returns") && valueReturningBodies.has(body);
+// `return null;`, `return undefined;`, `return false;` next to a return of a
+// value: a sentinel for "nothing", typed as a union in TypeScript
+const isSentinel = (e) =>
+  !e ||
+  (e.type === "Literal" && (e.value === null || e.value === false) && !e.regex) ||
+  (e.type === "Identifier" && e.name === "undefined") ||
+  (e.type === "UnaryExpression" && e.operator === "void");
+function collectRelaxedFacts(root) {
+  const bind = (p) => {
+    if (!p) return;
+    if (p.type === "Identifier") declaredNames.add(p.name);
+    else if (p.type === "ObjectPattern") p.properties.forEach((q) => bind(q.type === "RestElement" ? q.argument : q.value));
+    else if (p.type === "ArrayPattern") p.elements.forEach(bind);
+    else if (p.type === "AssignmentPattern") bind(p.left);
+    else if (p.type === "RestElement") bind(p.argument);
+  };
+  const visit = (node, returns) => {
+    if (!node || typeof node.type !== "string") return;
+    switch (node.type) {
+      case "VariableDeclarator":
+        bind(node.id);
+        break;
+      case "AssignmentExpression":
+        bind(node.left);
+        if (node.left.type === "MemberExpression" && !node.left.computed && node.left.property.type === "Identifier")
+          definedMembers.add(node.left.property.name);
+        break;
+      case "Property":
+      case "MethodDefinition":
+      case "PropertyDefinition":
+        if (node.key && node.key.type === "Identifier") definedMembers.add(node.key.name);
+        else if (node.key && node.key.type === "Literal") definedMembers.add(String(node.key.value));
+        break;
+      case "ClassDeclaration":
+      case "ClassExpression":
+        bind(node.id);
+        break;
+      case "CatchClause":
+        bind(node.param);
+        break;
+      case "ImportSpecifier":
+      case "ImportDefaultSpecifier":
+      case "ImportNamespaceSpecifier":
+        bind(node.local);
+        break;
+      case "ReturnStatement":
+        if (returns) returns.push(node);
+        break;
+      case "FunctionDeclaration":
+      case "FunctionExpression":
+      case "ArrowFunctionExpression": {
+        bind(node.id);
+        node.params.forEach(bind);
+        const own = [];
+        visit(node.body, own);
+        if (own.some((r) => r.argument)) valueReturningBodies.add(node.body);
+        if (own.some((r) => !isSentinel(r.argument))) own.filter((r) => isSentinel(r.argument)).forEach((r) => absorbedReturns.add(r));
+        return;
+      }
+    }
+    for (const key of Object.keys(node)) {
+      if (key === "loc" || key === "start" || key === "end") continue;
+      const v = node[key];
+      if (Array.isArray(v)) v.forEach((c) => visit(c, returns));
+      else if (v && typeof v.type === "string") visit(v, returns);
+    }
+  };
+  visit(root, null);
 }
 
 // force declaration in the current scope
@@ -450,6 +540,24 @@ const SHARED_STR_ARRAY_METHODS = new Set([
 // Array methods whose result type depends on the callback: every use gets its
 // own instance, so that a.map(f) and a.map(g) may have different results.
 const POLYMORPHIC_ARRAY_METHODS = new Set(["map", "flatMap", "reduce"]);
+
+// --relaxed: a member of a receiver of unknown type is `any` when the program
+// never defines it and it is no built-in member (it belongs to a library:
+// jQuery's .html, Backbone's .get); a built-in method that is only read, not
+// called (this.match[0]), says nothing about the receiver either.
+let builtinMembers = null;
+function relaxedAnyMember(name, called) {
+  if (definedMembers.has(name)) return false;
+  if (STRING_EXCLUSIVE_METHODS.has(name) || ARRAY_EXCLUSIVE_METHODS.has(name)) return !called;
+  if (!builtinMembers) {
+    builtinMembers = new Set(["length", "then", "catch", "finally", "call", "apply", "bind", "prototype",
+      ...SHARED_STR_ARRAY_METHODS, ...POLYMORPHIC_ARRAY_METHODS]);
+    for (const table of ["__typeMethods__", "__typeProps__"])
+      for (const members of Object.values(summaries[table] ?? {})) Object.keys(members).forEach((k) => builtinMembers.add(k));
+    Object.keys(summaries.__objectProtoMethods__ ?? {}).forEach((k) => builtinMembers.add(k));
+  }
+  return !builtinMembers.has(name);
+}
 
 // Reading `prop` from a receiver whose type is not known yet (no type hint).
 // Returns the TV of the result, or null if the read is an ordinary field read.
@@ -830,7 +938,7 @@ function inferFuncNode(funcNode, fnName, fnScope, env, xTarget, thisTV = null) {
     hasReturn = inferStmt(funcNode.body, fnEnv, qualName);
   }
 
-  if (!hasReturn) {
+  if (!hasReturn && !undefinedAbsorbed(funcNode.body)) {
     addCons(
       "void",
       funcNode.async ? `async_inner__${qualName}` : `ret__${qualName}`,
@@ -920,7 +1028,7 @@ function inferPromiseThen(node, env, scope) {
     } else {
       hasReturn = inferStmt(cb.body, cbEnv, cbQualName);
     }
-    if (!hasReturn) addCons("void", `ret__${cbQualName}`);
+    if (!hasReturn && !undefinedAbsorbed(cb.body)) addCons("void", `ret__${cbQualName}`);
     X_cb_ret = `ret__${cbQualName}`;
     functionTypes.set(cbQualName, { params: paramTVs, ret: X_cb_ret });
   } else if (cb) {
@@ -975,7 +1083,7 @@ function inferPromiseCatch(node, env, scope) {
     } else {
       hasReturn = inferStmt(cb.body, cbEnv, cbQualName);
     }
-    if (!hasReturn) addCons("void", `ret__${cbQualName}`);
+    if (!hasReturn && !undefinedAbsorbed(cb.body)) addCons("void", `ret__${cbQualName}`);
     X_cb_ret = `ret__${cbQualName}`;
     functionTypes.set(cbQualName, { params: paramTVs, ret: X_cb_ret });
   } else if (cb) {
@@ -1415,7 +1523,7 @@ function inferClassNode(node, className, env) {
     } else {
       hasReturn = inferStmt(m.value.body, fnEnv, qualName);
     }
-    if (!hasReturn) {
+    if (!hasReturn && !undefinedAbsorbed(m.value.body)) {
       addCons(
         "void",
         m.value.async ? `async_inner__${qualName}` : `ret__${qualName}`,
@@ -1567,8 +1675,14 @@ function inferExprNode(node, env, scope) {
       } else if (
         ["<", ">", "<=", ">=", "==", "===", "!=", "!=="].includes(op)
       ) {
-        addCons(X1, X2);
-        addCons(X2, X1);
+        if (relax("compare") && ["==", "===", "!=", "!=="].includes(op)) {
+          // --relaxed: as in TypeScript, values of two different primitive types
+          // are never equal (an error); any other two values may be compared
+          addCons(X1, X2, { access: "compare" });
+        } else {
+          addCons(X1, X2);
+          addCons(X2, X1);
+        }
         addCons(Xr, "bool");
       } else if (["&&", "||"].includes(op)) {
         // Result is one of the operands, but only resolvable when both sides are known.
@@ -1657,6 +1771,8 @@ function inferExprNode(node, env, scope) {
         if (propTV !== null) return propTV;
         const typeTV = accessTypeMethod(Xobj, node.property.name);
         if (typeTV !== null) return typeTV;
+        if (relax("members") && !typeHints.has(Xobj) && relaxedAnyMember(node.property.name, calleeNodes.has(node)))
+          return fresh();
         const untypedTV = untypedPropertyRead(Xobj, node.property.name);
         if (untypedTV !== null) return untypedTV;
         const X3 = fresh();
@@ -1923,6 +2039,7 @@ function inferExprNode(node, env, scope) {
       const fname = node.callee.type === "Identifier" ? node.callee.name : null;
       if (!fname) {
         // e.g. obj.method(a, b), (function(x){})(5)
+        calleeNodes.add(node.callee);
         const Xcallee = inferExpr(node.callee, env, scope);
         const Xret = fresh();
         const paramTVs = node.arguments.map(() => fresh());
@@ -1990,10 +2107,13 @@ function inferExprNode(node, env, scope) {
       // e.g. [e1, e2, ..., en]
       const Xelem = fresh();
       const Xarr = fresh();
+      // --relaxed: an array literal of literals of different kinds holds a union
+      const kinds = new Set(node.elements.filter((e) => e && e.type === "Literal").map((e) => (e.regex ? "regexp" : e.value === null ? "null" : typeof e.value)));
+      const mixed = relax("arrays") && kinds.size > 1;
       for (const elem of node.elements) {
         if (elem) {
           const Xi = inferExpr(elem, env, scope);
-          addCons(Xi, Xelem);
+          if (!mixed) addCons(Xi, Xelem);
         }
       }
       addCons(Xarr, `Array<${Xelem}>`);
@@ -2173,8 +2293,50 @@ function handleRHS(name, rhs, env, scope) {
 }
 
 // -- Statement inference -----------------------------------------------------
+// ── Block scopes ─────────────────────────────────────────────────────────────
+// A let/const declared in a nested block (a block, a for loop, a switch) gets a
+// type variable of its own when its name is already bound to a variable of the
+// same function (an outer let, the `let i` of an earlier loop); its binding ends
+// with the block. Other declarations keep the name `x__scope`, so programs
+// without such re-declarations are inferred exactly as before.
+const BLOCK_SCOPES = new Set(["BlockStatement", "ForStatement", "ForInStatement", "ForOfStatement", "SwitchStatement"]);
+const functionBodies = new WeakSet(); // a function's own body is its scope, not a nested block
+const blockFrames = []; // per enclosing nested block: name -> the binding before the block
+const blockTaken = new Set(); // type variables of block-scoped declarations so far
+let blockCounter = 0;
+function markFunctionBodies(node) {
+  if (!node || typeof node.type !== "string") return;
+  if (/Function/.test(node.type) && node.body) functionBodies.add(node.body);
+  for (const key of Object.keys(node)) {
+    if (key === "loc") continue;
+    const v = node[key];
+    if (Array.isArray(v)) v.forEach(markFunctionBodies);
+    else if (v && typeof v.type === "string") markFunctionBodies(v);
+  }
+}
+function declareBinding(env, name, scope, kind) {
+  if ((kind !== "let" && kind !== "const") || blockFrames.length === 0) return envDeclare(env, name, scope);
+  let tv = mkTV(name, scope);
+  if (env.get(name) === tv || blockTaken.has(tv)) tv = `${name}__b${++blockCounter}__${scope}`;
+  blockTaken.add(tv);
+  const frame = blockFrames[blockFrames.length - 1];
+  if (!frame.has(name)) frame.set(name, env.get(name));
+  env.set(name, tv);
+  return tv;
+}
+
 function inferStmt(node, env, scope) {
-  return withNode(node, () => inferStmtNode(node, env, scope));
+  if (!node || !BLOCK_SCOPES.has(node.type) || functionBodies.has(node))
+    return withNode(node, () => inferStmtNode(node, env, scope));
+  blockFrames.push(new Map());
+  try {
+    return withNode(node, () => inferStmtNode(node, env, scope));
+  } finally {
+    for (const [name, prev] of blockFrames.pop()) {
+      if (prev === undefined) env.delete(name);
+      else env.set(name, prev);
+    }
+  }
 }
 function inferStmtNode(node, env, scope) {
   let hasReturn = false;
@@ -2271,8 +2433,12 @@ function inferStmtNode(node, env, scope) {
       for (const cas of node.cases) {
         if (cas.test) {
           const Xtest = inferExpr(cas.test, env, scope);
-          addCons(Xdisc, Xtest);
-          addCons(Xtest, Xdisc);
+          if (relax("compare")) {
+            addCons(Xdisc, Xtest, { access: "compare" }); // as === (see BinaryExpression)
+          } else {
+            addCons(Xdisc, Xtest);
+            addCons(Xtest, Xdisc);
+          }
         }
 
         // process the body of each case
@@ -2312,7 +2478,7 @@ function inferStmtNode(node, env, scope) {
       if (node.left.type === "VariableDeclaration") {
         // e.g., for (var key in obj)
         const decl = node.left.declarations[0];
-        keyVar = envDeclare(env, decl.id.name, scope);
+        keyVar = declareBinding(env, decl.id.name, scope, node.left.kind);
       } else if (node.left.type === "Identifier") {
         // e.g., for (key in obj)
         keyVar = envGet(env, node.left.name, scope);
@@ -2340,7 +2506,7 @@ function inferStmtNode(node, env, scope) {
       if (node.left.type === "VariableDeclaration") {
         // e.g. for (const item of iterable)
         const decl = node.left.declarations[0];
-        valVar = envDeclare(env, decl.id.name, scope);
+        valVar = declareBinding(env, decl.id.name, scope, node.left.kind);
       } else if (node.left.type === "Identifier") {
         // e.g. for (item of iterable)
         valVar = envGet(env, node.left.name, scope);
@@ -2367,7 +2533,7 @@ function inferStmtNode(node, env, scope) {
                 : String(prop.key.value);
             const valName =
               prop.value.type === "Identifier" ? prop.value.name : keyName;
-            const localTV = envDeclare(env, valName, scope);
+            const localTV = declareBinding(env, valName, scope, node.kind);
             const propTV = accessModuleProp(Xrhs, keyName);
             if (propTV !== null) {
               addCons(propTV, localTV);
@@ -2385,13 +2551,13 @@ function inferStmtNode(node, env, scope) {
           for (const el of decl.id.elements) {
             if (!el || el.type === "RestElement") continue;
             if (el.type === "Identifier") {
-              const localTV = envDeclare(env, el.name, scope);
+              const localTV = declareBinding(env, el.name, scope, node.kind);
               addCons(Xelem, localTV);
             }
           }
         } else {
           // Identifier
-          envDeclare(env, decl.id.name, scope);
+          declareBinding(env, decl.id.name, scope, node.kind);
           if (decl.init) handleRHS(decl.id.name, decl.init, env, scope);
         }
       }
@@ -2432,7 +2598,7 @@ function inferStmtNode(node, env, scope) {
 
       const retTV = `ret__${qualName}`;
       const hasReturn = inferStmt(node.body, fnEnv, qualName);
-      if (!hasReturn) {
+      if (!hasReturn && !undefinedAbsorbed(node.body)) {
         addCons("void", node.async ? `async_inner__${qualName}` : retTV);
       }
 
@@ -2494,10 +2660,11 @@ function inferStmtNode(node, env, scope) {
       const retTarget = asyncScopes.has(scope)
         ? `async_inner__${scope}`
         : `ret__${scope}`;
+      const absorbed = relax("returns") && absorbedReturns.has(node);
       if (node.argument) {
         const X1 = inferExpr(node.argument, env, scope);
-        addCons(X1, retTarget);
-      } else {
+        if (!absorbed) addCons(X1, retTarget);
+      } else if (!absorbed) {
         addCons("void", retTarget);
       }
       return true;
@@ -2581,7 +2748,7 @@ function inferExprStmtNode(node, env, scope) {
             } else {
               hasReturn = inferStmt(rhs.body, fnEnv, qualName);
             }
-            if (!hasReturn) addCons("void", retTV);
+            if (!hasReturn && !undefinedAbsorbed(rhs.body)) addCons("void", retTV);
             const mfv = mkTV(methodName, scope);
             addCons(mfv, funcType(qualName, paramTVs, retTV));
             setHint(mfv, "func");
@@ -2684,6 +2851,17 @@ function inferExprStmtNode(node, env, scope) {
 //   --ignore-lines  infer the program as if these lines contributed nothing
 const cliArgs = process.argv.slice(2);
 const jsonOutput = cliArgs.includes("--json");
+// --relaxed: all rules below; --relaxed=r1,r2: only those
+//   globals  names the program never declares are any ($, document, ...)
+//   returns  `return;`, `return null/false` and falling off the end are fine next to `return value`
+//   compare  == and switch: an error only between two different primitive types
+//   members  library members of receivers of unknown type are any (.html, .get)
+//   arrays   an array literal of literals of different kinds holds a union
+const RELAX_RULES = ["globals", "returns", "compare", "members", "arrays"];
+const relaxedArg = cliArgs.find((a) => a === "--relaxed" || a.startsWith("--relaxed="));
+const relaxedRules = new Set(!relaxedArg ? [] : relaxedArg.includes("=") ? relaxedArg.slice(10).split(",") : RELAX_RULES);
+const relaxedMode = relaxedRules.size > 0;
+const relax = (rule) => relaxedRules.has(rule);
 const ignoreIdx = cliArgs.indexOf("--ignore-lines");
 if (ignoreIdx >= 0)
   ignoredLines = new Set(String(cliArgs[ignoreIdx + 1]).split(",").map(Number));
@@ -2739,6 +2917,8 @@ for (const name of summaries.__globals__ ?? []) {
   globalEnv.set(name, tv);
   moduleTV.set(tv, { modName: name, cache: new Map() });
 }
+if (ast) markFunctionBodies(ast);
+if (ast && relaxedMode) collectRelaxedFacts(ast);
 if (ast) inferStmt(ast, globalEnv, "global");
 
 for (const [tv, types] of typeofGuardMap.entries()) {

@@ -31,6 +31,7 @@ sys.path.insert(0, str(ROOT))
 
 import evaluate as ev  # noqa: E402
 from localizer import baseline, rank  # noqa: E402
+from localizer.features import fanout_of, pool_counts, tier_features  # noqa: E402
 from localizer.repair import find_hints  # noqa: E402
 
 METHODS = ["first conflict (solver.js)", "first conflict (SMT order)", "MCS card, latest first", "MCS learned",
@@ -91,6 +92,16 @@ def evaluate_pair(name: str, buggy: str, fixed: str) -> dict:
         "first conflict (SMT order)": _rank_in(baseline.first_conflicts(enc, k=5), targets),
     }
     pool = rank.enumerate_pool(enc, None, "oll", min_count=10, hard_cap=40, timeout=60)
+    if pool.mcses:  # training data for the learned tie-breaker (bench/train_ranker.py)
+        cands = [rank.to_candidate(enc, m.lines) for m in pool.mcses]
+        counts, n_mcs = pool_counts(enc, pool.mcses)
+        fan, tset = fanout_of(enc), set(targets)
+        row["tiers"] = [
+            [{"lines": [enc.line_of(g) for g in c.lines], "x": [round(v, 4) for v in x],
+              "y": int(any(enc.line_of(g) in tset for g in c.lines))}
+             for c, x in zip(tier[:12], tier_features(enc, tier[:12], counts, n_mcs, fan))]
+            for tier in rank.tiers_of(cands)[:3]
+        ]
     import tempfile
 
     with tempfile.TemporaryDirectory() as d:

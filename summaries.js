@@ -540,8 +540,9 @@ summaries.__typeMethods__ = {
     toLocaleUpperCase: { params: [], ret: "str" },
     slice: { params: ["num", "num"], ret: "str" },
     substring: { params: ["num", "num"], ret: "str" },
-    replace: { params: ["str|regexp", "str"], ret: "str" },
-    replaceAll: { params: ["str|regexp", "str"], ret: "str" },
+    // the replacement is a string or a function computing it
+    replace: { params: ["str|regexp", { kind: "any" }], ret: "str" },
+    replaceAll: { params: ["str|regexp", { kind: "any" }], ret: "str" },
     concat: { params: ["str"], ret: "str" },
     includes: { params: ["str"], ret: "bool" },
     startsWith: { params: ["str"], ret: "bool" },
@@ -554,8 +555,8 @@ summaries.__typeMethods__ = {
     padEnd: { params: ["num", "str"], ret: "str" },
     repeat: { params: ["num"], ret: "str" },
     toString: { params: [], ret: "str" },
-    match: { params: ["{}"], ret: { kind: "array", elem: "str" } },
-    search: { params: ["{}"], ret: "num" },
+    match: { params: ["str|regexp"], ret: { kind: "array", elem: "str" } },
+    search: { params: ["str|regexp"], ret: "num" },
     at: { params: ["num"], ret: "str" },
   },
   num: {

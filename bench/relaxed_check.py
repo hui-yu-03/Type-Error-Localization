@@ -1,0 +1,138 @@
+"""What the relaxed type system (localizer --relaxed) costs on injected mistakes.
+
+    python bench/relaxed_check.py [--jobs 2]
+    python bench/relaxed_check.py --ablation FIXJS_DATA [--pairs 2000]
+
+Samples the mutants of the test suite and of the generated corpus exactly as
+bench/run_experiments.py does, and checks every mutant with the strict and the
+relaxed type system (SMT encoding, open records).  The relaxed system accepts
+everything the strict one accepts, so the question is which mistakes it stops
+seeing.  Writes results/relaxed_check.md.
+"""
+
+from __future__ import annotations
+
+import argparse
+import glob
+import sys
+import tempfile
+import zlib
+from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(ROOT))
+
+import evaluate as ev  # noqa: E402
+from run_experiments import RESULTS, _sample_mutants  # noqa: E402
+from localizer.constraints import ALL_RELAX_RULES, INFER_RELAX_RULES, program_from_json, run_infer  # noqa: E402
+from localizer.encode import encode  # noqa: E402
+
+
+def ill_typed(source: str, relaxed: bool) -> bool:
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "program.js"
+        p.write_text(source)
+        data = run_infer(p, relaxed=relaxed)
+    rules = (set(ALL_RELAX_RULES) if relaxed is True else set(relaxed or ())) - set(INFER_RELAX_RULES)
+    return str(encode(program_from_json(data, source), relaxed=rules).check(timeout_ms=30000)) == "unsat"
+
+
+def check(task: dict) -> dict:
+    return {**task, "strict": ill_typed(task["source"], False), "relaxed": ill_typed(task["source"], True)}
+
+
+def corpus(name: str, bases: list[str], per_op: int) -> list[dict]:
+    tasks = []
+    for path in bases:
+        label = str(Path(path).relative_to(ROOT))
+        src = Path(path).read_text()
+        if ill_typed(src, False):  # only well-typed base programs are mutated
+            continue
+        for m in _sample_mutants(path, per_op, seed=zlib.crc32(label.encode())):
+            tasks.append({"corpus": name, "base": label, "op": m["op"], "source": m["source"]})
+    return tasks
+
+
+def _check_config(task) -> tuple[str, str, bool]:
+    name, rules, kind, source = task
+    return name, kind, ill_typed(source, rules)
+
+
+def ablation(data: Path, jobs: int, n_pairs: int, per_op: int, seed: int = 1) -> str:
+    """Every rule left out in turn: false alarms on real code (the versions after
+    a fix of a sample of FixJS pairs that are still ill-typed) against injected
+    mistakes still found."""
+    import random
+
+    import fixjs
+
+    configs = {"strict (no rule)": set(), "all rules": set(ALL_RELAX_RULES)}
+    configs.update({f"all but {r}": set(ALL_RELAX_RULES) - {r} for r in ALL_RELAX_RULES})
+    tests = sorted(glob.glob(str(ROOT / "Tests" / "**" / "*.js"), recursive=True))
+    generated = sorted(glob.glob(str(ROOT / "bench" / "corpus" / "generated" / "*.js")))
+    mutants = corpus("test suite", tests, per_op) + corpus("generated", generated, per_op)
+    pairs = random.Random(seed).sample(fixjs.pairs(data), n_pairs)
+    fixed = [w for w in (fixjs.wrap(fixjs._read(str(data / "input" / a))) for _, _, _, a in pairs) if w]
+    tasks = [(name, rules, m["corpus"], m["source"]) for name, rules in configs.items() for m in mutants]
+    tasks += [(name, rules, "real", src) for name, rules in configs.items() for src in fixed]
+    counts: Counter = Counter()
+    with ProcessPoolExecutor(jobs) as pool:
+        for name, kind, bad in pool.map(_check_config, tasks, chunksize=16):
+            counts[(name, kind)] += bad
+    n_test = sum(1 for m in mutants if m["corpus"] == "test suite")
+    out = ["## Each rule left out in turn\n",
+           f"False alarms: versions after the fix of {len(fixed):,} random FixJS pairs that are still ill-typed. "
+           f"Mistakes found: of the {n_test} test-suite and {len(mutants) - n_test} generated mutants.\n",
+           "| rules | false alarms on real code | mistakes found: test suite | generated |", "|---|---|---|---|"]
+    for name in configs:
+        fa = counts[(name, "real")]
+        out.append(f"| {name} | {fa} ({100 * fa / len(fixed):.1f}%) | {counts[(name, 'test suite')]} "
+                   f"| {counts[(name, 'generated')]} |")
+    return "\n".join(out) + "\n"
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--jobs", type=int, default=2)
+    ap.add_argument("--per-op", type=int, default=6)
+    ap.add_argument("--ablation", type=Path, metavar="FIXJS_DATA", help="leave out each rule in turn")
+    ap.add_argument("--pairs", type=int, default=2000)
+    args = ap.parse_args()
+    if args.ablation:
+        text = ablation(args.ablation, args.jobs, args.pairs, args.per_op)
+        (RESULTS / "relaxed_ablation.md").write_text("# Relaxed type system: ablation\n\nGenerated by "
+                                                      "`python bench/relaxed_check.py --ablation DATA`.\n\n" + text)
+        print(text)
+        return
+    tests = sorted(glob.glob(str(ROOT / "Tests" / "**" / "*.js"), recursive=True))
+    generated = sorted(glob.glob(str(ROOT / "bench" / "corpus" / "generated" / "*.js")))
+    tasks = corpus("test suite", tests, args.per_op) + corpus("generated", generated, args.per_op)
+    with ProcessPoolExecutor(args.jobs) as pool:
+        rows = list(pool.map(check, tasks, chunksize=8))
+    out = ["# Relaxed type system on injected mistakes\n",
+           "Generated by `python bench/relaxed_check.py`. Mutants that are type errors under the strict type "
+           "system, and how many of them the relaxed one (`--relaxed`) still reports.\n",
+           "| mistake | test suite: strict | relaxed | generated: strict | relaxed |", "|---|---|---|---|---|"]
+    ops = sorted({r["op"] for r in rows})
+    for op in ops + ["all"]:
+        cells = []
+        for c in ("test suite", "generated"):
+            rs = [r for r in rows if r["corpus"] == c and op in ("all", r["op"])]
+            s = sum(r["strict"] for r in rs)
+            x = sum(r["relaxed"] for r in rs)
+            cells += [f"{s}", f"{x} ({100 * x / s:.0f}%)" if s else "–"]
+        out.append(f"| {op} | " + " | ".join(cells) + " |")
+    lost = Counter(r["op"] for r in rows if r["strict"] and not r["relaxed"])
+    out += ["", f"{len(rows)} mutants checked; mistakes no longer reported, by kind: "
+            + (", ".join(f"{k} {v}" for k, v in lost.most_common()) or "none") + ".\n"]
+    text = "\n".join(out) + "\n"
+    (RESULTS / "relaxed_check.md").write_text(text)
+    print(text)
+
+
+if __name__ == "__main__":
+    main()

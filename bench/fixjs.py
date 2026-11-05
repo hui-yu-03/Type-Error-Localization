@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import difflib
 import gzip
 import json
 import os
@@ -50,8 +51,19 @@ from localizer.constraints import program_from_json  # noqa: E402
 from localizer.encode import encode  # noqa: E402
 
 RESULTS = ROOT / "results"
-SCREEN = RESULTS / "fixjs_screen.jsonl.gz"
-EVAL = RESULTS / "fixjs.jsonl"
+NAME = "fixjs"  # results/<NAME>*: "fixjs", or "fixjs_relaxed" with --relaxed
+SCREEN = RESULTS / f"{NAME}_screen.jsonl.gz"
+EVAL = RESULTS / f"{NAME}.jsonl"
+
+
+def use_relaxed() -> None:
+    """Type the functions with the relaxed type system (localizer --relaxed); separate result files."""
+    global NAME, SCREEN, EVAL
+    from localizer.constraints import set_relaxed
+
+    set_relaxed(True)
+    NAME = "fixjs_relaxed"
+    SCREEN, EVAL = RESULTS / f"{NAME}_screen.jsonl.gz", RESULTS / f"{NAME}.jsonl"
 SIZES = ["50", "50-100", "100+"]
 NAMED = re.compile(r"function\s+[A-Za-z_$][\w$]*\s*\(")
 ANON = re.compile(r"function\s*\(")
@@ -68,12 +80,79 @@ def wrap(source: str) -> str | None:
     return None
 
 
-def pairs(data: Path):
+def positional_pairs(data: Path):
+    """The pairs as FixJS gives them: the n-th function of a file before and after the commit."""
     for size in SIZES:
         d = data / "input" / size
         for f in sorted(os.listdir(d / "before")):
             if f.endswith(".js") and (d / "after" / f).exists():
                 yield size, f[:-3], str(d / "before" / f), str(d / "after" / f)
+
+
+PAIRING = RESULTS / "fixjs_pairing.json"
+PAIRS = RESULTS / "fixjs_pairs.json.gz"  # cache of the matching (it takes minutes)
+
+
+def pairs(data: Path) -> list[tuple[str, str, str, str]]:
+    """The functions of each commit and file matched by similarity.
+
+    FixJS pairs the n-th function of a file before the commit with the n-th one
+    after it (within a size class), so a commit that adds, removes, reorders or
+    resizes functions pairs two different functions.  Here every function before
+    the commit is matched with the most similar function after it in the same file
+    (greedily, best pairs first); a pair counts if the two versions share at least
+    SAME of their lines and are not identical up to whitespace.  Identical pairs
+    of different commits (cherry-picks) are kept once.  Returns
+    (size class before, name, path before, path after), the paths relative to
+    DATA/input, and writes the matching statistics to results/fixjs_pairing.json."""
+    from collections import defaultdict
+
+    if PAIRS.exists():
+        with gzip.open(PAIRS, "rt") as f:
+            return [tuple(p) for p in json.load(f)]
+
+    groups: dict = defaultdict(lambda: ([], []))
+    for size in SIZES:
+        for side in (0, 1):
+            d = data / "input" / size / ("before", "after")[side]
+            for f in sorted(os.listdir(d)):
+                if f.endswith(".js"):
+                    commit, file_index, _ = f[:-3].rsplit("_", 2)
+                    groups[(commit, file_index)][side].append((size, f[:-3], d / f))
+    out, seen = [], set()
+    stats = Counter()
+    for (befores, afters) in groups.values():
+        text = {p: _read(str(p[2])) for p in befores + afters}
+        norm = {p: [" ".join(x.split()) for x in t.split("\n")] for p, t in text.items()}
+        scored = []
+        for b in befores:
+            for a in afters:
+                if norm[b] == norm[a]:
+                    continue
+                m = difflib.SequenceMatcher(None, norm[b], norm[a], autojunk=False)
+                if m.real_quick_ratio() >= SAME and m.quick_ratio() >= SAME:
+                    r = m.ratio()
+                    if r >= SAME:
+                        scored.append((-r, b, a))
+        used_b, used_a = set(), set()
+        for r, b, a in sorted(scored, key=lambda x: (x[0], x[1][1], x[2][1])):
+            if b in used_b or a in used_a:
+                continue
+            used_b.add(b)
+            used_a.add(a)
+            key = ("\n".join(norm[b]), "\n".join(norm[a]))
+            if key in seen:
+                stats["duplicate"] += 1
+                continue
+            seen.add(key)
+            out.append((b[0], f"{b[0]}/{b[1]}~{a[0]}/{a[1]}", f"{b[0]}/before/{b[1]}.js", f"{a[0]}/after/{a[1]}.js"))
+            stats["same position" if (b[0], b[1]) == (a[0], a[1]) else "re-paired"] += 1
+    positional = sum(1 for _ in positional_pairs(data))
+    PAIRING.write_text(json.dumps({"positional pairs": positional, "matched pairs": len(out), **stats}, indent=1))
+    out.sort()
+    with gzip.open(PAIRS, "wt") as f:
+        json.dump(out, f)
+    return out
 
 
 class _Timeout(Exception):
@@ -108,7 +187,7 @@ def status(row: dict) -> str:
 
 def screen_one(task) -> dict:
     size, name, before, after = task
-    row = {"size": size, "name": name}
+    row = {"size": size, "name": name, "before": before.split("/input/", 1)[-1], "after": after.split("/input/", 1)[-1]}
     t0 = time.time()
     signal.signal(signal.SIGALRM, _alarm)
     signal.alarm(120)
@@ -150,7 +229,7 @@ def read_jsonl(path: Path) -> list[dict]:
 
 
 def screen(data: Path, jobs: int, sample: int | None, seed: int, out: Path) -> None:
-    tasks = list(pairs(data))
+    tasks = [(size, name, str(data / "input" / b), str(data / "input" / a)) for size, name, b, a in pairs(data)]
     if sample:
         tasks = random.Random(seed).sample(tasks, sample)
     done = {(r["size"], r["name"]) for r in read_jsonl(out)}  # resume an interrupted run
@@ -184,11 +263,12 @@ def evaluate_one(task) -> dict:
 
 
 def evaluate(data: Path, jobs: int, max_pairs: int | None, seed: int) -> None:
+    paths = {(r["size"], r["name"]): (r["before"], r["after"]) for r in read_jsonl(SCREEN)}
     chosen = [(r["size"], r["name"]) for r in read_jsonl(SCREEN) if r["status"] == FIXED]
     if max_pairs and len(chosen) > max_pairs:
         chosen = sorted(random.Random(seed).sample(chosen, max_pairs))
     done = {(r["size"], r["name"]) for r in read_jsonl(EVAL)}
-    tasks = [(s, n, str(data / "input" / s / "before" / f"{n}.js"), str(data / "input" / s / "after" / f"{n}.js"))
+    tasks = [(s, n, str(data / "input" / paths[(s, n)][0]), str(data / "input" / paths[(s, n)][1]))
              for s, n in chosen if (s, n) not in done]
     print(f"{len(tasks)} pairs to localize ({len(done)} already done)", file=sys.stderr)
     t0 = time.time()
@@ -200,7 +280,7 @@ def evaluate(data: Path, jobs: int, max_pairs: int | None, seed: int) -> None:
                 print(f"{i}/{len(tasks)} in {time.time() - t0:.0f} s", file=sys.stderr, flush=True)
     rows = read_jsonl(EVAL)
     keys = list(dict.fromkeys(k for r in rows for k in r))
-    with open(RESULTS / "fixjs.csv", "w", newline="") as f:
+    with open(RESULTS / f"{NAME}.csv", "w", newline="") as f:
         w = csv.DictWriter(f, keys)
         w.writeheader()
         for r in rows:
@@ -214,7 +294,7 @@ def _pct(a: int, b: int) -> str:
 def report() -> str:
     screened = read_jsonl(SCREEN)
     rows = [r for r in read_jsonl(EVAL) if "error" not in r]
-    out = ["# FixJS: real bug-fixing commits\n",
+    out = [f"# FixJS: real bug-fixing commits{' (relaxed type system)' if NAME.endswith('relaxed') else ''}\n",
            "Generated by `python bench/fixjs.py report`. Pairs of a JavaScript function before and after a "
            "bug-fixing commit (FixJS, first half of 2012), checked one function at a time with free variables "
            "unconstrained.\n", "## Which bugs are type errors\n",
@@ -293,15 +373,18 @@ def main() -> None:
     ap.add_argument("--sample", type=int, help="screen only a random sample of pairs")
     ap.add_argument("--max", type=int, help="localize at most this many pairs (random sample)")
     ap.add_argument("--seed", type=int, default=1)
-    ap.add_argument("--out", type=Path, default=SCREEN, help="screening output")
+    ap.add_argument("--out", type=Path, help="screening output (default results/<name>_screen.jsonl.gz)")
+    ap.add_argument("--relaxed", action="store_true", help="the relaxed type system of `localizer --relaxed`")
     args = ap.parse_args()
+    if args.relaxed:
+        use_relaxed()
     if args.command == "screen":
-        screen(args.data, args.jobs, args.sample, args.seed, args.out)
+        screen(args.data, args.jobs, args.sample, args.seed, args.out or SCREEN)
     elif args.command == "evaluate":
         evaluate(args.data, args.jobs, args.max, args.seed)
     else:
         text = report()
-        (RESULTS / "fixjs.md").write_text(text)
+        (RESULTS / f"{NAME}.md").write_text(text)
         print(text)
 
 

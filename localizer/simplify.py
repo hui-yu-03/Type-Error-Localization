@@ -54,7 +54,7 @@ def local_renaming(program: Program, group_of) -> dict[str, str]:
     # contains variables local to one group, so renaming them is sound.
     pinned = {v: len(gs) > 1 for v, gs in occurs.items()}
     for c in program.constraints:
-        if c.kind != "sub" or not (isinstance(c.args[0], Var) and isinstance(c.args[1], Var)):
+        if c.kind != "sub" or c.access == "compare" or not (isinstance(c.args[0], Var) and isinstance(c.args[1], Var)):
             continue
         x, y = c.args[0].name, c.args[1].name
         g = "hard" if c.hard else group_of(c)

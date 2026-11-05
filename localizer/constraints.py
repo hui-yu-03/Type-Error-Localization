@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 from collections import OrderedDict
@@ -129,19 +130,81 @@ def program_from_json(data: dict, source_text: str, path: str = "<input>") -> Pr
     )
 
 
-def run_infer(path: str | Path, timeout: float = 60, ignore_lines=None) -> dict:
+class _InferWorker:
+    """One Node process that runs infer.js on many files (localizer/infer_worker.js).
+
+    Node's start-up dominates the time of inferring a small file, and
+    benchmarks and re-inference infer thousands of them."""
+
+    def __init__(self) -> None:
+        self.proc = subprocess.Popen(["node", str(WORKER_JS)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                     stderr=subprocess.DEVNULL, text=True, cwd=REPO_ROOT, bufsize=1)
+
+    def run(self, args: list[str], timeout: float) -> tuple[int, str, str]:
+        import select
+
+        self.proc.stdin.write(json.dumps({"args": args}) + "\n")
+        self.proc.stdin.flush()
+        ready, _, _ = select.select([self.proc.stdout], [], [], timeout)
+        if not ready:
+            self.close()
+            raise subprocess.TimeoutExpired(["infer_worker.js", *args], timeout)
+        line = self.proc.stdout.readline()
+        if not line:
+            raise RuntimeError("infer worker exited")
+        reply = json.loads(line)
+        return reply["code"], reply["stdout"], reply["stderr"]
+
+    def close(self) -> None:
+        self.proc.kill()
+        self.proc.wait()
+
+
+WORKER_JS = Path(__file__).resolve().parent / "infer_worker.js"
+_worker: Optional[_InferWorker] = None
+USE_WORKER = os.environ.get("LOCALIZER_INFER_WORKER", "1") != "0"
+# rules of `infer.js --relaxed` and of the relaxed encoding (encode.RELAX_RULES)
+INFER_RELAX_RULES = ("globals", "returns", "compare", "members", "arrays")
+ALL_RELAX_RULES = INFER_RELAX_RULES + ("fields", "length", "errors", "keys")
+RELAXED: frozenset = frozenset(ALL_RELAX_RULES if os.environ.get("LOCALIZER_RELAXED", "0") == "1" else ())
+
+
+def set_relaxed(on=True) -> None:
+    """Type real JavaScript more permissively for the rest of this process:
+    True for all rules, False for none, or a collection of rule names
+    (ALL_RELAX_RULES; see infer.js and encode.Encoder)."""
+    global RELAXED
+    RELAXED = frozenset(ALL_RELAX_RULES if on is True else (on or ()))
+    unknown = RELAXED - set(ALL_RELAX_RULES)
+    if unknown:
+        raise ValueError(f"unknown relaxation rules: {sorted(unknown)}")
+
+
+def _infer_once(args: list[str], timeout: float) -> tuple[int, str, str]:
+    global _worker
+    if USE_WORKER:
+        try:
+            if _worker is None or _worker.proc.poll() is not None:
+                _worker = _InferWorker()
+            return _worker.run(args, timeout)
+        except (OSError, RuntimeError, ValueError):
+            _worker = None  # fall back to one process per file
+    out = subprocess.run(["node", str(INFER_JS), *args], capture_output=True, text=True, timeout=timeout,
+                         cwd=REPO_ROOT)
+    return out.returncode, out.stdout, out.stderr
+
+
+def run_infer(path: str | Path, timeout: float = 60, ignore_lines=None, relaxed=None) -> dict:
     """Constraints of a program; with ignore_lines, as if those lines said nothing."""
     extra = ["--ignore-lines", ",".join(map(str, sorted(ignore_lines)))] if ignore_lines else []
-    out = subprocess.run(
-        ["node", str(INFER_JS), "--json", *extra, str(path)],
-        capture_output=True,
-        text=True,
-        timeout=timeout,
-        cwd=REPO_ROOT,
-    )
-    if out.returncode != 0:
-        raise RuntimeError(f"infer.js failed on {path}: {out.stderr.strip()}")
-    return json.loads(out.stdout)
+    rules = RELAXED if relaxed is None else frozenset(ALL_RELAX_RULES if relaxed is True else (relaxed or ()))
+    infer_rules = sorted(rules & set(INFER_RELAX_RULES))
+    if infer_rules:
+        extra.append("--relaxed=" + ",".join(infer_rules))
+    code, stdout, stderr = _infer_once(["--json", *extra, str(path)], timeout)
+    if code != 0:
+        raise RuntimeError(f"infer.js failed on {path}: {stderr.strip()}")
+    return json.loads(stdout)
 
 
 def load_program(path: str | Path, timeout: float = 60) -> Program:

@@ -15,6 +15,7 @@ import z3
 
 from . import baseline, rank
 from .constraints import load_program, run_infer, program_from_json, run_solver_js
+from .explain import explain, question
 from .encode import GROUPINGS, describe_types, encode
 from .mcs import ALGORITHMS, HardConflict
 from pathlib import Path
@@ -36,9 +37,21 @@ def main(argv=None) -> int:
                     help="also check candidate lines by re-running inference without them")
     ap.add_argument("--no-hints", action="store_true",
                     help="do not look for missing code (a forgotten return or await)")
+    ap.add_argument("--relaxed", action="store_true",
+                    help="type real JavaScript more permissively: undeclared globals are any, functions may carry "
+                         "fields, `return;` next to `return value` is fine, arrays and strings have a length")
+    ap.add_argument("--explain", action="store_true",
+                    help="say which types clash for the first candidates (localizer/explain.py)")
+    ap.add_argument("--ask", action="store_true",
+                    help="when the first two candidates tie, ask which type a variable should have")
+    ap.add_argument("--answer", choices=("1", "2"), help="the answer to --ask (otherwise read from the terminal)")
     ap.add_argument("--timeout", type=float, default=60.0, help="seconds")
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     args = ap.parse_args(argv)
+    if args.relaxed:
+        from .constraints import set_relaxed
+
+        set_relaxed(True)
 
     data = run_infer(args.file)
     program = program_from_json(data, Path(args.file).read_text(), args.file)
@@ -121,6 +134,24 @@ def main(argv=None) -> int:
     print(f"\nCorrection subsets (dropping the constraints of these {unit}s makes the rest typable):")
     for i, c in enumerate(ranking.candidates[: max(args.top, 3)], 1):
         print(f"  #{i:<2} {{{', '.join(where(g) for g in c.lines)}}}  ({c.card} {unit}(s), {c.size} constraint(s))")
+        if args.explain and i <= 3:
+            for sentence in explain(enc, c.lines):
+                print(f"       {sentence}")
+    if args.ask and len(ranking.candidates) > 1 and ranking.candidates[0].card == ranking.candidates[1].card:
+        a, b = ranking.candidates[0], ranking.candidates[1]
+        q = question(enc, a.lines, b.lines)
+        if q:
+            la = ", ".join(where(g) for g in a.lines)
+            lb = ", ".join(where(g) for g in b.lines)
+            print(f"\nCandidates #1 and #2 tie. Which type should {q['variable']} have?")
+            print(f"  1) {q['if_first']}   (then the mistake is in {unit} {la})")
+            print(f"  2) {q['if_second']}   (then the mistake is in {unit} {lb})")
+            answer = args.answer
+            if answer is None and sys.stdin.isatty():
+                answer = input("answer (1/2): ").strip()
+            if answer in ("1", "2"):
+                chosen = a if answer == "1" else b
+                print(f"Most likely mistake: {unit} {', '.join(where(g) for g in chosen.lines)}")
     if not ranking.complete:
         print("  (enumeration cut short)")
     fc = result["first_conflict_solver_js"]

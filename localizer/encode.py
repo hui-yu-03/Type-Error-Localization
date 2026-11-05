@@ -169,6 +169,9 @@ class Encoding:
         return list(self.groups.keys())
 
 
+RELAX_RULES = ("fields", "length", "errors", "keys")  # rules of the relaxed encoding
+
+
 class Encoder:
     """Translates constraints into Z3 formulas.
 
@@ -179,12 +182,20 @@ class Encoder:
       closed_fields: if True, reading field f of an object created by an object
                      literal requires that some object literal or write defines
                      f on that object (catches misspelled property names).
+      relaxed:       what real JavaScript allows beyond the core type system, a
+                     set of rules (True: all of RELAX_RULES): "fields" functions
+                     are objects and may carry fields ($.ajax); "length" arrays
+                     and strings have a numeric length (arr.length = 0); "errors"
+                     an error is an object; "keys" any value can be an object
+                     key; "compare" a == b (tagged by infer.js --relaxed) is an
+                     error only between two different primitive types.
     """
 
-    def __init__(self, plus: str = "strict", closed_fields: bool = False) -> None:
+    def __init__(self, plus: str = "strict", closed_fields: bool = False, relaxed=False) -> None:
         self.th = Theory.get()
         self.plus_mode = plus
         self.closed_fields = closed_fields
+        self.rules = frozenset(RELAX_RULES if relaxed is True else (relaxed or ()))
         self._vars: dict[str, z3.ExprRef] = {}
         self._aux = 0
         self._class_ids: dict[str, int] = {}
@@ -223,17 +234,31 @@ class Encoder:
         if isinstance(t, Var):
             out.append(x == self.var(t.name))
         elif isinstance(t, Base):
-            out.append(z3.Or([x == th.base[o] for o in t.options]))
+            alts = [x == th.base[o] for o in t.options]
+            if "errors" in self.rules and "error" in t.options:
+                alts.append(th.is_kind("Obj", x))  # an error is an object with message and stack
+            out.append(z3.Or(alts))
         elif isinstance(t, Obj):
             if not t.fields:
-                out.append(th.is_kind("Obj", x))
+                out.append(z3.Or(th.is_kind("Obj", x), th.is_kind("Fun", x)) if "fields" in self.rules else th.is_kind("Obj", x))
                 return
             # objects are open records; a class instance may gain attributes
             inst = z3.And([th.arity(f)(x) == 1 for f, _ in t.fields])
-            out.append(z3.Or(th.is_kind("Obj", x), z3.And(th.is_kind("Inst", x), inst)))
+            kinds = [th.is_kind("Obj", x), z3.And(th.is_kind("Inst", x), inst)]
+            if "fields" in self.rules:
+                kinds.append(th.is_kind("Fun", x))  # functions are objects too
+            fields = []
             for f, v in t.fields:
-                out.append(th.field(f)(x) == self.term(v, out))
+                fields.append(th.field(f)(x) == self.term(v, out))
                 self.field_uses.append((x, f))
+            if "length" in self.rules and [f for f, _ in t.fields] == ["length"]:
+                # arrays and strings have a numeric length
+                n = self.term(t.fields[0][1], out)
+                out.append(z3.Or(z3.And(z3.Or(kinds), *fields),
+                                 z3.And(z3.Or(th.is_kind("Arr", x), x == th.base["str"]), n == th.base["num"])))
+            else:
+                out.append(z3.Or(kinds))
+                out.extend(fields)
         elif isinstance(t, Arr):
             out.append(th.is_kind("Arr", x))
             out.append(th.fn("elem")(x) == self.term(t.elem, out))
@@ -273,7 +298,13 @@ class Encoder:
         out: list = []
         if c.kind == "sub":
             lhs, rhs = c.args
-            if c.access == "index" and isinstance(lhs, Var) and isinstance(rhs, Arr):
+            if c.access == "compare" and isinstance(lhs, Var) and isinstance(rhs, Var):
+                # a == b (infer.js --relaxed): an error only between two different
+                # primitive types, as in TypeScript (the comparison is always false)
+                x, y = self.var(lhs.name), self.var(rhs.name)
+                prim = lambda v: z3.Or(v == th.base["num"], v == th.base["str"], v == th.base["bool"])  # noqa: E731
+                out.append(z3.Implies(z3.And(prim(x), prim(y)), x == y))
+            elif c.access == "index" and isinstance(lhs, Var) and isinstance(rhs, Arr):
                 # x[0] with a numeric literal: x is an array, or a string
                 # (whose characters are strings)
                 x = self.var(lhs.name)
@@ -322,7 +353,9 @@ class Encoder:
             out.append(
                 z3.Or(
                     z3.And(th.is_kind("Arr", o), i == num, r == th.fn("elem")(o)),
-                    z3.And(th.is_kind("Obj", o), i == string),
+                    # --relaxed: any value can be a key (it is converted to a string)
+                    z3.Or(th.is_kind("Obj", o), th.is_kind("Fun", o)) if "keys" in self.rules
+                    else z3.And(th.is_kind("Obj", o), i == string),
                     z3.And(o == string, i == num, r == string),
                 )
             )
@@ -374,12 +407,17 @@ class Encoder:
 
 
 def encode(program: Program, plus: str = "strict", closed_fields: bool = False, group_by: str = "line",
-           simplify: bool = True) -> Encoding:
+           simplify: bool = True, relaxed=None) -> Encoding:
     """simplify: eliminate type variables local to one group (simplify.py);
-    not combined with closed_fields, whose formulas link variables of groups."""
+    not combined with closed_fields, whose formulas link variables of groups.
+    relaxed: see Encoder; None means the process-wide setting (constraints.RELAXED)."""
     if group_by not in GROUPINGS:
         raise ValueError(group_by)
-    enc = Encoder(plus=plus, closed_fields=closed_fields)
+    if relaxed is None:
+        from . import constraints
+
+        relaxed = constraints.RELAXED & set(RELAX_RULES)
+    enc = Encoder(plus=plus, closed_fields=closed_fields, relaxed=relaxed)
     key_of = {c.id: group_key(c, group_by) for c in program.constraints if not c.hard}
     span: dict = {}
     for c in program.constraints:
