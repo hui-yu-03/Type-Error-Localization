@@ -150,10 +150,19 @@ class State {
     this.classMethods = new Map(); // rep → Map<methodName, TV[]>
     this.baseAndArr = new Map(); // rep → true when TV has both a base type AND isArr
     this.errors = [];
+    // blame[i] = origin of the constraint being processed when errors[i] was
+    // found (set only when the input carries origins, i.e. JSON input)
+    this.blame = [];
+    this.currentOrigin = null;
 
     this.displayList = []; // todos os nós em ordem de aparição
     this.seenNodes = new Set();
     this.consumedLits = new Set(); // literais já absorvidos
+  }
+
+  reportError(msg) {
+    this.errors.push(msg);
+    this.blame.push(this.currentOrigin);
   }
 
   _reg(node) {
@@ -207,7 +216,7 @@ class State {
     if (!ka || !kb) return false;
     if (ka === kb) return false;
     if (mergeTypes(ka, kb) !== null) return false; // union types overlap — compatible
-    this.errors.push(`CONFLICT: ${ka} vs ${kb}  (union(${a},${b}))`);
+    this.reportError(`CONFLICT: ${ka} vs ${kb}  (union(${a},${b}))`);
     return true;
   }
 
@@ -310,26 +319,26 @@ class State {
     if (cur) {
       const merged = mergeTypes(cur, type);
       if (merged === null)
-        this.errors.push(`CONFLICT: ${cur} vs ${type}  (${ctx})`);
+        this.reportError(`CONFLICT: ${cur} vs ${type}  (${ctx})`);
       else if (merged !== cur) this.baseType.set(rx, merged);
     } else if (this.isObj.get(rx)) {
-      this.errors.push(`CONFLICT: obj vs ${type}  (${ctx})`);
+      this.reportError(`CONFLICT: obj vs ${type}  (${ctx})`);
     } else if (this.isArr.get(rx)) {
       if (isBaseType(type)) {
         // Array + base type → str|Array<T>, num|Array<T>, etc.
         this.baseType.set(rx, type);
         this.baseAndArr.set(rx, true);
       } else {
-        this.errors.push(`CONFLICT: Array vs ${type}  (${ctx})`);
+        this.reportError(`CONFLICT: Array vs ${type}  (${ctx})`);
       }
     } else if (this.isFuncType.get(rx)) {
-      this.errors.push(`CONFLICT: Func vs ${type}  (${ctx})`);
+      this.reportError(`CONFLICT: Func vs ${type}  (${ctx})`);
     } else if (this.isPromiseType.get(rx)) {
-      this.errors.push(`CONFLICT: Promise vs ${type}  (${ctx})`);
+      this.reportError(`CONFLICT: Promise vs ${type}  (${ctx})`);
     } else if (this.isResolverType.get(rx)) {
-      this.errors.push(`CONFLICT: Resolver vs ${type}  (${ctx})`);
+      this.reportError(`CONFLICT: Resolver vs ${type}  (${ctx})`);
     } else if (this.isRejectorType.get(rx)) {
-      this.errors.push(`CONFLICT: Rejector vs ${type}  (${ctx})`);
+      this.reportError(`CONFLICT: Rejector vs ${type}  (${ctx})`);
     } else {
       this.baseType.set(rx, type);
     }
@@ -337,15 +346,15 @@ class State {
 
   _initObj(rx) {
     if (this.baseType.has(rx)) {
-      this.errors.push(`CONFLICT: ${this.baseType.get(rx)} vs obj`);
+      this.reportError(`CONFLICT: ${this.baseType.get(rx)} vs obj`);
       return;
     }
     if (this.isArr.get(rx)) {
-      this.errors.push(`CONFLICT: Array vs obj`);
+      this.reportError(`CONFLICT: Array vs obj`);
       return;
     }
     if (this.classKind.has(rx)) {
-      this.errors.push(
+      this.reportError(
         `CONFLICT: ${this.classKind.get(rx)}<${this.className.get(rx)}> vs obj`,
       );
       return;
@@ -365,15 +374,15 @@ class State {
         this.baseAndArr.set(rx, true);
         return;
       }
-      this.errors.push(`CONFLICT: ${bt} vs Array`);
+      this.reportError(`CONFLICT: ${bt} vs Array`);
       return;
     }
     if (this.isObj.get(rx)) {
-      this.errors.push(`CONFLICT: obj vs Array`);
+      this.reportError(`CONFLICT: obj vs Array`);
       return;
     }
     if (this.classKind.has(rx)) {
-      this.errors.push(
+      this.reportError(
         `CONFLICT: ${this.classKind.get(rx)}<${this.className.get(rx)}> vs Array`,
       );
       return;
@@ -388,15 +397,15 @@ class State {
 
   _initFunc(rx, info) {
     if (this.baseType.has(rx)) {
-      this.errors.push(`CONFLICT: ${this.baseType.get(rx)} vs Func`);
+      this.reportError(`CONFLICT: ${this.baseType.get(rx)} vs Func`);
       return;
     }
     if (this.isObj.get(rx)) {
-      this.errors.push(`CONFLICT: obj vs Func`);
+      this.reportError(`CONFLICT: obj vs Func`);
       return;
     }
     if (this.isArr.get(rx)) {
-      this.errors.push(`CONFLICT: Array vs Func`);
+      this.reportError(`CONFLICT: Array vs Func`);
       return;
     }
     if (this.isFuncType.get(rx)) {
@@ -419,19 +428,19 @@ class State {
 
   _initPromise(rx, resolveTV, rejectTV) {
     if (this.baseType.has(rx)) {
-      this.errors.push(`CONFLICT: ${this.baseType.get(rx)} vs Promise`);
+      this.reportError(`CONFLICT: ${this.baseType.get(rx)} vs Promise`);
       return;
     }
     if (this.isObj.get(rx)) {
-      this.errors.push(`CONFLICT: obj vs Promise`);
+      this.reportError(`CONFLICT: obj vs Promise`);
       return;
     }
     if (this.isArr.get(rx)) {
-      this.errors.push(`CONFLICT: Array vs Promise`);
+      this.reportError(`CONFLICT: Array vs Promise`);
       return;
     }
     if (this.isFuncType.get(rx)) {
-      this.errors.push(`CONFLICT: Func vs Promise`);
+      this.reportError(`CONFLICT: Func vs Promise`);
       return;
     }
     if (this.isPromiseType.get(rx)) {
@@ -464,23 +473,23 @@ class State {
 
   _initClassKind(rx, kind, className) {
     if (this.baseType.has(rx)) {
-      this.errors.push(
+      this.reportError(
         `CONFLICT: ${this.baseType.get(rx)} vs ${kind}<${className}>`,
       );
       return false;
     }
     if (this.isObj.get(rx)) {
-      this.errors.push(`CONFLICT: obj vs ${kind}<${className}>`);
+      this.reportError(`CONFLICT: obj vs ${kind}<${className}>`);
       return false;
     }
     if (this.isArr.get(rx)) {
-      this.errors.push(`CONFLICT: Array vs ${kind}<${className}>`);
+      this.reportError(`CONFLICT: Array vs ${kind}<${className}>`);
       return false;
     }
     const curKind = this.classKind.get(rx);
     const curName = this.className.get(rx);
     if (curKind && (curKind !== kind || curName !== className)) {
-      this.errors.push(
+      this.reportError(
         `CONFLICT: ${curKind}<${curName}> vs ${kind}<${className}>`,
       );
       return false;
@@ -497,7 +506,7 @@ class State {
       if (existing.has(name)) {
         const ex = existing.get(name);
         if (ex.length !== sig.length) {
-          this.errors.push(
+          this.reportError(
             `CONFLICT: arity mismatch on method ${name} (${ex.length} vs ${sig.length})`,
           );
         } else {
@@ -794,6 +803,7 @@ function resolvePlus(st, plusParsed) {
     for (let i = 0; i < plusParsed.length; i++) {
       if (done.has(i)) continue;
       const { x1, x2, xr } = plusParsed[i];
+      st.currentOrigin = plusParsed[i].origin ?? null;
       const k1 = st.kindOf(st.find(x1));
       const k2 = st.kindOf(st.find(x2));
       if (k1 === "str" || k2 === "str") {
@@ -824,6 +834,7 @@ function resolvePlus(st, plusParsed) {
   for (let i = 0; i < plusParsed.length; i++) {
     if (done.has(i)) continue;
     const { x1, x2, xr } = plusParsed[i];
+    st.currentOrigin = plusParsed[i].origin ?? null;
     if (!st.kindOf(st.find(x1))) st.process(x1, "num|str");
     if (!st.kindOf(st.find(x2))) st.process(x2, "num|str");
     setResult(xr, "num|str");
@@ -838,7 +849,8 @@ function resolveUnion(st, unionParsed) {
     if (!st.baseType.has(rep) && isBaseType(type)) st.baseType.set(rep, type);
   };
 
-  for (const { x1, x2, xr } of unionParsed) {
+  for (const { x1, x2, xr, origin } of unionParsed) {
+    st.currentOrigin = origin ?? null;
     const k1 = st.kindOf(st.find(x1));
     const k2 = st.kindOf(st.find(x2));
     if (!k1 && !k2) continue; // both unresolved → xr stays bot
@@ -866,7 +878,8 @@ function resolveUnion(st, unionParsed) {
 }
 
 function resolveTpl(st, tplParsed) {
-  for (const { xexpr } of tplParsed) {
+  for (const { xexpr, origin } of tplParsed) {
+    st.currentOrigin = origin ?? null;
     const r = st.find(xexpr);
     const kind = st.kindOf(r);
     if (!kind) {
@@ -887,7 +900,8 @@ function resolveLogicalUnion(st, logicalUnionParsed) {
     const rep = st.find(xr);
     if (!st.baseType.has(rep)) st.baseType.set(rep, type);
   };
-  for (const { x1, x2, xr } of logicalUnionParsed) {
+  for (const { x1, x2, xr, origin } of logicalUnionParsed) {
+    st.currentOrigin = origin ?? null;
     const k1 = st.kindOf(st.find(x1));
     const k2 = st.kindOf(st.find(x2));
     if (!k1 || !k2) {
@@ -909,7 +923,8 @@ function resolveLogicalUnion(st, logicalUnionParsed) {
 }
 
 function resolveIndex(st, indexParsed) {
-  for (const { xobj, xidx, xresult } of indexParsed) {
+  for (const { xobj, xidx, xresult, origin } of indexParsed) {
+    st.currentOrigin = origin ?? null;
     const robj = st.find(xobj);
     if (st.isArr.get(robj)) {
       // Array[i]: index must be num, result is the element type
@@ -938,41 +953,95 @@ function resolveIndex(st, indexParsed) {
   }
 }
 
-function solve(input, quiet = false) {
-  const parsed = [];
-  const plusParsed = [];
-  const unionParsed = [];
-  const logicalUnionParsed = [];
-  const indexParsed = [];
-  const tplParsed = [];
-  for (const line of input.split("\n")) {
+// Input is either the text printed by `node infer.js` or the JSON printed by
+// `node infer.js --json`.  With JSON input every parsed constraint keeps its
+// origin (source line), so that conflicts can be blamed on a line.
+function parseInput(input) {
+  const lists = {
+    parsed: [],
+    plusParsed: [],
+    unionParsed: [],
+    logicalUnionParsed: [],
+    indexParsed: [],
+    tplParsed: [],
+  };
+  const addLine = (line, origin) => {
+    let item = null,
+      list = null;
     if (line.includes(" <= ")) {
-      const c = parseConstraint(line);
-      if (c) parsed.push(c);
+      item = parseConstraint(line);
+      list = lists.parsed;
     } else if (line.includes("plus(")) {
-      const p = parsePlusConstraint(line);
-      if (p) plusParsed.push(p);
+      item = parsePlusConstraint(line);
+      list = lists.plusParsed;
     } else if (line.includes("logical_union(")) {
-      const lu = parseLogicalUnionConstraint(line);
-      if (lu) logicalUnionParsed.push(lu);
+      item = parseLogicalUnionConstraint(line);
+      list = lists.logicalUnionParsed;
     } else if (line.includes("union(")) {
-      const u = parseUnionConstraint(line);
-      if (u) unionParsed.push(u);
+      item = parseUnionConstraint(line);
+      list = lists.unionParsed;
     } else if (line.includes("index(")) {
-      const ix = parseIndexConstraint(line);
-      if (ix) indexParsed.push(ix);
+      item = parseIndexConstraint(line);
+      list = lists.indexParsed;
     } else if (line.includes("tpl(")) {
-      const t = parseTplConstraint(line);
-      if (t) tplParsed.push(t);
+      item = parseTplConstraint(line);
+      list = lists.tplParsed;
     }
+    if (item) {
+      if (origin) item.origin = origin;
+      list.push(item);
+    }
+  };
+  const trimmed = input.trimStart();
+  if (trimmed.startsWith("{")) {
+    for (const c of JSON.parse(trimmed).constraints) addLine(c.text, c);
+  } else {
+    for (const line of input.split("\n")) addLine(line, null);
   }
+  return lists;
+}
+
+// Machine-readable result for `--json`: the conflicts in the order the solver
+// met them (the first one is what a first-conflict checker reports) and the
+// final types.
+function printJsonResult(st) {
+  const conflicts = st.errors.map((message, i) => {
+    const o = st.blame[i];
+    return {
+      message,
+      constraint: o ? o.id : null,
+      text: o ? o.text : null,
+      line: o && o.source === "program" ? o.line : null,
+    };
+  });
+  const types = {};
+  const progVars = [...st.seenNodes]
+    .filter(
+      (k) =>
+        k.includes("__") && !isLiteral(k) && !k.startsWith("async_inner__"),
+    )
+    .sort();
+  for (const v of progVars) types[v] = st.resolveType(v);
+  console.log(JSON.stringify({ conflicts, types }));
+}
+
+function solve(input, quiet = false, json = false) {
+  const {
+    parsed,
+    plusParsed,
+    unionParsed,
+    logicalUnionParsed,
+    indexParsed,
+    tplParsed,
+  } = parseInput(input);
   if (
     !parsed.length &&
     !plusParsed.length &&
     !unionParsed.length &&
     !tplParsed.length
   ) {
-    console.log("(sem constraints)");
+    if (json) console.log(JSON.stringify({ conflicts: [], types: {} }));
+    else console.log("(sem constraints)");
     return;
   }
 
@@ -1002,6 +1071,20 @@ function solve(input, quiet = false) {
   }
   for (const { xexpr } of tplParsed) {
     st._reg(xexpr);
+  }
+
+  if (json) {
+    for (const c of parsed) {
+      st.currentOrigin = c.origin ?? null;
+      st.process(c.lhs, c.rhs);
+    }
+    resolvePlus(st, plusParsed);
+    resolveUnion(st, unionParsed);
+    resolveLogicalUnion(st, logicalUnionParsed);
+    resolveIndex(st, indexParsed);
+    resolveTpl(st, tplParsed);
+    printJsonResult(st);
+    return;
   }
 
   if (!quiet) {
@@ -1066,14 +1149,19 @@ function solve(input, quiet = false) {
   console.log();
 }
 
+// Usage: node infer.js f.js | node solver.js [-q] [--json]
+//   -q      do not print the intermediate states
+//   --json  print {conflicts, types} as JSON (needs `infer.js --json` input
+//           for the conflicts to carry source lines)
 const args = process.argv.slice(2);
 const quiet = args.includes("-q") || args.includes("--quiet");
+const json = args.includes("--json");
 const fileArg = args.find((a) => !a.startsWith("-"));
 
 if (fileArg) {
-  solve(require("fs").readFileSync(fileArg, "utf8"), quiet);
+  solve(require("fs").readFileSync(fileArg, "utf8"), quiet, json);
 } else if (!process.stdin.isTTY) {
   const chunks = [];
   process.stdin.on("data", (d) => chunks.push(d));
-  process.stdin.on("end", () => solve(chunks.join(""), quiet));
+  process.stdin.on("end", () => solve(chunks.join(""), quiet, json));
 }

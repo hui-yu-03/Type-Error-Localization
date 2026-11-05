@@ -13,8 +13,58 @@ const summaries = require("./summaries");
 let _cnt = 0;
 const fresh = () => `T${++_cnt}`;
 
+// ── Source locations of constraints (used by --json / type error localization) ──
+// Every constraint records the innermost AST node that was being inferred when
+// it was generated.  Constraints generated while instantiating a library
+// signature (summaries.js, stubs.js, built-in str/array methods) are marked as
+// hard: they are cached and shared between call sites, so they do not belong to
+// any single source line.
+const nodeStack = []; // AST nodes currently being inferred, innermost last
+let libraryDepth = 0; // > 0 while a library signature is being instantiated
+
+function currentOrigin(extra) {
+  const node = nodeStack[nodeStack.length - 1];
+  const origin =
+    libraryDepth > 0
+      ? { source: "library" }
+      : node
+        ? {
+            source: "program",
+            line: node.loc.start.line,
+            col: node.loc.start.column,
+            endLine: node.loc.end.line,
+            endCol: node.loc.end.column,
+            node: node.type,
+          }
+        : { source: "none" };
+  return extra ? { ...origin, ...extra } : origin;
+}
+
+// Run fn with node as the innermost node (Program/BlockStatement are skipped so
+// that their constraints are attributed to the enclosing construct).
+function withNode(node, fn) {
+  const push =
+    node && node.loc && node.type !== "Program" && node.type !== "BlockStatement";
+  if (push) nodeStack.push(node);
+  try {
+    return fn();
+  } finally {
+    if (push) nodeStack.pop();
+  }
+}
+
+function asLibrary(fn) {
+  libraryDepth++;
+  try {
+    return fn();
+  } finally {
+    libraryDepth--;
+  }
+}
+
 // constraint
 const constraints = [];
+const constraintOrigins = []; // parallel to constraints
 // typeHints: TV → 'str' | 'num' | 'bool' | { kind: 'arr', elem: TV }
 // Populated eagerly so MemberExpression can dispatch built-in type methods.
 const typeHints = new Map();
@@ -23,8 +73,10 @@ const typeMethodCache = new Map(); // `${TV}::${propName}` → methodTV
 // so that locally-bound module methods (e.g. var exec = cp.exec) are also dispatched.
 const methodSummaryMap = new Map();
 const _isPlainTV = (t) => /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(t) && t !== "void";
-function addCons(a, b) {
+// meta (optional): extra origin info, e.g. { access: "read", field: "x" }
+function addCons(a, b, meta) {
   constraints.push(`${a} <= ${b}`);
+  constraintOrigins.push(currentOrigin(meta));
   if (b === "str" || b === "num" || b === "bool" || b === "regexp" || b === "error") {
     if (!typeHints.has(a)) typeHints.set(a, b);
     return;
@@ -48,12 +100,18 @@ function addCons(a, b) {
 
 // deferred plus constraints: plus(X1, X2, Xr)
 const plusConstraints = [];
-const addPlus = (a, b, r) => plusConstraints.push(`plus(${a},${b},${r})`);
+const plusOrigins = [];
+const addPlus = (a, b, r) => {
+  plusConstraints.push(`plus(${a},${b},${r})`);
+  plusOrigins.push(currentOrigin());
+};
 
 // deferred union constraints: union(X1, X2, Xr) — ternary branches
 const unionConstraints = [];
+const unionOrigins = [];
 function addUnion(a, b, r) {
   unionConstraints.push(`union(${a},${b},${r})`);
+  unionOrigins.push(currentOrigin());
   // Propagate type hints eagerly so method dispatch works on the result TV.
   const ha = typeHints.get(a);
   const hb = typeHints.get(b);
@@ -73,8 +131,10 @@ function addUnion(a, b, r) {
 // deferred logical-union constraints: logical_union(X1, X2, Xr) — && / || result
 // More conservative than union(): both sides must be known to resolve the result.
 const logicalUnionConstraints = [];
+const logicalUnionOrigins = [];
 function addLogicalUnion(a, b, r) {
   logicalUnionConstraints.push(`logical_union(${a},${b},${r})`);
+  logicalUnionOrigins.push(currentOrigin());
   const ha = typeHints.get(a);
   const hb = typeHints.get(b);
   if (ha && hb) {
@@ -89,12 +149,19 @@ function addLogicalUnion(a, b, r) {
 
 // deferred index constraints: index(Xobj, Xidx, Xresult)
 const indexConstraints = [];
-const addIndex = (obj, idx, result) =>
+const indexOrigins = [];
+const addIndex = (obj, idx, result) => {
   indexConstraints.push(`index(${obj},${idx},${result})`);
+  indexOrigins.push(currentOrigin());
+};
 
 // deferred template constraints: tpl(Xexpr)
 const tplConstraints = [];
-const addTpl = (expr) => tplConstraints.push(`tpl(${expr})`);
+const tplOrigins = [];
+const addTpl = (expr) => {
+  tplConstraints.push(`tpl(${expr})`);
+  tplOrigins.push(currentOrigin());
+};
 
 // build a Func type string: Func<qualName>{p1 -> p2 -> ... -> ret}
 const funcType = (qualName, paramTVs, retTV) =>
@@ -111,6 +178,7 @@ const resolverTargets = new Map();
 const rejectorTargets = new Map();
 // typeof-guard: origTV → Set<jsType> — collected from typeof x === 'typename' guards
 const typeofGuardMap = new Map();
+const typeofGuardOrigins = new Map(); // origTV → origin of the first guard
 // qualNames of async functions (return type is wrapped in Promise)
 const asyncScopes = new Set();
 // class methods: className -> [{name, params, ret}]
@@ -149,6 +217,9 @@ function envDeclare(env, name, scope) {
 // Returns the method's function TV (cached), or null if Xobj is not a lazy module
 // or the module has no summary for propName.
 function accessModuleProp(Xobj, propName) {
+  return asLibrary(() => accessModulePropImpl(Xobj, propName));
+}
+function accessModulePropImpl(Xobj, propName) {
   if (!moduleTV.has(Xobj)) return null;
   const { modName, cache, nativeMod } = moduleTV.get(Xobj);
   if (!summaries[modName]?.[propName] && !nativeMod) return null;
@@ -186,13 +257,16 @@ function accessModuleProp(Xobj, propName) {
     if (!tv) return null;
   }
   cache.set(propName, tv);
-  addCons(Xobj, `{${propName}: ${tv}}`);
+  addCons(Xobj, `{${propName}: ${tv}}`, { access: "write", field: propName });
   return tv;
 }
 
 // Dispatch a property/method access on a TV whose base type is known via typeHints.
 // Returns a fresh method TV (cached), or null if no type hint or method known.
 function accessTypeMethod(Xobj, propName) {
+  return asLibrary(() => accessTypeMethodImpl(Xobj, propName));
+}
+function accessTypeMethodImpl(Xobj, propName) {
   const cacheKey = `${Xobj}::${propName}`;
   // Object.prototype methods exist on every value — intercept before hint check
   // so they never add a structural field to the receiver type.
@@ -321,6 +395,9 @@ const ARRAY_EXCLUSIVE_METHODS = new Set([
 ]);
 
 function _accessArrayMethod(propName, elemTV, cacheKey) {
+  return asLibrary(() => accessArrayMethodImpl(propName, elemTV, cacheKey));
+}
+function accessArrayMethodImpl(propName, elemTV, cacheKey) {
   if (propName === "length") {
     const tv = fresh();
     addCons(tv, "num");
@@ -556,7 +633,8 @@ function declareParam(p, fnEnv, qualName) {
         const keyName = prop.key?.name ?? prop.key?.value;
         if (!keyName) continue;
         const fieldTV = fresh();
-        addCons(optsTV, `{${keyName}: ${fieldTV}}`);
+        const access = prop.value.type === "AssignmentPattern" ? "read-default" : "read";
+        addCons(optsTV, `{${keyName}: ${fieldTV}}`, { access, field: keyName });
         if (prop.value.type === "Identifier") {
           const localTV = envDeclare(fnEnv, prop.value.name, qualName);
           addCons(fieldTV, localTV);
@@ -853,7 +931,7 @@ function inferObjectExpr(node, env, scope, ownerName) {
   const Xobj = fresh();
 
   if (node.properties.length === 0) {
-    addCons(Xobj, "{}");
+    addCons(Xobj, "{}", { access: "literal" });
     return Xobj;
   }
 
@@ -880,7 +958,7 @@ function inferObjectExpr(node, env, scope, ownerName) {
       Xval = inferExpr(p.value, env, scope);
     }
 
-    addCons(Xobj, `{${key}: ${Xval}}`);
+    addCons(Xobj, `{${key}: ${Xval}}`, { access: "literal", field: key });
   }
 
   return Xobj;
@@ -1308,7 +1386,8 @@ function applyModuleMethodCall(sig, propName, argNodes, env, scope) {
       arg.type === "ObjectExpression"
     ) {
       addCons(Xi, "{}");
-      if (paramSpec._sharedTV) addCons(paramSpec._sharedTV, "{}");
+      if (paramSpec._sharedTV)
+        asLibrary(() => addCons(paramSpec._sharedTV, "{}"));
       for (const prop of arg.properties) {
         if (prop.computed || prop.type === "SpreadElement") continue;
         const fieldName =
@@ -1316,32 +1395,38 @@ function applyModuleMethodCall(sig, propName, argNodes, env, scope) {
             ? prop.key.name
             : (prop.key.value ?? null);
         if (fieldName && paramSpec.fields[fieldName] !== undefined) {
-          const fTV = summaries.buildTypeTV(
-            paramSpec.fields[fieldName],
-            `${propName}_${fieldName}`,
-            fresh,
-            addCons,
+          const fTV = asLibrary(() =>
+            summaries.buildTypeTV(
+              paramSpec.fields[fieldName],
+              `${propName}_${fieldName}`,
+              fresh,
+              addCons,
+            ),
           );
-          addCons(Xi, `{${fieldName}: ${fTV}}`);
+          addCons(Xi, `{${fieldName}: ${fTV}}`, { access: "write", field: fieldName });
           if (paramSpec._sharedTV)
-            addCons(paramSpec._sharedTV, `{${fieldName}: ${fTV}}`);
+            asLibrary(() =>
+              addCons(paramSpec._sharedTV, `{${fieldName}: ${fTV}}`),
+            );
         }
       }
     } else {
-      const pTV = summaries.buildTypeTV(
-        paramSpec,
-        `${propName}_p${pi}`,
-        fresh,
-        addCons,
+      const pTV = asLibrary(() =>
+        summaries.buildTypeTV(paramSpec, `${propName}_p${pi}`, fresh, addCons),
       );
       addCons(Xi, pTV);
     }
   }
-  return summaries.buildTypeTV(sig.ret, `${propName}_ret`, fresh, addCons);
+  return asLibrary(() =>
+    summaries.buildTypeTV(sig.ret, `${propName}_ret`, fresh, addCons),
+  );
 }
 
 // -- Expression inference ----------------------------------------------------
 function inferExpr(node, env, scope) {
+  return withNode(node, () => inferExprNode(node, env, scope));
+}
+function inferExprNode(node, env, scope) {
   if (!node) return fresh();
 
   switch (node.type) {
@@ -1515,7 +1600,10 @@ function inferExpr(node, env, scope) {
         }
         const X3 = fresh();
         if (typeHints.get(Xobj) !== "func") {
-          addCons(Xobj, `{${node.property.name}: ${X3}}`);
+          addCons(Xobj, `{${node.property.name}: ${X3}}`, {
+            access: "read",
+            field: node.property.name,
+          });
         }
         return X3;
       } else if (
@@ -1552,7 +1640,10 @@ function inferExpr(node, env, scope) {
         }
         const X3 = fresh();
         if (node.property.value !== "") {
-          addCons(Xobj, `{${node.property.value}: ${X3}}`);
+          addCons(Xobj, `{${node.property.value}: ${X3}}`, {
+            access: "read",
+            field: node.property.value,
+          });
         } else {
           // empty-string key: just an existence probe, don't add a named field
           addIndex(Xobj, fresh(), X3);
@@ -1598,7 +1689,9 @@ function inferExpr(node, env, scope) {
             const p = ctorSig.params[i];
             if (p) addCons(Xi, typeof p === "string" ? p : p.type ?? "{}");
           });
-          return summaries.buildTypeTV(ctorSig.ret, node.callee.name, fresh, addCons);
+          return asLibrary(() =>
+            summaries.buildTypeTV(ctorSig.ret, node.callee.name, fresh, addCons),
+          );
         }
       }
       for (const arg of node.arguments) inferExpr(arg, env, scope);
@@ -1681,7 +1774,8 @@ function inferExpr(node, env, scope) {
           moduleTV.set(T_mod, { modName: moduleName, cache: new Map() });
           return T_mod;
         }
-        if (stubs[moduleName]) return stubs[moduleName](fresh, addCons);
+        if (stubs[moduleName])
+          return asLibrary(() => stubs[moduleName](fresh, addCons));
 
         // Fallback: introspect from node_modules (file-relative first, then global).
         // Store the native module object in moduleTV for demand-driven access —
@@ -1752,7 +1846,7 @@ function inferExpr(node, env, scope) {
             for (const { name: fn, tv: fv } of classMethodThisAttrs.get(
               mQualName,
             ) ?? []) {
-              addCons(Xobj, `{${fn}: ${fv}}`);
+              addCons(Xobj, `{${fn}: ${fv}}`, { access: "write", field: fn });
             }
             return method.ret;
           }
@@ -1912,7 +2006,10 @@ function inferExpr(node, env, scope) {
         lhs.object.type !== "ThisExpression"
       ) {
         const Xobj = inferExpr(lhs.object, env, scope);
-        addCons(Xobj, `{${lhs.property.name}: ${Xrhs}}`);
+        addCons(Xobj, `{${lhs.property.name}: ${Xrhs}}`, {
+          access: "write",
+          field: lhs.property.name,
+        });
       } else if (
         lhs.type === "MemberExpression" &&
         !lhs.computed &&
@@ -1947,7 +2044,7 @@ function handleRHS(name, rhs, env, scope) {
 
   if (rhs.type === "ObjectExpression" && rhs.properties.length === 0) {
     // x = {}
-    addCons(xTarget, "{}");
+    addCons(xTarget, "{}", { access: "literal" });
     return;
   }
 
@@ -1999,7 +2096,7 @@ function handleRHS(name, rhs, env, scope) {
     }
     const X3 = fresh();
     addCons(X3, xTarget);
-    addCons(X1, `{${prop}: ${X3}}`);
+    addCons(X1, `{${prop}: ${X3}}`, { access: "read", field: prop });
     return;
   }
 
@@ -2032,6 +2129,9 @@ function handleRHS(name, rhs, env, scope) {
 
 // -- Statement inference -----------------------------------------------------
 function inferStmt(node, env, scope) {
+  return withNode(node, () => inferStmtNode(node, env, scope));
+}
+function inferStmtNode(node, env, scope) {
   let hasReturn = false;
   if (!node) return hasReturn;
 
@@ -2088,7 +2188,10 @@ function inferStmt(node, env, scope) {
         env.set(guard.ident, shadowTV);
         inferStmt(node.consequent, env, scope);
         env.set(guard.ident, origTV);
-        if (!typeofGuardMap.has(origTV)) typeofGuardMap.set(origTV, new Set());
+        if (!typeofGuardMap.has(origTV)) {
+          typeofGuardMap.set(origTV, new Set());
+          typeofGuardOrigins.set(origTV, currentOrigin());
+        }
         typeofGuardMap.get(origTV).add(guard.jsType);
       } else {
         inferStmt(node.consequent, env, scope);
@@ -2222,7 +2325,9 @@ function inferStmt(node, env, scope) {
             if (propTV !== null) {
               addCons(propTV, localTV);
             } else {
-              addCons(Xrhs, `{${keyName}: ${localTV}}`);
+              const access =
+                prop.value.type === "AssignmentPattern" ? "read-default" : "read";
+              addCons(Xrhs, `{${keyName}: ${localTV}}`, { access, field: keyName });
             }
           }
         } else if (decl.id.type === "ArrayPattern") {
@@ -2381,6 +2486,9 @@ function inferStmt(node, env, scope) {
  * (assignments, compound assignments, update expressions, calls).
  */
 function inferExprStmt(node, env, scope) {
+  return withNode(node, () => inferExprStmtNode(node, env, scope));
+}
+function inferExprStmtNode(node, env, scope) {
   if (!node) return;
 
   switch (node.type) {
@@ -2446,7 +2554,7 @@ function inferExprStmt(node, env, scope) {
           X1 = inferExpr(rhs, env, scope);
         }
         const prop = lhs.property.name;
-        addCons(X2, `{${prop}: ${X1}}`);
+        addCons(X2, `{${prop}: ${X1}}`, { access: "write", field: prop });
         return;
       }
 
@@ -2502,7 +2610,7 @@ function inferExprStmt(node, env, scope) {
         const Xrhs = inferExpr(rhs, env, scope);
         const Xobj = inferExpr(lhs.object, env, scope);
         const Xidx = inferExpr(lhs.property, env, scope);
-        addCons(Xobj, "{}");
+        addCons(Xobj, "{}", { access: "computed-write" });
         addIndex(Xobj, Xidx, Xrhs);
         return;
       }
@@ -2523,10 +2631,14 @@ function inferExprStmt(node, env, scope) {
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────────
-const filePath = process.argv[2];
+// Usage: node infer.js [--json] <source-file.js>
+//   --json  print the constraints as JSON, each tagged with its source origin
+const cliArgs = process.argv.slice(2);
+const jsonOutput = cliArgs.includes("--json");
+const filePath = cliArgs.find((a) => !a.startsWith("--"));
 
 if (!filePath) {
-  console.error("Usage: node infer.js <source-file.js>");
+  console.error("Usage: node infer.js [--json] <source-file.js>");
   process.exit(1);
 }
 
@@ -2546,6 +2658,7 @@ try {
     ecmaVersion: 2020,
     sourceType: "script",
     allowReturnOutsideFunction: true,
+    locations: true,
   });
 } catch (scriptErr) {
   try {
@@ -2553,6 +2666,7 @@ try {
       ecmaVersion: 2020,
       sourceType: "module",
       allowReturnOutsideFunction: true,
+      locations: true,
     });
   } catch (e) {
     process.stderr.write(
@@ -2576,38 +2690,70 @@ if (ast) inferStmt(ast, globalEnv, "global");
 for (const [tv, types] of typeofGuardMap.entries()) {
   const union = [...types].sort().join("|");
   constraints.push(`${tv} <= ${union}`);
+  constraintOrigins.push(typeofGuardOrigins.get(tv));
 }
 
 // ── Output ────────────────────────────────────────────────────────────────────
-const SEP = "─".repeat(60);
-console.log(`\nType Inference Constraints`);
-console.log(`File : ${path.resolve(filePath)}`);
-console.log(SEP);
-
-const allConstraints = [
-  ...constraints,
-  ...plusConstraints,
-  ...unionConstraints,
-  ...logicalUnionConstraints,
-  ...indexConstraints,
-  ...tplConstraints,
-];
-if (allConstraints.length === 0) {
-  console.log("  (no constraints generated)");
-} else {
-  const pad = String(allConstraints.length).length;
-  allConstraints.forEach((c, i) =>
-    console.log(`  C${String(i + 1).padStart(pad, "0")}: ${c}`),
+if (jsonOutput) {
+  // Same constraints, in the same order as the text output, with their origins.
+  const tagged = [];
+  const addAll = (kind, list, origins) =>
+    list.forEach((text, i) =>
+      tagged.push({ id: tagged.length, kind, text, ...origins[i] }),
+    );
+  addAll("sub", constraints, constraintOrigins);
+  addAll("plus", plusConstraints, plusOrigins);
+  addAll("union", unionConstraints, unionOrigins);
+  addAll("logical_union", logicalUnionConstraints, logicalUnionOrigins);
+  addAll("index", indexConstraints, indexOrigins);
+  addAll("tpl", tplConstraints, tplOrigins);
+  const functions = {};
+  for (const [qualName, t] of functionTypes.entries())
+    functions[qualName] = { params: t.params, ret: t.ret };
+  // no process.exit() here: it could cut the output short when piped
+  process.stdout.write(
+    JSON.stringify({
+      file: path.resolve(filePath),
+      parsed: ast !== null,
+      constraints: tagged,
+      functions,
+    }) + "\n",
   );
+} else {
+  printConstraints();
 }
 
-console.log(SEP);
-console.log(`Total: ${allConstraints.length} constraint(s)\n`);
+function printConstraints() {
+  const SEP = "─".repeat(60);
+  console.log(`\nType Inference Constraints`);
+  console.log(`File : ${path.resolve(filePath)}`);
+  console.log(SEP);
 
-console.log("\nFunction Types");
-console.log(SEP);
+  const allConstraints = [
+    ...constraints,
+    ...plusConstraints,
+    ...unionConstraints,
+    ...logicalUnionConstraints,
+    ...indexConstraints,
+    ...tplConstraints,
+  ];
+  if (allConstraints.length === 0) {
+    console.log("  (no constraints generated)");
+  } else {
+    const pad = String(allConstraints.length).length;
+    allConstraints.forEach((c, i) =>
+      console.log(`  C${String(i + 1).padStart(pad, "0")}: ${c}`),
+    );
+  }
 
-for (const [qualName, t] of functionTypes.entries()) {
-  const params = t.params.join(", ");
-  console.log(`  ${qualName} : (${params}) -> ${t.ret}`);
+  console.log(SEP);
+  console.log(`Total: ${allConstraints.length} constraint(s)\n`);
+
+  console.log("\nFunction Types");
+  console.log(SEP);
+
+  for (const [qualName, t] of functionTypes.entries()) {
+    const params = t.params.join(", ");
+    console.log(`  ${qualName} : (${params}) -> ${t.ret}`);
+  }
 }

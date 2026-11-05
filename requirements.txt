@@ -1,0 +1,6 @@
+# SMT-based localizer (python -m localizer)
+z3-solver>=4.12
+python-sat>=1.8.dev0
+# tests and plots
+pytest>=7
+matplotlib>=3.7

@@ -1,3 +1,8 @@
 *.pdf
 node_modules/
 datasets/
+__pycache__/
+.pytest_cache/
+.venv/
+# large generated programs for the scaling experiment (regenerated from seeds)
+bench/corpus/scaling/
