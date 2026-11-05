@@ -13,7 +13,8 @@
 // and three small fixes that real bug-fixing commits make (FixJS):
 //
 //   precedence     `!a === b` (always false: ! binds first) becomes `!(a === b)`
-//   add-length     a comparison `n < xs` becomes `n < xs.length`
+//   add-length     a comparison `n < xs` becomes `n < xs.length`, if xs is also
+//                  used as a collection (indexed, xs.push(...), ...)
 //   rename-member  a member that the program never defines and that is no
 //                  built-in member, `user.nmae`, becomes the closest defined or
 //                  built-in name (edit distance 1, or 2 for longer names)
@@ -126,6 +127,14 @@ function main() {
       defined.add(n.left.property.name);
   });
   const known = new Set([...defined, ...builtinMembers()]);
+  // values the program also uses as a collection (xs[i], xs.push(...), ...):
+  // only for those is a missing .length a likely fix
+  const COLLECTION = new Set(["length", "push", "pop", "shift", "unshift", "splice", "slice", "map", "forEach",
+    "filter", "reduce", "some", "every", "indexOf", "join", "concat", "sort", "reverse", "includes"]);
+  const collections = new Set();
+  walk(ast, (n) => {
+    if (n.type === "MemberExpression" && (n.computed || COLLECTION.has(n.property.name))) collections.add(code(n.object));
+  });
   walk(ast, (n) => {
     if (!n.loc || !lines.has(n.loc.start.line)) return;
     const L = n.loc.start.line;
@@ -136,7 +145,7 @@ function main() {
     }
     if (n.type === "BinaryExpression" && ["<", ">", "<=", ">="].includes(n.operator)) {
       for (const side of [n.left, n.right])
-        if (side.type === "Identifier" || side.type === "MemberExpression")
+        if ((side.type === "Identifier" || side.type === "MemberExpression") && collections.has(code(side)))
           add("add-length", L, `${code(side)}.length`, side.end, ".length");
     }
     if (n.type === "MemberExpression" && !n.computed && n.property.type === "Identifier" && !known.has(n.property.name)) {

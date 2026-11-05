@@ -5,3 +5,4 @@ numpy  # training the learned tie-breaker (bench/train_ranker.py)
 # tests and plots
 pytest>=7
 matplotlib>=3.7
+markdown  # the PDF report (docs/build_report.py)
